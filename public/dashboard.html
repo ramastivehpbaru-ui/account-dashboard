@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BloxCracker · Dashboard</title>
+
+    <!-- ============================================================
+    LUCIDE ICONS (SVG)
+    ============================================================ -->
+    <script src="https://unpkg.com/lucide@latest">
+    </script>
+
     <style>
         /* ============================================================
            ROOT VARIABLES
@@ -114,6 +121,49 @@
         }
 
         /* ============================================================
+           LOADING SCREEN
+           ============================================================ */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #loading-screen .logo {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+        #loading-screen .logo span {
+            color: var(--accent);
+        }
+        #loading-screen .loader {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ============================================================
            LAYOUT
            ============================================================ */
         #app {
@@ -121,15 +171,166 @@
             z-index: 1;
             display: flex;
             min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        #app.visible {
+            opacity: 1;
         }
 
-        /* ---- SIDEBAR ---- */
+        /* ============================================================
+           LOGIN PAGE
+           ============================================================ */
+        #login-page {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: var(--bg-primary);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        #login-page.hidden {
+            opacity: 0;
+            transform: scale(0.96);
+            pointer-events: none;
+        }
+        .login-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 40px 44px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.60), var(--shadow-glow);
+            transition: all var(--transition);
+            text-align: center;
+        }
+        .login-card:hover {
+            border-color: var(--border-hover);
+        }
+        .login-card .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .login-card .logo span {
+            color: var(--accent);
+        }
+        .login-card .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+        .login-card .input-group {
+            position: relative;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .login-card .input-group .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 18px;
+            height: 18px;
+            transition: color var(--transition);
+        }
+        .login-card .input-group input {
+            width: 100%;
+            padding: 12px 14px 12px 44px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.40);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all var(--transition);
+            outline: none;
+        }
+        .login-card .input-group input::placeholder {
+            color: var(--text-muted);
+        }
+        .login-card .input-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 28px var(--accent-glow);
+        }
+        .login-card .input-group input:focus~.icon {
+            color: var(--accent);
+        }
+        .login-card .input-group .toggle-pw {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            width: 20px;
+            height: 20px;
+            transition: color var(--transition);
+        }
+        .login-card .input-group .toggle-pw:hover {
+            color: var(--text-primary);
+        }
+        .login-card .btn-signin {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--accent-dim);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .login-card .btn-signin:hover {
+            border-color: var(--accent);
+            background: var(--accent);
+            box-shadow: 0 0 32px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+        .login-card .btn-signin:active {
+            transform: scale(0.97);
+        }
+        .login-card .btn-signin .icon {
+            width: 18px;
+            height: 18px;
+        }
+        .login-card .btn-signin.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .login-card .error-msg {
+            color: var(--accent);
+            font-size: 13px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
         #sidebar {
             position: fixed;
             top: 0;
             left: 0;
             bottom: 0;
-            width: 280px;
+            width: 270px;
             background: var(--bg-glass);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
@@ -138,7 +339,7 @@
             transform: translateX(-110%);
             transition: transform var(--transition), opacity var(--transition);
             z-index: 1000;
-            padding: 28px 20px;
+            padding: 24px 18px;
             display: flex;
             flex-direction: column;
             opacity: 0;
@@ -156,9 +357,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding-bottom: 24px;
+            padding-bottom: 22px;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             color: #fff;
         }
         #sidebar .brand span {
@@ -168,20 +369,19 @@
             font-size: 11px;
             font-weight: 400;
             color: var(--text-muted);
-            letter-spacing: 0.3px;
             margin-left: auto;
         }
         #sidebar .nav {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
         #sidebar .nav a {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 12px 16px;
+            padding: 11px 16px;
             border-radius: var(--radius-sm);
             color: var(--text-secondary);
             text-decoration: none;
@@ -190,6 +390,12 @@
             transition: all var(--transition);
             cursor: pointer;
             border: 1px solid transparent;
+            position: relative;
+        }
+        #sidebar .nav a .icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
         }
         #sidebar .nav a:hover {
             background: var(--accent-dim);
@@ -202,11 +408,6 @@
             border-color: var(--accent);
             box-shadow: 0 0 20px var(--accent-glow);
         }
-        #sidebar .nav a .icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
         #sidebar .nav a .badge-nav {
             margin-left: auto;
             background: var(--accent-dim);
@@ -218,35 +419,65 @@
         }
         #sidebar .footer-side {
             margin-top: auto;
-            padding-top: 20px;
+            padding-top: 18px;
             border-top: 1px solid var(--border-color);
-            font-size: 12px;
-            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #sidebar .footer-side .user-mini {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
-        #sidebar .footer-side .dot {
-            width: 6px;
-            height: 6px;
+        #sidebar .footer-side .user-mini .avatar {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: #2ecc71;
-            display: inline-block;
-            animation: pulse-dot 2s ease-in-out infinite;
+            background: var(--accent-dim);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
         }
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: scale(0.7);
-            }
+        #sidebar .footer-side .user-mini .info {
+            flex: 1;
+            font-size: 13px;
+            color: #fff;
+        }
+        #sidebar .footer-side .user-mini .info small {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        #sidebar .footer-side .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all var(--transition);
+            width: 100%;
+        }
+        #sidebar .footer-side .logout-btn:hover {
+            border-color: var(--accent);
+            color: #fff;
+            background: var(--accent-dim);
+        }
+        #sidebar .footer-side .logout-btn .icon {
+            width: 16px;
+            height: 16px;
         }
 
-        /* ---- SIDEBAR OVERLAY ---- */
         #sidebar-overlay {
             position: fixed;
             inset: 0;
@@ -263,7 +494,9 @@
             pointer-events: auto;
         }
 
-        /* ---- MAIN CONTENT ---- */
+        /* ============================================================
+           MAIN CONTENT
+           ============================================================ */
         #main {
             flex: 1;
             padding: 20px 28px 40px;
@@ -278,7 +511,9 @@
             }
         }
 
-        /* ---- TOP BAR ---- */
+        /* ============================================================
+           TOP BAR
+           ============================================================ */
         .topbar {
             display: flex;
             align-items: center;
@@ -300,28 +535,28 @@
             width: 44px;
             height: 44px;
             border-radius: var(--radius-sm);
-            font-size: 22px;
-            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all var(--transition);
-            line-height: 1;
-            letter-spacing: -2px;
+        }
+        .topbar .menu-btn .icon {
+            width: 22px;
+            height: 22px;
         }
         .topbar .menu-btn:hover {
             border-color: var(--accent);
             box-shadow: 0 0 24px var(--accent-glow);
             transform: scale(1.03);
         }
-        .topbar .greeting h2 {
-            font-size: 22px;
+        .topbar .page-title h2 {
+            font-size: 20px;
             font-weight: 600;
-            letter-spacing: -0.3px;
             color: #fff;
+            letter-spacing: -0.3px;
         }
-        .topbar .greeting p {
+        .topbar .page-title p {
             font-size: 13px;
             color: var(--text-secondary);
             margin-top: 1px;
@@ -329,16 +564,78 @@
         .topbar .right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
-        .topbar .right .time {
-            font-size: 13px;
-            color: var(--text-muted);
+        .topbar .right .notif-btn {
+            position: relative;
             background: var(--bg-glass);
-            padding: 6px 16px;
-            border-radius: 20px;
+            backdrop-filter: blur(8px);
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(4px);
+            border-radius: var(--radius-sm);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+        .topbar .right .notif-btn .icon {
+            width: 20px;
+            height: 20px;
+        }
+        .topbar .right .notif-btn:hover {
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .topbar .right .notif-btn .dot-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
+        }
+        .topbar .right .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 40px;
+            padding: 4px 14px 4px 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .topbar .right .user-profile:hover {
+            border-color: var(--border-hover);
+        }
+        .topbar .right .user-profile .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+            color: #fff;
+            border: 1px solid var(--border-color);
+        }
+        .topbar .right .user-profile .name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #fff;
+        }
+        .topbar .right .user-profile .chevron {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
         }
 
         /* ============================================================
@@ -365,10 +662,50 @@
         /* ============================================================
            HOME PAGE
            ============================================================ */
+        .home-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .home-header .left h1 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .home-header .left p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        .home-header .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 6px 16px 6px 12px;
+            font-size: 12px;
+            color: #2ecc71;
+            font-weight: 500;
+        }
+        .home-header .status-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2ecc71;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
             margin-bottom: 32px;
         }
         .stat-card {
@@ -377,11 +714,11 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 20px 22px;
+            padding: 18px 20px;
             transition: all var(--transition);
-            cursor: default;
             position: relative;
             overflow: hidden;
+            cursor: default;
         }
         .stat-card::before {
             content: '';
@@ -400,48 +737,55 @@
         .stat-card:hover::before {
             opacity: 1;
         }
-        .stat-card .label {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .stat-card .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             position: relative;
             z-index: 1;
+        }
+        .stat-card .top .icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            opacity: 0.5;
+            transition: all var(--transition);
+        }
+        .stat-card:hover .top .icon {
+            opacity: 1;
+            color: var(--accent);
+        }
+        .stat-card .top .trend {
+            font-size: 11px;
+            color: #2ecc71;
+            font-weight: 500;
+            background: rgba(46, 204, 113, 0.10);
+            padding: 1px 10px;
+            border-radius: 20px;
         }
         .stat-card .number {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 700;
             color: #fff;
-            margin-top: 4px;
+            margin-top: 8px;
             position: relative;
             z-index: 1;
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
         }
-        .stat-card .number .sub {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--text-muted);
-        }
-        .stat-card .icon-stat {
-            position: absolute;
-            right: 16px;
-            bottom: 16px;
-            font-size: 28px;
-            opacity: 0.12;
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            position: relative;
             z-index: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-weight: 500;
         }
         .stat-card.accent .number {
             color: var(--accent);
         }
-        .stat-card.accent .label {
-            color: var(--accent);
-            opacity: 0.7;
-        }
 
-        /* ---- CHART ---- */
+        /* Chart */
         .chart-section {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -464,9 +808,32 @@
             font-weight: 600;
             color: #fff;
         }
-        .chart-section .header-chart span {
-            font-size: 12px;
+        .chart-section .header-chart .segmented {
+            display: flex;
+            gap: 3px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 3px;
+            border: 1px solid var(--border-color);
+        }
+        .chart-section .header-chart .segmented button {
+            padding: 4px 14px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
             color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .chart-section .header-chart .segmented button.active {
+            background: var(--accent-dim);
+            color: #fff;
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+        .chart-section .header-chart .segmented button:hover {
+            color: #fff;
         }
         #activityChart {
             width: 100%;
@@ -474,7 +841,7 @@
             display: block;
         }
 
-        /* ---- RECENT ACTIVITY ---- */
+        /* Recent Activity */
         .recent-section {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -516,23 +883,11 @@
             background: rgba(255, 255, 255, 0.02);
             border-left-color: var(--accent);
         }
-        .recent-item .dot-status {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        .recent-item .icon {
+            width: 16px;
+            height: 16px;
             flex-shrink: 0;
-        }
-        .recent-item .dot-status.green {
-            background: #2ecc71;
-        }
-        .recent-item .dot-status.red {
-            background: var(--accent);
-        }
-        .recent-item .dot-status.yellow {
-            background: #f1c40f;
-        }
-        .recent-item .dot-status.purple {
-            background: #9b59b6;
+            color: var(--text-muted);
         }
         .recent-item .content {
             flex: 1;
@@ -564,6 +919,15 @@
             min-width: 200px;
             position: relative;
         }
+        .logs-toolbar .search-wrap .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 18px;
+            height: 18px;
+        }
         .logs-toolbar .search-wrap input {
             width: 100%;
             padding: 11px 18px 11px 44px;
@@ -583,13 +947,21 @@
             border-color: var(--accent);
             box-shadow: 0 0 28px var(--accent-glow);
         }
-        .logs-toolbar .search-wrap .icon-search {
+        .logs-toolbar .search-wrap .clear-btn {
             position: absolute;
-            left: 14px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
+            background: none;
+            border: none;
             color: var(--text-muted);
-            font-size: 16px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            display: none;
+        }
+        .logs-toolbar .search-wrap .clear-btn.visible {
+            display: block;
         }
         .logs-toolbar .filter-group {
             display: flex;
@@ -617,8 +989,29 @@
             color: #fff;
             box-shadow: 0 0 20px var(--accent-glow);
         }
+        .logs-toolbar .refresh-btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .logs-toolbar .refresh-btn .icon {
+            width: 16px;
+            height: 16px;
+        }
+        .logs-toolbar .refresh-btn:hover {
+            border-color: var(--accent);
+            color: #fff;
+            background: var(--accent-dim);
+        }
 
-        /* ---- ACCOUNT CARDS (LOGS) ---- */
         .accounts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -670,7 +1063,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 600;
             color: var(--text-secondary);
             transition: border var(--transition);
@@ -791,6 +1184,13 @@
             cursor: pointer;
             transition: all var(--transition);
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .account-card .cookie-area .copy-btn .icon {
+            width: 12px;
+            height: 12px;
         }
         .account-card .cookie-area .copy-btn:hover {
             border-color: var(--accent);
@@ -815,6 +1215,14 @@
             font-weight: 500;
             cursor: pointer;
             transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .account-card .actions button .icon {
+            width: 14px;
+            height: 14px;
         }
         .account-card .actions button:hover {
             border-color: var(--accent);
@@ -877,8 +1285,14 @@
             box-shadow: var(--shadow-glow);
         }
         .info-card .logo-big {
-            font-size: 52px;
-            margin-bottom: 12px;
+            font-size: 48px;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+        .info-card .logo-big .icon {
+            width: 56px;
+            height: 56px;
+            color: var(--accent);
         }
         .info-card h1 {
             font-size: 28px;
@@ -975,7 +1389,6 @@
             font-size: 12px;
             color: var(--text-muted);
         }
-        /* Toggle */
         .toggle {
             width: 44px;
             height: 24px;
@@ -1008,7 +1421,7 @@
         }
 
         /* ============================================================
-           MODAL (View Details)
+           DETAIL MODAL
            ============================================================ */
         #detail-modal {
             position: fixed;
@@ -1059,9 +1472,10 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 24px;
             cursor: pointer;
             transition: color var(--transition);
+            width: 24px;
+            height: 24px;
         }
         #detail-modal .modal-box .close-btn:hover {
             color: #fff;
@@ -1126,16 +1540,18 @@
             font-size: 12px;
             cursor: pointer;
             transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #detail-modal .modal-actions button .icon {
+            width: 14px;
+            height: 14px;
         }
         #detail-modal .modal-actions button:hover {
             border-color: var(--accent);
             color: #fff;
             background: var(--accent-dim);
-        }
-        #detail-modal .modal-actions .copy-toast {
-            background: rgba(46, 204, 113, 0.12);
-            color: #2ecc71;
-            border-color: rgba(46, 204, 113, 0.20);
         }
 
         /* ============================================================
@@ -1174,18 +1590,14 @@
             opacity: 1;
         }
         .toast .icon {
-            font-size: 20px;
+            width: 20px;
+            height: 20px;
             flex-shrink: 0;
         }
         .toast .msg {
             flex: 1;
             font-size: 13px;
             color: var(--text-primary);
-        }
-        .toast .msg small {
-            color: var(--text-muted);
-            display: block;
-            font-size: 11px;
         }
         .toast.success .icon {
             color: #2ecc71;
@@ -1198,45 +1610,57 @@
         }
 
         /* ============================================================
-           SKELETON
+           NOTIFICATION PANEL
            ============================================================ */
-        .skeleton {
-            background: var(--bg-secondary);
-            border-radius: var(--radius-xs);
-            animation: shimmer 1.6s ease-in-out infinite;
-            background-image: linear-gradient(90deg,
-                    var(--bg-secondary) 0%,
-                    rgba(255, 255, 255, 0.03) 50%,
-                    var(--bg-secondary) 100%);
-            background-size: 200% 100%;
-        }
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
-        }
-        .skeleton-avatar {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-        }
-        .skeleton-text {
-            height: 14px;
-            width: 100%;
-            margin-bottom: 4px;
-        }
-        .skeleton-text.short {
-            width: 60%;
-        }
-        .skeleton-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(8px);
+        #notif-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 340px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--bg-glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 20px 22px;
+            padding: 18px 20px;
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.60);
+            transform: translateY(-12px) scale(0.96);
+            opacity: 0;
+            pointer-events: none;
+            transition: all var(--transition);
+            z-index: 1500;
+        }
+        #notif-panel.show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #notif-panel h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        #notif-panel .notif-item {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        #notif-panel .notif-item:last-child {
+            border-bottom: none;
+        }
+        #notif-panel .notif-item strong {
+            color: #fff;
+            font-weight: 500;
+        }
+        #notif-panel .notif-item .time {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 2px;
         }
 
         /* ============================================================
@@ -1246,10 +1670,10 @@
             #main {
                 padding: 14px 16px 28px;
             }
-            .topbar .greeting h2 {
+            .topbar .page-title h2 {
                 font-size: 18px;
             }
-            .topbar .greeting p {
+            .topbar .page-title p {
                 font-size: 12px;
             }
             .stats-grid {
@@ -1282,9 +1706,6 @@
             .logs-toolbar .filter-group {
                 justify-content: center;
             }
-            .topbar .right .time {
-                display: none;
-            }
             .chart-section {
                 padding: 16px;
             }
@@ -1293,6 +1714,17 @@
                 right: 16px;
                 left: 16px;
                 max-width: 100%;
+            }
+            #notif-panel {
+                right: 10px;
+                left: 10px;
+                width: auto;
+            }
+            .login-card {
+                padding: 28px 24px;
+            }
+            .home-header {
+                flex-direction: column;
             }
         }
         @media (max-width: 480px) {
@@ -1315,6 +1747,12 @@
                 white-space: normal;
                 word-break: break-all;
             }
+            .topbar .right .user-profile .name {
+                display: none;
+            }
+            .topbar .right .user-profile {
+                padding: 4px;
+            }
         }
 
         /* ============================================================
@@ -1332,17 +1770,61 @@
         .mb-8 {
             margin-bottom: 8px;
         }
-        .gap-4 {
-            gap: 4px;
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.7);
+            }
         }
     </style>
 </head>
 <body>
 
     <!-- ============================================================
+    LOADING SCREEN
+    ============================================================ -->
+    <div id="loading-screen">
+        <div class="logo">Blox<span>Cracker</span></div>
+        <div class="loader"></div>
+    </div>
+
+    <!-- ============================================================
     GALAXY BACKGROUND
     ============================================================ -->
     <div id="galaxy-bg" aria-hidden="true"></div>
+
+    <!-- ============================================================
+    LOGIN PAGE
+    ============================================================ -->
+    <div id="login-page">
+        <div class="login-card">
+            <div class="logo">Blox<span>Cracker</span></div>
+            <p class="subtitle">Welcome back. Sign in to continue.</p>
+
+            <div class="input-group">
+                <i data-lucide="user" class="icon"></i>
+                <input type="text" id="loginUser" placeholder="Enter username" value="Rama" />
+            </div>
+            <div class="input-group">
+                <i data-lucide="lock" class="icon"></i>
+                <input type="password" id="loginPass" placeholder="Enter password" value="Rama" />
+                <button class="toggle-pw" id="togglePw" type="button" aria-label="Toggle password visibility">
+                    <i data-lucide="eye" id="pwIcon" style="width:18px;height:18px;"></i>
+                </button>
+            </div>
+
+            <button class="btn-signin" id="signinBtn">
+                <i data-lucide="log-in" class="icon"></i>
+                <span id="signinText">Sign In</span>
+            </button>
+            <div class="error-msg" id="loginError"></div>
+        </div>
+    </div>
 
     <!-- ============================================================
     SIDEBAR OVERLAY
@@ -1359,23 +1841,45 @@
         </div>
         <nav class="nav">
             <a class="active" data-page="home" onclick="navigate('home')">
-                <span class="icon">⌂</span> Home
+                <i data-lucide="layout-dashboard" class="icon"></i> Home
             </a>
             <a data-page="logs" onclick="navigate('logs')">
-                <span class="icon">▦</span> Logs
+                <i data-lucide="list" class="icon"></i> Logs
                 <span class="badge-nav" id="logs-badge">0</span>
             </a>
             <a data-page="info" onclick="navigate('info')">
-                <span class="icon">ℹ</span> Info
+                <i data-lucide="info" class="icon"></i> Info
             </a>
             <a data-page="settings" onclick="navigate('settings')">
-                <span class="icon">⚙</span> Settings
+                <i data-lucide="settings" class="icon"></i> Settings
             </a>
         </nav>
         <div class="footer-side">
-            <span class="dot"></span> System Online
+            <div class="user-mini">
+                <div class="avatar">R</div>
+                <div class="info">
+                    Rama
+                    <small>● Online</small>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i data-lucide="log-out" class="icon"></i> Logout
+            </button>
         </div>
     </aside>
+
+    <!-- ============================================================
+    NOTIFICATION PANEL
+    ============================================================ -->
+    <div id="notif-panel">
+        <h4>Notifications</h4>
+        <div id="notifList">
+            <div class="notif-item">
+                <strong>System ready</strong> — Dashboard is operational.
+                <span class="time">just now</span>
+            </div>
+        </div>
+    </div>
 
     <!-- ============================================================
     MAIN
@@ -1386,14 +1890,24 @@
             <!-- TOPBAR -->
             <header class="topbar">
                 <div class="left">
-                    <button class="menu-btn" id="menuToggle" aria-label="Toggle menu">⋮</button>
-                    <div class="greeting">
-                        <h2>Welcome back, <span id="greetingUser">Ramzz</span></h2>
-                        <p id="greetingSub">Here's what's happening with your dashboard today.</p>
+                    <button class="menu-btn" id="menuToggle" aria-label="Toggle menu">
+                        <i data-lucide="menu" class="icon"></i>
+                    </button>
+                    <div class="page-title">
+                        <h2 id="pageTitle">Dashboard</h2>
+                        <p id="pageSub">Overview of your account activity</p>
                     </div>
                 </div>
                 <div class="right">
-                    <span class="time" id="liveTime">--:--</span>
+                    <button class="notif-btn" id="notifToggle" aria-label="Notifications">
+                        <i data-lucide="bell" class="icon"></i>
+                        <span class="dot-badge"></span>
+                    </button>
+                    <div class="user-profile" id="userProfile">
+                        <div class="avatar">R</div>
+                        <span class="name">Rama</span>
+                        <i data-lucide="chevron-down" class="chevron"></i>
+                    </div>
                 </div>
             </header>
 
@@ -1402,35 +1916,76 @@
             ========================================================== -->
             <section class="page active" id="page-home">
 
+                <div class="home-header">
+                    <div class="left">
+                        <h1>Welcome back, Rama</h1>
+                        <p>Here's your dashboard overview.</p>
+                    </div>
+                    <div class="status-badge">
+                        <span class="dot"></span> System Operational
+                    </div>
+                </div>
+
                 <!-- STATS -->
                 <div class="stats-grid">
                     <div class="stat-card accent">
-                        <div class="label">Total Accounts</div>
+                        <div class="top">
+                            <i data-lucide="users" class="icon"></i>
+                            <span class="trend">▲ 12.4%</span>
+                        </div>
                         <div class="number" id="statTotal">0</div>
-                        <div class="icon-stat">👥</div>
+                        <div class="label">Total Accounts</div>
                     </div>
                     <div class="stat-card">
-                        <div class="label">Total Robux</div>
-                        <div class="number" id="statRobux">0 <span class="sub">R$</span></div>
-                        <div class="icon-stat">💰</div>
+                        <div class="top">
+                            <i data-lucide="activity" class="icon"></i>
+                            <span class="trend">▲ 8.1%</span>
+                        </div>
+                        <div class="number" id="statLogsToday">0</div>
+                        <div class="label">Logs Today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="top">
+                            <i data-lucide="refresh-cw" class="icon"></i>
+                            <span class="trend">▲ 5.3%</span>
+                        </div>
+                        <div class="number" id="statUpdates">0</div>
+                        <div class="label">Updates Today</div>
                     </div>
                     <div class="stat-card accent">
-                        <div class="label">Premium</div>
-                        <div class="number" id="statPremium">0</div>
-                        <div class="icon-stat">⭐</div>
+                        <div class="top">
+                            <i data-lucide="shield-check" class="icon"></i>
+                            <span class="trend">● 100%</span>
+                        </div>
+                        <div class="number" id="statActive">0</div>
+                        <div class="label">Active Accounts</div>
                     </div>
                     <div class="stat-card">
-                        <div class="label">Last Activity</div>
+                        <div class="top">
+                            <i data-lucide="database" class="icon"></i>
+                            <span class="trend">▲ 2.1%</span>
+                        </div>
+                        <div class="number" id="statEvents">0</div>
+                        <div class="label">Total Events</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="top">
+                            <i data-lucide="clock" class="icon"></i>
+                        </div>
                         <div class="number" id="statLast">—</div>
-                        <div class="icon-stat">🕒</div>
+                        <div class="label">Last Activity</div>
                     </div>
                 </div>
 
                 <!-- CHART -->
                 <div class="chart-section">
                     <div class="header-chart">
-                        <h3>📈 Activity Overview</h3>
-                        <span>Last 7 days</span>
+                        <h3>Activity Overview</h3>
+                        <div class="segmented" id="chartRange">
+                            <button class="active" data-range="7">7D</button>
+                            <button data-range="30">30D</button>
+                            <button data-range="90">90D</button>
+                        </div>
                     </div>
                     <canvas id="activityChart" height="180"></canvas>
                 </div>
@@ -1438,11 +1993,11 @@
                 <!-- RECENT ACTIVITY -->
                 <div class="recent-section">
                     <div class="header-recent">
-                        <h3>🕐 Recent Activity</h3>
+                        <h3>Recent Activity</h3>
                         <span class="count" id="recentCount">0 events</span>
                     </div>
                     <div class="recent-list" id="recentList">
-                        <div class="loading" style="color:var(--text-muted);padding:12px 0;font-size:14px;">⏳ Loading...</div>
+                        <div style="color:var(--text-muted);padding:12px 0;font-size:14px;">⏳ Loading...</div>
                     </div>
                 </div>
             </section>
@@ -1454,19 +2009,25 @@
 
                 <div class="logs-toolbar">
                     <div class="search-wrap">
-                        <span class="icon-search">🔍</span>
-                        <input type="text" id="searchInput" placeholder="Search by username, display name, or ID..." oninput="applyLogsFilter()" />
+                        <i data-lucide="search" class="icon"></i>
+                        <input type="text" id="searchInput" placeholder="Search username, display name or user ID..." oninput="applyLogsFilter()" />
+                        <button class="clear-btn" id="clearSearch" onclick="clearSearch()" aria-label="Clear search">
+                            <i data-lucide="x" style="width:16px;height:16px;"></i>
+                        </button>
                     </div>
                     <div class="filter-group" id="filterGroup">
                         <button class="active" data-filter="all" onclick="setFilter('all')">All</button>
-                        <button data-filter="premium" onclick="setFilter('premium')">⭐ Premium</button>
+                        <button data-filter="premium" onclick="setFilter('premium')">Premium</button>
                         <button data-filter="free" onclick="setFilter('free')">Free</button>
-                        <button data-filter="recent" onclick="setFilter('recent')">🕐 Recent</button>
+                        <button data-filter="recent" onclick="setFilter('recent')">Recent</button>
                     </div>
+                    <button class="refresh-btn" onclick="loadData()">
+                        <i data-lucide="refresh-cw" class="icon"></i> Refresh
+                    </button>
                 </div>
 
                 <div class="accounts-grid" id="accountsGrid">
-                    <div class="loading" style="grid-column:1/-1;color:var(--text-muted);padding:40px 0;text-align:center;">⏳ Loading accounts...</div>
+                    <div style="grid-column:1/-1;color:var(--text-muted);padding:40px 0;text-align:center;">⏳ Loading accounts...</div>
                 </div>
             </section>
 
@@ -1476,7 +2037,9 @@
             <section class="page" id="page-info">
                 <div class="info-center">
                     <div class="info-card">
-                        <div class="logo-big">✦</div>
+                        <div class="logo-big">
+                            <i data-lucide="sparkle" class="icon"></i>
+                        </div>
                         <h1>Blox<span>Cracker</span></h1>
                         <p class="sub">Modern account management dashboard</p>
                         <div class="divider"></div>
@@ -1506,7 +2069,7 @@
             ========================================================== -->
             <section class="page" id="page-settings">
                 <div class="settings-wrap">
-                    <h2>⚙️ Preferences</h2>
+                    <h2>Preferences</h2>
 
                     <div class="settings-card">
                         <div class="setting-row">
@@ -1559,7 +2122,9 @@
     <div id="detail-modal">
         <div class="backdrop" onclick="closeDetail()"></div>
         <div class="modal-box">
-            <button class="close-btn" onclick="closeDetail()">✕</button>
+            <button class="close-btn" onclick="closeDetail()">
+                <i data-lucide="x" style="width:24px;height:24px;"></i>
+            </button>
             <div class="modal-avatar" id="modalAvatar">👤</div>
             <div class="modal-name" id="modalName">—</div>
             <div class="modal-sub" id="modalSub">—</div>
@@ -1584,6 +2149,8 @@
         let currentFilter = 'all';
         let currentPage = 'home';
         let detailData = null;
+        let chartRange = 7;
+        let isLoggedIn = false;
 
         const API_URL = window.location.origin;
 
@@ -1593,21 +2160,26 @@
         const $ = id => document.getElementById(id);
         const grid = $('accountsGrid');
         const searchInput = $('searchInput');
+        const clearBtn = $('clearSearch');
         const recentList = $('recentList');
         const recentCount = $('recentCount');
         const statTotal = $('statTotal');
-        const statRobux = $('statRobux');
-        const statPremium = $('statPremium');
+        const statLogsToday = $('statLogsToday');
+        const statUpdates = $('statUpdates');
+        const statActive = $('statActive');
+        const statEvents = $('statEvents');
         const statLast = $('statLast');
         const logsBadge = $('logs-badge');
-        const greetingUser = $('greetingUser');
+        const pageTitle = $('pageTitle');
+        const pageSub = $('pageSub');
+        const notifPanel = $('notif-panel');
+        const notifToggle = $('notifToggle');
 
         // ============================================================
         // GALAXY BACKGROUND
         // ============================================================
         (function initGalaxy() {
             const bg = document.getElementById('galaxy-bg');
-            // stars
             for (let i = 0; i < 140; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -1620,7 +2192,6 @@
                 star.style.animationDelay = Math.random() * 6 + 's';
                 bg.appendChild(star);
             }
-            // nebula
             for (let i = 0; i < 3; i++) {
                 const neb = document.createElement('div');
                 neb.className = 'nebula';
@@ -1638,6 +2209,74 @@
         })();
 
         // ============================================================
+        // LUCIDE ICONS
+        // ============================================================
+        function refreshIcons() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+        // run after DOM updates
+        const iconObserver = new MutationObserver(() => refreshIcons());
+        iconObserver.observe(document.body, { childList: true, subtree: true });
+
+        // ============================================================
+        // LOADING SCREEN
+        // ============================================================
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+        }, 800);
+
+        // ============================================================
+        // LOGIN
+        // ============================================================
+        const loginPage = $('login-page');
+        const appEl = $('app');
+        const loginUser = $('loginUser');
+        const loginPass = $('loginPass');
+        const signinBtn = $('signinBtn');
+        const signinText = $('signinText');
+        const loginError = $('loginError');
+        const togglePw = $('togglePw');
+        const pwIcon = $('pwIcon');
+
+        togglePw.addEventListener('click', () => {
+            const isPass = loginPass.type === 'password';
+            loginPass.type = isPass ? 'text' : 'password';
+            pwIcon.setAttribute('data-lucide', isPass ? 'eye-off' : 'eye');
+            refreshIcons();
+        });
+
+        signinBtn.addEventListener('click', () => {
+            const user = loginUser.value.trim();
+            const pass = loginPass.value.trim();
+
+            if (user === 'Rama' && pass === 'Rama') {
+                loginError.textContent = '';
+                signinBtn.classList.add('loading');
+                signinText.textContent = 'Signing in...';
+                setTimeout(() => {
+                    isLoggedIn = true;
+                    loginPage.classList.add('hidden');
+                    appEl.classList.add('visible');
+                    signinBtn.classList.remove('loading');
+                    signinText.textContent = 'Sign In';
+                    loadData();
+                    setInterval(loadData, 30000);
+                    toast('Welcome back, Rama!', 'success');
+                }, 1000);
+            } else {
+                loginError.textContent = 'Invalid username or password.';
+                signinBtn.classList.remove('loading');
+                signinText.textContent = 'Sign In';
+            }
+        });
+
+        // Enter key on login
+        loginUser.addEventListener('keydown', e => { if (e.key === 'Enter') signinBtn.click(); });
+        loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') signinBtn.click(); });
+
+        // ============================================================
         // SIDEBAR / NAV
         // ============================================================
         const sidebar = $('sidebar');
@@ -1645,7 +2284,6 @@
         const menuBtn = $('menuToggle');
 
         function toggleSidebar(open) {
-            const isOpen = open !== undefined ? open : sidebar.classList.contains('open');
             if (open === undefined) {
                 sidebar.classList.toggle('open');
                 overlay.classList.toggle('show');
@@ -1660,22 +2298,42 @@
         menuBtn.addEventListener('click', () => toggleSidebar());
         overlay.addEventListener('click', () => toggleSidebar(false));
 
+        const pageTitles = {
+            home: { title: 'Dashboard', sub: 'Overview of your account activity' },
+            logs: { title: 'Accounts', sub: 'Manage and review recent account activity' },
+            info: { title: 'Info', sub: 'About BloxCracker' },
+            settings: { title: 'Settings', sub: 'Customize your experience' }
+        };
+
         function navigate(page) {
             currentPage = page;
-            // update nav
             document.querySelectorAll('#sidebar .nav a').forEach(el => el.classList.remove('active'));
             const target = document.querySelector(`#sidebar .nav a[data-page="${page}"]`);
             if (target) target.classList.add('active');
-            // show page
             document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
             const pg = document.getElementById('page-' + page);
             if (pg) pg.classList.add('active');
-            // close sidebar on mobile
+            // update topbar
+            const info = pageTitles[page] || pageTitles.home;
+            pageTitle.textContent = info.title;
+            pageSub.textContent = info.sub;
             if (window.innerWidth < 1024) toggleSidebar(false);
-            // re-render if logs
             if (page === 'logs') renderAccounts(allAccounts);
             if (page === 'home') updateHomeStats();
+            refreshIcons();
         }
+
+        // ============================================================
+        // NOTIFICATIONS
+        // ============================================================
+        notifToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notifPanel.classList.toggle('show');
+        });
+        document.addEventListener('click', () => {
+            notifPanel.classList.remove('show');
+        });
+        notifPanel.addEventListener('click', (e) => e.stopPropagation());
 
         // ============================================================
         // LIVE TIME
@@ -1684,7 +2342,7 @@
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
-            $('liveTime').textContent = h + ':' + m;
+            // optional: show in topbar if needed
         }
         setInterval(updateClock, 10000);
         updateClock();
@@ -1692,30 +2350,25 @@
         // ============================================================
         // LOAD DATA
         // ============================================================
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            setInterval(loadData, 30000);
-        });
-
         async function loadData() {
+            if (!isLoggedIn) return;
             try {
                 const res = await fetch(`${API_URL}/api/accounts`);
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
                 if (data.success) {
                     allAccounts = data.accounts || [];
-                    // update everything
                     renderAccounts(allAccounts);
                     updateHomeStats();
                     loadLogs();
                     updateStatsBar(data.stats);
-                    // badge
                     logsBadge.textContent = allAccounts.length;
-                    // update greeting
+                    // update notif badge
+                    const dot = notifToggle.querySelector('.dot-badge');
                     if (allAccounts.length > 0) {
-                        greetingUser.textContent = 'Ramzz';
-                        $('greetingSub').textContent =
-                            `📊 ${allAccounts.length} accounts • ${allAccounts.filter(a => a.premium).length} premium`;
+                        dot.style.display = 'block';
+                    } else {
+                        dot.style.display = 'none';
                     }
                 } else {
                     showError('Server error: ' + (data.error || 'unknown'));
@@ -1728,20 +2381,36 @@
 
         function showError(msg) {
             grid.innerHTML =
-                `<div class="loading" style="grid-column:1/-1;color:var(--text-muted);padding:40px 0;text-align:center;">❌ ${msg}</div>`;
+                `<div style="grid-column:1/-1;color:var(--text-muted);padding:40px 0;text-align:center;">❌ ${msg}</div>`;
         }
 
         // ============================================================
-        // STATS BAR (header)
+        // STATS
         // ============================================================
         function updateStatsBar(stats) {
             if (!stats) return;
             const total = allAccounts.length || stats.totalAccounts || 0;
             statTotal.textContent = total;
-            statRobux.textContent = (stats.totalRobux || 0).toLocaleString();
-            const prem = (allAccounts || []).filter(a => a.premium).length;
-            statPremium.textContent = prem;
-            // last activity
+            // logs today
+            const today = new Date().toDateString();
+            const logsToday = (stats.recentLogs || []).filter(l => new Date(l.timestamp).toDateString() === today).length;
+            statLogsToday.textContent = logsToday;
+            // updates today (accounts received today)
+            const updatesToday = allAccounts.filter(a => {
+                const d = new Date(a.receivedAt || a.createdAt || 0);
+                return d.toDateString() === today;
+            }).length;
+            statUpdates.textContent = updatesToday;
+            // active accounts (with recent activity < 7 days)
+            const weekAgo = Date.now() - 7 * 86400000;
+            const active = allAccounts.filter(a => {
+                const d = new Date(a.receivedAt || a.createdAt || 0);
+                return d.getTime() > weekAgo;
+            }).length;
+            statActive.textContent = active;
+            // total events
+            statEvents.textContent = (stats.recentLogs || []).length;
+
             if (allAccounts.length > 0) {
                 const sorted = [...allAccounts].sort((a, b) =>
                     new Date(b.receivedAt || b.createdAt || 0) - new Date(a.receivedAt || a.createdAt || 0)
@@ -1758,24 +2427,19 @@
 
         function updateHomeStats() {
             const total = allAccounts.length;
-            const prem = allAccounts.filter(a => a.premium).length;
-            const robux = allAccounts.reduce((s, a) => s + (a.robux || 0), 0);
             statTotal.textContent = total;
-            statRobux.innerHTML = robux.toLocaleString() + ' <span class="sub">R$</span>';
-            statPremium.textContent = prem;
-            if (total > 0) {
-                const sorted = [...allAccounts].sort((a, b) =>
-                    new Date(b.receivedAt || b.createdAt || 0) - new Date(a.receivedAt || a.createdAt || 0)
-                );
-                const latest = sorted[0];
-                if (latest) {
-                    const d = new Date(latest.receivedAt || latest.createdAt || Date.now());
-                    statLast.textContent = timeAgo(d);
-                }
-            } else {
-                statLast.textContent = '—';
-            }
-            // update chart
+            const today = new Date().toDateString();
+            const updatesToday = allAccounts.filter(a => {
+                const d = new Date(a.receivedAt || a.createdAt || 0);
+                return d.toDateString() === today;
+            }).length;
+            statUpdates.textContent = updatesToday;
+            const weekAgo = Date.now() - 7 * 86400000;
+            const active = allAccounts.filter(a => {
+                const d = new Date(a.receivedAt || a.createdAt || 0);
+                return d.getTime() > weekAgo;
+            }).length;
+            statActive.textContent = active;
             drawChart(allAccounts);
         }
 
@@ -1790,27 +2454,26 @@
                     const logs = [...data.recentLogs].reverse().slice(0, 20);
                     if (logs.length === 0) {
                         recentList.innerHTML =
-                        '<div style="color:var(--text-muted);padding:8px 0;font-size:14px;">No activity yet</div>';
+                            '<div style="color:var(--text-muted);padding:8px 0;font-size:14px;">No activity yet</div>';
                         recentCount.textContent = '0 events';
                         return;
                     }
                     recentCount.textContent = logs.length + ' events';
                     recentList.innerHTML = logs.map(log => {
-                        const dotClass = log.type === 'account_deleted' ? 'red' :
-                            log.type === 'screenshot' ? 'green' :
-                            log.type === 'clipboard' ? 'yellow' :
-                            log.type === 'account_received' ? 'green' :
-                            log.type === 'full_data' ? 'purple' : 'green';
-                        const icon = log.type === 'account_deleted' ? '🗑️' :
-                            log.type === 'screenshot' ? '📸' :
-                            log.type === 'clipboard' ? '📋' :
-                            log.type === 'account_received' ? '📥' :
-                            log.type === 'full_data' ? '📊' : '●';
+                        const iconMap = {
+                            account_deleted: 'trash-2',
+                            screenshot: 'camera',
+                            clipboard: 'copy',
+                            account_received: 'user-plus',
+                            full_data: 'database',
+                            default: 'activity'
+                        };
+                        const iconName = iconMap[log.type] || iconMap.default;
                         return `
                                 <div class="recent-item">
-                                    <span class="dot-status ${dotClass}"></span>
+                                    <i data-lucide="${iconName}" class="icon"></i>
                                     <span class="content">
-                                        <strong>${icon} ${escHtml(log.type || 'event')}</strong>
+                                        <strong>${log.type || 'event'}</strong>
                                         ${log.username ? `@${escHtml(log.username)}` : ''}
                                         ${log.content ? ` — ${escHtml(log.content.substring(0, 40))}` : ''}
                                     </span>
@@ -1818,6 +2481,7 @@
                                 </div>
                             `;
                     }).join('');
+                    refreshIcons();
                 }
             } catch (e) {
                 console.error('Logs error:', e);
@@ -1831,7 +2495,7 @@
             const filtered = applyLogsFilter(accounts || allAccounts);
             if (!filtered || filtered.length === 0) {
                 grid.innerHTML = `
-                        <div class="loading" style="grid-column:1/-1;color:var(--text-muted);padding:40px 0;text-align:center;">
+                        <div style="grid-column:1/-1;color:var(--text-muted);padding:40px 0;text-align:center;">
                             📭 No accounts found
                             <br><small style="color:var(--text-muted);">Try adjusting your search or filter.</small>
                         </div>
@@ -1842,8 +2506,8 @@
                 const isPremium = acc.premium === true;
                 const has2fa = acc.twoFAEnabled === true;
                 const initial = (acc.displayName || acc.username || '?')[0].toUpperCase();
-                const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${acc.userId}&width=100&height=100&format=png`;
-                const statusDot = 'online';
+                const avatarUrl =
+                    `https://www.roblox.com/headshot-thumbnail/image?userId=${acc.userId}&width=100&height=100&format=png`;
                 const updatedAt = acc.receivedAt || acc.createdAt || Date.now();
                 return `
                         <div class="account-card" data-id="${escHtml(String(acc.userId || ''))}">
@@ -1872,20 +2536,29 @@
                             </div>
                             <div class="cookie-area">
                                 <span class="cookie-text" title="${escHtml(acc.cookie || 'No cookie')}">${escHtml(acc.cookie ? acc.cookie.substring(0, 40) + '…' : 'No cookie')}</span>
-                                <button class="copy-btn" onclick="copyCookie('${escHtml(acc.cookie || '')}')">📋 Copy</button>
+                                <button class="copy-btn" onclick="copyCookie('${escHtml(acc.cookie || '')}')">
+                                    <i data-lucide="copy" class="icon"></i> Copy
+                                </button>
                             </div>
                             <div class="status-line">
-                                <span class="dot ${statusDot}"></span>
+                                <span class="dot online"></span>
                                 Updated ${timeAgo(new Date(updatedAt))}
                             </div>
                             <div class="actions">
-                                <button onclick="openDetail('${escHtml(String(acc.userId || ''))}')">👁 View Details</button>
-                                <button onclick="openProfile('${escHtml(String(acc.userId || ''))}')">🌐 Profile</button>
-                                <button class="btn-delete" onclick="deleteAccount('${escHtml(String(acc.userId || ''))}')">🗑 Delete</button>
+                                <button onclick="openDetail('${escHtml(String(acc.userId || ''))}')">
+                                    <i data-lucide="eye" class="icon"></i> View
+                                </button>
+                                <button onclick="openProfile('${escHtml(String(acc.userId || ''))}')">
+                                    <i data-lucide="external-link" class="icon"></i> Profile
+                                </button>
+                                <button class="btn-delete" onclick="deleteAccount('${escHtml(String(acc.userId || ''))}')">
+                                    <i data-lucide="trash-2" class="icon"></i> Delete
+                                </button>
                             </div>
                         </div>
                     `;
             }).join('');
+            refreshIcons();
         }
 
         // ============================================================
@@ -1895,16 +2568,17 @@
             const search = (searchInput?.value || '').toLowerCase().trim();
             let list = (accounts || allAccounts).slice();
 
-            // search
             if (search) {
                 list = list.filter(a =>
                     (a.username || '').toLowerCase().includes(search) ||
                     (a.displayName || '').toLowerCase().includes(search) ||
                     String(a.userId || '').includes(search)
                 );
+                clearBtn.classList.toggle('visible', search.length > 0);
+            } else {
+                clearBtn.classList.remove('visible');
             }
 
-            // filter
             if (currentFilter === 'premium') {
                 list = list.filter(a => a.premium === true);
             } else if (currentFilter === 'free') {
@@ -1916,7 +2590,6 @@
                 list = list.slice(0, 12);
             }
 
-            // sort by newest
             if (currentFilter !== 'recent') {
                 list.sort((a, b) =>
                     new Date(b.receivedAt || b.createdAt || 0) - new Date(a.receivedAt || a.createdAt || 0)
@@ -1934,9 +2607,15 @@
             renderAccounts(allAccounts);
         }
 
-        // called from oninput
         function applyLogsFilter() {
             renderAccounts(allAccounts);
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            clearBtn.classList.remove('visible');
+            renderAccounts(allAccounts);
+            searchInput.focus();
         }
 
         // ============================================================
@@ -1962,15 +2641,13 @@
             chartCanvas = canvas;
             chartCtx = ctx;
 
-            // data: group by day
+            const days = chartRange;
             const now = Date.now();
-            const days = 7;
             const dayMs = 86400000;
             const buckets = [];
             for (let i = days - 1; i >= 0; i--) {
                 const d = new Date(now - i * dayMs);
-                const key = d.toDateString();
-                buckets.push({ key, date: d, count: 0 });
+                buckets.push({ key: d.toDateString(), date: d, count: 0 });
             }
 
             (accounts || []).forEach(a => {
@@ -1985,7 +2662,6 @@
             const chartW = w - padding.left - padding.right;
             const chartH = h - padding.top - padding.bottom;
 
-            // clear
             ctx.clearRect(0, 0, w, h);
 
             // grid lines
@@ -1999,7 +2675,6 @@
                 ctx.stroke();
             }
 
-            // draw line
             if (buckets.length > 1) {
                 const points = buckets.map((b, i) => {
                     const x = padding.left + (i / (buckets.length - 1)) * chartW;
@@ -2007,7 +2682,6 @@
                     return { x, y, count: b.count };
                 });
 
-                // fill gradient
                 const grad = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
                 grad.addColorStop(0, 'rgba(232,48,48,0.25)');
                 grad.addColorStop(1, 'rgba(232,48,48,0.01)');
@@ -2019,7 +2693,6 @@
                 ctx.fillStyle = grad;
                 ctx.fill();
 
-                // line
                 ctx.beginPath();
                 points.forEach((p, i) => {
                     if (i === 0) ctx.moveTo(p.x, p.y);
@@ -2032,7 +2705,6 @@
                 ctx.stroke();
                 ctx.shadowBlur = 0;
 
-                // dots
                 points.forEach(p => {
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
@@ -2041,18 +2713,13 @@
                     ctx.shadowBlur = 14;
                     ctx.fill();
                     ctx.shadowBlur = 0;
-                    // label
                     ctx.fillStyle = 'var(--text-muted)';
                     ctx.font = '10px Inter, sans-serif';
                     ctx.textAlign = 'center';
                     ctx.fillText(p.count, p.x, padding.top + chartH + 18);
                 });
 
-                // x labels
-                const labels = buckets.map(b => {
-                    const d = b.date;
-                    return d.toLocaleDateString('en', { weekday: 'short' });
-                });
+                const labels = buckets.map(b => b.date.toLocaleDateString('en', { weekday: 'short' }));
                 ctx.fillStyle = 'var(--text-muted)';
                 ctx.font = '9px Inter, sans-serif';
                 ctx.textAlign = 'center';
@@ -2066,6 +2733,16 @@
                 ctx.fillText('No data available', w / 2, h / 2 + 4);
             }
         }
+
+        // chart range buttons
+        document.querySelectorAll('#chartRange button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#chartRange button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                chartRange = parseInt(this.dataset.range);
+                drawChart(allAccounts);
+            });
+        });
 
         // ============================================================
         // DETAIL MODAL
@@ -2096,14 +2773,23 @@
 
             const actions = document.getElementById('modalActions');
             actions.innerHTML = `
-                    <button onclick="copyText('${escHtml(acc.username || '')}', 'Username')">📋 Copy Username</button>
-                    <button onclick="copyText('${escHtml(String(acc.userId || ''))}', 'User ID')">📋 Copy ID</button>
-                    <button onclick="copyText('https://www.roblox.com/users/${acc.userId}/profile', 'Profile URL')">🔗 Copy URL</button>
-                    <button onclick="closeDetail()">✕ Close</button>
+                    <button onclick="copyText('${escHtml(acc.username || '')}', 'Username')">
+                        <i data-lucide="copy" class="icon"></i> Copy Username
+                    </button>
+                    <button onclick="copyText('${escHtml(String(acc.userId || ''))}', 'User ID')">
+                        <i data-lucide="copy" class="icon"></i> Copy ID
+                    </button>
+                    <button onclick="copyText('https://www.roblox.com/users/${acc.userId}/profile', 'Profile URL')">
+                        <i data-lucide="link" class="icon"></i> Copy URL
+                    </button>
+                    <button onclick="closeDetail()">
+                        <i data-lucide="x" class="icon"></i> Close
+                    </button>
                 `;
 
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
+            refreshIcons();
         }
 
         function closeDetail() {
@@ -2130,7 +2816,7 @@
         }
 
         // ============================================================
-        // COPY COOKIE (existing)
+        // COPY COOKIE
         // ============================================================
         function copyCookie(cookie) {
             if (!cookie || cookie === 'No cookie' || cookie === '') {
@@ -2187,24 +2873,39 @@
         }
 
         // ============================================================
+        // LOGOUT
+        // ============================================================
+        function logout() {
+            if (confirm('Logout?')) {
+                isLoggedIn = false;
+                appEl.classList.remove('visible');
+                loginPage.classList.remove('hidden');
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+                toast('Logged out', 'info');
+            }
+        }
+
+        // ============================================================
         // TOAST SYSTEM
         // ============================================================
         function toast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const el = document.createElement('div');
-            const icons = {
-                success: '✅',
-                error: '❌',
-                info: 'ℹ'
+            const iconMap = {
+                success: 'check-circle',
+                error: 'alert-circle',
+                info: 'info'
             };
             el.className = `toast ${type}`;
             el.innerHTML = `
-                    <span class="icon">${icons[type] || 'ℹ'}</span>
+                    <i data-lucide="${iconMap[type] || 'info'}" class="icon"></i>
                     <span class="msg">${message}</span>
                 `;
             container.appendChild(el);
             requestAnimationFrame(() => {
                 el.classList.add('show');
+                refreshIcons();
             });
             setTimeout(() => {
                 el.classList.remove('show');
@@ -2241,7 +2942,7 @@
         }
 
         // ============================================================
-        // WINDOW RESIZE — redraw chart
+        // WINDOW RESIZE
         // ============================================================
         let resizeTimer;
         window.addEventListener('resize', () => {
@@ -2250,25 +2951,29 @@
         });
 
         // ============================================================
-        // KEYBOARD: ESC to close modal / sidebar
+        // KEYBOARD
         // ============================================================
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeDetail();
                 if (sidebar.classList.contains('open')) toggleSidebar(false);
+                notifPanel.classList.remove('show');
             }
         });
 
         // ============================================================
         // INIT
         // ============================================================
-        console.log('✦ BloxCracker Dashboard v2 · UI Redesign');
+        console.log('✦ BloxCracker Dashboard v2 · Premium UI');
         console.log('📡 API:', API_URL);
 
-        // override toast for old alert calls
+        // Override alert
         window.alert = function(msg) {
             toast(msg, 'info');
         };
+
+        // Initial icon render
+        setTimeout(refreshIcons, 300);
     </script>
 </body>
 </html>
