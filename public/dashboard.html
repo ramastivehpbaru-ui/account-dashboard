@@ -2508,7 +2508,23 @@
         let galaxyParticles = [];
         let galaxyAnimationId = null;
 
-        const API_URL = window.location.origin;
+        // Keep the existing /api contract while avoiding host/port mismatches.
+        const API_URL = '';
+        const API_TIMEOUT_MS = 10000;
+
+        async function apiFetch(path, options = {}) {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+            try {
+                return await fetch(`${API_URL}${path}`, {
+                    ...options,
+                    headers: { Accept: 'application/json', ...(options.headers || {}) },
+                    signal: controller.signal,
+                });
+            } finally {
+                clearTimeout(timeout);
+            }
+        }
         const DEMO_USER = 'Rama';
         const DEMO_PASS = 'Rama';
 
@@ -2896,7 +2912,7 @@
         async function loadData() {
             if (!isLoggedIn) return;
             try {
-                const res = await fetch(`${API_URL}/api/accounts`);
+                const res = await apiFetch('/api/accounts');
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
                 if (data.success) {
@@ -2911,7 +2927,7 @@
                 }
             } catch (e) {
                 console.error('Load error:', e);
-                showError('Cannot connect to server.');
+                showError(e.name === 'AbortError' ? 'Server timeout.' : 'Cannot connect to server.');
             }
         }
 
@@ -2973,7 +2989,7 @@
         // ============================================================
         async function loadLogs() {
             try {
-                const res = await fetch(`${API_URL}/api/stats`);
+                const res = await apiFetch('/api/stats');
                 const data = await res.json();
                 if (data.success && data.recentLogs) {
                     const logs = [...data.recentLogs].reverse().slice(0, 20);
@@ -3369,7 +3385,7 @@
         async function deleteAccount(userId) {
             if (!confirm('⚠️ Delete this account permanently?')) return;
             try {
-                const res = await fetch(`${API_URL}/api/account/${userId}`, { method: 'DELETE' });
+                const res = await apiFetch(`/api/account/${userId}`, { method: 'DELETE' });
                 const data = await res.json();
                 if (data.success) {
                     toast('🗑️ Account deleted', 'success');
@@ -3557,7 +3573,7 @@
         // INIT
         // ============================================================
         console.log('✦ BloxCracker Dashboard v2 · Premium UI');
-        console.log('📡 API:', API_URL);
+        console.log('📡 API:', `${window.location.origin}/api`);
 
         // Start galaxy background (for login page)
         galaxyInstance = initGalaxy();
