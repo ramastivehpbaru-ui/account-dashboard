@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BloxCracker · Dashboard</title>
+    <title>BloxCracker · Premium Dashboard</title>
 
-    <!-- ============================================================
-    LUCIDE ICONS (SVG)
-    ============================================================ -->
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest">
     </script>
 
@@ -20,6 +23,7 @@
             --bg-secondary: #0c0e14;
             --bg-card: rgba(14, 16, 24, 0.72);
             --bg-glass: rgba(14, 16, 24, 0.55);
+            --bg-glass-light: rgba(20, 22, 32, 0.60);
             --border-color: rgba(255, 40, 40, 0.15);
             --border-hover: rgba(255, 40, 40, 0.40);
             --accent: #e83030;
@@ -28,13 +32,14 @@
             --text-primary: #f0f0f5;
             --text-secondary: #9a9ab0;
             --text-muted: #5e5e7a;
-            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --radius: 16px;
             --radius-sm: 10px;
             --radius-xs: 6px;
             --transition: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
             --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.60);
             --shadow-glow: 0 0 40px rgba(232, 48, 48, 0.08);
+            --sidebar-width: 280px;
         }
 
         /* ============================================================
@@ -49,6 +54,7 @@
         }
         html {
             scroll-behavior: smooth;
+            font-size: 16px;
         }
         body {
             font-family: var(--font);
@@ -58,10 +64,11 @@
             overflow-x: hidden;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+            width: 4px;
+            height: 4px;
         }
         ::-webkit-scrollbar-track {
             background: var(--bg-primary);
@@ -73,51 +80,50 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent);
         }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background: none;
+            color: inherit;
+        }
+        input {
+            font-family: var(--font);
+            outline: none;
+            border: none;
+            background: none;
+            color: inherit;
+        }
 
         /* ============================================================
-           GALAXY BACKGROUND
+           REDUCED MOTION
            ============================================================ */
-        #galaxy-bg {
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ============================================================
+           GALAXY CANVAS
+           ============================================================ */
+        #galaxy-canvas {
             position: fixed;
             inset: 0;
             z-index: 0;
             pointer-events: none;
-            overflow: hidden;
-            background: radial-gradient(ellipse at 30% 20%, rgba(60, 10, 10, 0.25) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(100, 20, 20, 0.12) 0%, transparent 50%),
-                var(--bg-primary);
-        }
-        #galaxy-bg .star {
-            position: absolute;
-            background: #fff;
-            border-radius: 50%;
-            animation: twinkle var(--d, 4s) ease-in-out infinite alternate;
-            opacity: 0.3;
-        }
-        #galaxy-bg .nebula {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.10;
-            animation: drift 28s ease-in-out infinite alternate;
-        }
-        @keyframes twinkle {
-            0% {
-                opacity: 0.15;
-                transform: scale(0.9);
-            }
-            100% {
-                opacity: 0.70;
-                transform: scale(1.2);
-            }
-        }
-        @keyframes drift {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-            100% {
-                transform: translate(40px, -30px) scale(1.15);
-            }
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         /* ============================================================
@@ -127,32 +133,35 @@
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background: var(--bg-primary);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            background: var(--bg-primary);
             transition: opacity 0.6s ease, visibility 0.6s ease;
         }
-        #loading-screen.hidden {
+        #loading-screen.hide {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
         #loading-screen .logo {
             font-size: 32px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: -0.5px;
             color: #fff;
-            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
         }
         #loading-screen .logo span {
             color: var(--accent);
         }
         #loading-screen .loader {
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--border-color);
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
             border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -162,20 +171,11 @@
                 transform: rotate(360deg);
             }
         }
-
-        /* ============================================================
-           LAYOUT
-           ============================================================ */
-        #app {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-        #app.visible {
-            opacity: 1;
+        #loading-screen .sub {
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
         }
 
         /* ============================================================
@@ -190,136 +190,196 @@
             justify-content: center;
             padding: 20px;
             background: var(--bg-primary);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: opacity 0.7s ease, transform 0.7s ease;
         }
-        #login-page.hidden {
+        #login-page.hide {
             opacity: 0;
-            transform: scale(0.96);
+            transform: scale(1.04);
             pointer-events: none;
         }
-        .login-card {
-            background: var(--bg-glass);
+        #login-page .login-card {
+            position: relative;
+            z-index: 2;
+            background: var(--bg-glass-light);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 40px 44px;
+            padding: 44px 40px 38px;
             max-width: 400px;
             width: 100%;
-            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.60), var(--shadow-glow);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.60), 0 0 60px rgba(232, 48, 48, 0.06);
             transition: all var(--transition);
-            text-align: center;
         }
-        .login-card:hover {
+        #login-page .login-card:hover {
             border-color: var(--border-hover);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.60), 0 0 80px rgba(232, 48, 48, 0.10);
         }
-        .login-card .logo {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .login-card .logo span {
-            color: var(--accent);
-        }
-        .login-card .subtitle {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 28px;
-        }
-        .login-card .input-group {
-            position: relative;
-            margin-bottom: 16px;
-            text-align: left;
-        }
-        .login-card .input-group .icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            width: 18px;
-            height: 18px;
-            transition: color var(--transition);
-        }
-        .login-card .input-group input {
-            width: 100%;
-            padding: 12px 14px 12px 44px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            background: rgba(0, 0, 0, 0.40);
-            color: var(--text-primary);
-            font-size: 14px;
-            transition: all var(--transition);
-            outline: none;
-        }
-        .login-card .input-group input::placeholder {
-            color: var(--text-muted);
-        }
-        .login-card .input-group input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 28px var(--accent-glow);
-        }
-        .login-card .input-group input:focus~.icon {
-            color: var(--accent);
-        }
-        .login-card .input-group .toggle-pw {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 4px;
-            width: 20px;
-            height: 20px;
-            transition: color var(--transition);
-        }
-        .login-card .input-group .toggle-pw:hover {
-            color: var(--text-primary);
-        }
-        .login-card .btn-signin {
-            width: 100%;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            background: var(--accent-dim);
-            color: #fff;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition);
+        #login-page .login-card .brand {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            margin-top: 8px;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+            margin-bottom: 4px;
         }
-        .login-card .btn-signin:hover {
+        #login-page .login-card .brand span {
+            color: var(--accent);
+        }
+        #login-page .login-card .brand .logo-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+        #login-page .login-card .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 28px;
+            font-weight: 400;
+        }
+        #login-page .login-card .form-group {
+            margin-bottom: 18px;
+        }
+        #login-page .login-card .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            letter-spacing: 0.3px;
+        }
+        #login-page .login-card .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition);
+        }
+        #login-page .login-card .input-wrap:focus-within {
             border-color: var(--accent);
-            background: var(--accent);
-            box-shadow: 0 0 32px var(--accent-glow);
-            transform: translateY(-2px);
+            box-shadow: 0 0 24px var(--accent-glow);
         }
-        .login-card .btn-signin:active {
+        #login-page .login-card .input-wrap .icon-left {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            margin-left: 14px;
+            color: var(--text-muted);
+            transition: color var(--transition);
+        }
+        #login-page .login-card .input-wrap:focus-within .icon-left {
+            color: var(--accent);
+        }
+        #login-page .login-card .input-wrap input {
+            flex: 1;
+            padding: 13px 14px 13px 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: transparent;
+            min-width: 0;
+        }
+        #login-page .login-card .input-wrap input::placeholder {
+            color: var(--text-muted);
+        }
+        #login-page .login-card .input-wrap .toggle-pw {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            margin-right: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+        #login-page .login-card .input-wrap .toggle-pw:hover {
+            color: var(--text-secondary);
+        }
+
+        #login-page .login-card .btn-login {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            background: var(--accent);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 1px solid var(--accent);
+            transition: all var(--transition);
+            margin-top: 6px;
+            position: relative;
+        }
+        #login-page .login-card .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px var(--accent-glow);
+            border-color: #ff4444;
+        }
+        #login-page .login-card .btn-login:active {
             transform: scale(0.97);
         }
-        .login-card .btn-signin .icon {
+        #login-page .login-card .btn-login .btn-icon {
             width: 18px;
             height: 18px;
         }
-        .login-card .btn-signin.loading {
+        #login-page .login-card .btn-login.loading {
             pointer-events: none;
-            opacity: 0.7;
+            opacity: 0.75;
         }
-        .login-card .error-msg {
+        #login-page .login-card .btn-login .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        #login-page .login-card .btn-login.loading .spinner {
+            display: block;
+        }
+        #login-page .login-card .btn-login.loading .btn-text {
+            display: none;
+        }
+        #login-page .login-card .btn-login.loading .btn-icon {
+            display: none;
+        }
+        #login-page .login-card .error-msg {
             color: var(--accent);
             font-size: 13px;
-            margin-top: 10px;
+            text-align: center;
+            margin-top: 12px;
             min-height: 20px;
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        #login-page .login-card .error-msg.show {
+            opacity: 1;
+        }
+
+        /* ============================================================
+           APP LAYOUT
+           ============================================================ */
+        #app {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        #app.show {
+            opacity: 1;
         }
 
         /* ============================================================
@@ -330,16 +390,16 @@
             top: 0;
             left: 0;
             bottom: 0;
-            width: 270px;
+            width: var(--sidebar-width);
             background: var(--bg-glass);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
             border-right: 1px solid var(--border-color);
             box-shadow: 4px 0 48px rgba(0, 0, 0, 0.50);
             transform: translateX(-110%);
             transition: transform var(--transition), opacity var(--transition);
             z-index: 1000;
-            padding: 24px 18px;
+            padding: 24px 18px 20px;
             display: flex;
             flex-direction: column;
             opacity: 0;
@@ -351,40 +411,51 @@
             pointer-events: auto;
         }
         #sidebar .brand {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             gap: 10px;
-            padding-bottom: 22px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            padding-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 22px;
+            margin-bottom: 20px;
             color: #fff;
         }
         #sidebar .brand span {
             color: var(--accent);
         }
+        #sidebar .brand .logo-icon {
+            width: 28px;
+            height: 28px;
+            color: var(--accent);
+        }
         #sidebar .brand small {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 400;
             color: var(--text-muted);
+            letter-spacing: 0.5px;
             margin-left: auto;
+            background: var(--accent-dim);
+            padding: 1px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
+
         #sidebar .nav {
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2px;
+            position: relative;
         }
-        #sidebar .nav a {
+        #sidebar .nav .nav-item {
             display: flex;
             align-items: center;
             gap: 14px;
             padding: 11px 16px;
             border-radius: var(--radius-sm);
             color: var(--text-secondary);
-            text-decoration: none;
             font-size: 14px;
             font-weight: 500;
             transition: all var(--transition);
@@ -392,23 +463,24 @@
             border: 1px solid transparent;
             position: relative;
         }
-        #sidebar .nav a .icon {
-            width: 20px;
-            height: 20px;
+        #sidebar .nav .nav-item .nav-icon {
+            width: 18px;
+            height: 18px;
             flex-shrink: 0;
+            transition: color var(--transition);
         }
-        #sidebar .nav a:hover {
+        #sidebar .nav .nav-item:hover {
             background: var(--accent-dim);
             color: #fff;
             border-color: var(--border-hover);
         }
-        #sidebar .nav a.active {
+        #sidebar .nav .nav-item.active {
             background: var(--accent-dim);
             color: #fff;
             border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
+            box-shadow: 0 0 24px var(--accent-glow);
         }
-        #sidebar .nav a .badge-nav {
+        #sidebar .nav .nav-item .badge-nav {
             margin-left: auto;
             background: var(--accent-dim);
             color: var(--accent);
@@ -417,67 +489,117 @@
             border-radius: 20px;
             font-weight: 600;
         }
+        #sidebar .nav .nav-item .indicator {
+            position: absolute;
+            left: -1px;
+            top: 50%;
+            transform: translateY(-50%) scaleY(0);
+            width: 3px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 0 4px 4px 0;
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        #sidebar .nav .nav-item.active .indicator {
+            transform: translateY(-50%) scaleY(1);
+        }
+
         #sidebar .footer-side {
             margin-top: auto;
-            padding-top: 18px;
+            padding-top: 16px;
             border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
         }
         #sidebar .footer-side .user-mini {
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 8px 6px;
+            border-radius: var(--radius-sm);
+            transition: background var(--transition);
+        }
+        #sidebar .footer-side .user-mini:hover {
+            background: var(--accent-dim);
         }
         #sidebar .footer-side .user-mini .avatar {
             width: 36px;
             height: 36px;
             border-radius: 50%;
             background: var(--accent-dim);
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
             font-size: 14px;
-            color: #fff;
+            color: var(--text-primary);
+            flex-shrink: 0;
+            transition: border var(--transition);
+        }
+        #sidebar .footer-side .user-mini:hover .avatar {
+            border-color: var(--accent);
         }
         #sidebar .footer-side .user-mini .info {
             flex: 1;
-            font-size: 13px;
+            min-width: 0;
+        }
+        #sidebar .footer-side .user-mini .info .name {
+            font-size: 14px;
+            font-weight: 600;
             color: #fff;
         }
-        #sidebar .footer-side .user-mini .info small {
-            display: block;
+        #sidebar .footer-side .user-mini .info .status {
             font-size: 11px;
             color: var(--text-muted);
-            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #sidebar .footer-side .user-mini .info .status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2ecc71;
+            display: inline-block;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.7);
+            }
         }
         #sidebar .footer-side .logout-btn {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px 14px;
-            border-radius: var(--radius-xs);
-            border: 1px solid var(--border-color);
-            background: transparent;
-            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
             font-size: 13px;
-            cursor: pointer;
+            font-weight: 500;
             transition: all var(--transition);
+            margin-top: 4px;
+            border: 1px solid transparent;
             width: 100%;
         }
         #sidebar .footer-side .logout-btn:hover {
-            border-color: var(--accent);
-            color: #fff;
+            color: var(--accent);
             background: var(--accent-dim);
+            border-color: var(--border-hover);
         }
         #sidebar .footer-side .logout-btn .icon {
             width: 16px;
             height: 16px;
         }
 
+        /* ============================================================
+           SIDEBAR OVERLAY
+           ============================================================ */
         #sidebar-overlay {
             position: fixed;
             inset: 0;
@@ -504,10 +626,20 @@
             transition: margin var(--transition);
             position: relative;
             max-width: 100%;
+            min-height: 100vh;
         }
         @media (min-width: 1024px) {
             #main {
                 padding: 28px 40px 48px;
+                margin-left: var(--sidebar-width);
+            }
+            #sidebar {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #sidebar.open {
+                transform: translateX(0);
             }
         }
 
@@ -542,8 +674,8 @@
             transition: all var(--transition);
         }
         .topbar .menu-btn .icon {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
         }
         .topbar .menu-btn:hover {
             border-color: var(--accent);
@@ -564,57 +696,93 @@
         .topbar .right {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
+        }
+        .topbar .right .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-glass);
+            padding: 4px 14px 4px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(4px);
+        }
+        .topbar .right .status-indicator .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2ecc71;
+            display: inline-block;
+            animation: pulse-dot 2s ease-in-out infinite;
         }
         .topbar .right .notif-btn {
             position: relative;
-            background: var(--bg-glass);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
             width: 40px;
             height: 40px;
+            border-radius: 50%;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             transition: all var(--transition);
-            color: var(--text-secondary);
+            cursor: pointer;
         }
         .topbar .right .notif-btn .icon {
             width: 20px;
             height: 20px;
+            color: var(--text-secondary);
+            transition: color var(--transition);
         }
         .topbar .right .notif-btn:hover {
-            border-color: var(--accent);
+            border-color: var(--border-hover);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .topbar .right .notif-btn:hover .icon {
             color: #fff;
         }
-        .topbar .right .notif-btn .dot-badge {
+        .topbar .right .notif-btn .badge {
             position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 8px;
-            height: 8px;
+            top: -2px;
+            right: -2px;
             background: var(--accent);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 600;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 2px solid var(--bg-primary);
+            opacity: 0;
+            transform: scale(0.6);
+            transition: all var(--transition);
         }
-        .topbar .right .user-profile {
+        .topbar .right .notif-btn .badge.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .topbar .right .user-avatar {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-color);
-            border-radius: 40px;
-            padding: 4px 14px 4px 6px;
             cursor: pointer;
+            padding: 4px 12px 4px 4px;
+            border-radius: 24px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
             transition: all var(--transition);
         }
-        .topbar .right .user-profile:hover {
+        .topbar .right .user-avatar:hover {
             border-color: var(--border-hover);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
-        .topbar .right .user-profile .avatar {
+        .topbar .right .user-avatar .avatar {
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -625,17 +793,177 @@
             font-weight: 600;
             font-size: 13px;
             color: #fff;
-            border: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
-        .topbar .right .user-profile .name {
+        .topbar .right .user-avatar .name {
             font-size: 13px;
             font-weight: 500;
+            color: var(--text-primary);
+        }
+        .topbar .right .user-avatar .chevron {
+            width: 14px;
+            height: 14px;
+            color: var(--text-muted);
+            transition: transform var(--transition);
+        }
+        .topbar .right .user-avatar .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        /* ============================================================
+           USER DROPDOWN
+           ============================================================ */
+        #user-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 200px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            box-shadow: var(--shadow-card);
+            opacity: 0;
+            transform: translateY(-8px) scale(0.96);
+            pointer-events: none;
+            transition: all var(--transition);
+            z-index: 500;
+        }
+        #user-dropdown.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        #user-dropdown .item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: var(--radius-xs);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        #user-dropdown .item:hover {
+            background: var(--accent-dim);
+            color: #fff;
+            border-color: var(--border-hover);
+        }
+        #user-dropdown .item .icon {
+            width: 16px;
+            height: 16px;
+        }
+        #user-dropdown .divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 8px;
+        }
+        #user-dropdown .item.danger:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: rgba(232, 48, 48, 0.10);
+        }
+
+        /* ============================================================
+           NOTIFICATION PANEL
+           ============================================================ */
+        #notif-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 360px;
+            max-height: 420px;
+            overflow-y: auto;
+            background: var(--bg-glass);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            box-shadow: var(--shadow-card);
+            opacity: 0;
+            transform: translateY(-8px) scale(0.96);
+            pointer-events: none;
+            transition: all var(--transition);
+            z-index: 500;
+        }
+        #notif-panel.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        #notif-panel .notif-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 8px;
+        }
+        #notif-panel .notif-header h4 {
+            font-size: 14px;
+            font-weight: 600;
             color: #fff;
         }
-        .topbar .right .user-profile .chevron {
+        #notif-panel .notif-header .mark-read {
+            font-size: 11px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+        #notif-panel .notif-header .mark-read:hover {
+            color: var(--text-secondary);
+        }
+        #notif-panel .notif-item {
+            display: flex;
+            gap: 12px;
+            padding: 8px 6px;
+            border-radius: var(--radius-xs);
+            transition: background var(--transition);
+            border-left: 2px solid transparent;
+        }
+        #notif-panel .notif-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        #notif-panel .notif-item .icon {
             width: 16px;
             height: 16px;
             color: var(--text-muted);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        #notif-panel .notif-item .content {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        #notif-panel .notif-item .content strong {
+            color: #fff;
+            font-weight: 500;
+        }
+        #notif-panel .notif-item .time {
+            font-size: 11px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        #notif-panel .notif-item .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+        #notif-panel .notif-empty {
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 20px 0;
         }
 
         /* ============================================================
@@ -660,52 +988,12 @@
         }
 
         /* ============================================================
-           HOME PAGE
+           HOME — STATS
            ============================================================ */
-        .home-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .home-header .left h1 {
-            font-size: 26px;
-            font-weight: 600;
-            color: #fff;
-            letter-spacing: -0.3px;
-        }
-        .home-header .left p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-top: 2px;
-        }
-        .home-header .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-color);
-            border-radius: 30px;
-            padding: 6px 16px 6px 12px;
-            font-size: 12px;
-            color: #2ecc71;
-            font-weight: 500;
-        }
-        .home-header .status-badge .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #2ecc71;
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
             margin-bottom: 32px;
         }
         .stat-card {
@@ -714,11 +1002,11 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 18px 20px;
+            padding: 20px 22px;
             transition: all var(--transition);
+            cursor: default;
             position: relative;
             overflow: hidden;
-            cursor: default;
         }
         .stat-card::before {
             content: '';
@@ -730,7 +1018,7 @@
             transition: opacity var(--transition);
         }
         .stat-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
             border-color: var(--border-hover);
             box-shadow: var(--shadow-glow);
         }
@@ -744,48 +1032,72 @@
             position: relative;
             z-index: 1;
         }
-        .stat-card .top .icon {
+        .stat-card .top .label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .stat-card .top .icon-stat {
             width: 20px;
             height: 20px;
             color: var(--text-muted);
             opacity: 0.5;
             transition: all var(--transition);
         }
-        .stat-card:hover .top .icon {
-            opacity: 1;
+        .stat-card:hover .top .icon-stat {
+            opacity: 0.8;
             color: var(--accent);
-        }
-        .stat-card .top .trend {
-            font-size: 11px;
-            color: #2ecc71;
-            font-weight: 500;
-            background: rgba(46, 204, 113, 0.10);
-            padding: 1px 10px;
-            border-radius: 20px;
+            transform: translateX(2px);
         }
         .stat-card .number {
             font-size: 30px;
             font-weight: 700;
             color: #fff;
-            margin-top: 8px;
+            margin-top: 6px;
             position: relative;
             z-index: 1;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
         }
-        .stat-card .label {
+        .stat-card .number .sub {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        .stat-card .trend {
             font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 2px;
+            color: var(--text-muted);
+            margin-top: 6px;
             position: relative;
             z-index: 1;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-card .trend.up {
+            color: #2ecc71;
+        }
+        .stat-card .trend.down {
+            color: var(--accent);
+        }
+        .stat-card .trend .icon {
+            width: 14px;
+            height: 14px;
         }
         .stat-card.accent .number {
             color: var(--accent);
         }
+        .stat-card.accent .label {
+            color: var(--accent);
+            opacity: 0.7;
+        }
 
-        /* Chart */
+        /* ============================================================
+           CHART SECTION
+           ============================================================ */
         .chart-section {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -803,37 +1115,41 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .chart-section .header-chart h3 {
+        .chart-section .header-chart .left h3 {
             font-size: 16px;
             font-weight: 600;
             color: #fff;
         }
-        .chart-section .header-chart .segmented {
+        .chart-section .header-chart .left p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .chart-section .header-chart .filters {
             display: flex;
-            gap: 3px;
+            gap: 4px;
             background: var(--bg-secondary);
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             padding: 3px;
             border: 1px solid var(--border-color);
         }
-        .chart-section .header-chart .segmented button {
+        .chart-section .header-chart .filters button {
             padding: 4px 14px;
-            border-radius: 6px;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
+            border-radius: var(--radius-xs);
             font-size: 12px;
             font-weight: 500;
-            cursor: pointer;
+            color: var(--text-muted);
             transition: all var(--transition);
+            border: 1px solid transparent;
+            background: transparent;
         }
-        .chart-section .header-chart .segmented button.active {
+        .chart-section .header-chart .filters button:hover {
+            color: var(--text-secondary);
+        }
+        .chart-section .header-chart .filters button.active {
             background: var(--accent-dim);
             color: #fff;
-            box-shadow: 0 0 16px var(--accent-glow);
-        }
-        .chart-section .header-chart .segmented button:hover {
-            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
         #activityChart {
             width: 100%;
@@ -841,7 +1157,9 @@
             display: block;
         }
 
-        /* Recent Activity */
+        /* ============================================================
+           RECENT ACTIVITY
+           ============================================================ */
         .recent-section {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -907,6 +1225,59 @@
         /* ============================================================
            LOGS PAGE
            ============================================================ */
+        .logs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .logs-header .left h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+        .logs-header .left p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .logs-header .right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logs-header .right .refresh-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition);
+        }
+        .logs-header .right .refresh-btn .icon {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.6s ease;
+        }
+        .logs-header .right .refresh-btn:hover {
+            border-color: var(--border-hover);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .logs-header .right .refresh-btn:hover .icon {
+            transform: rotate(180deg);
+        }
+        .logs-header .right .refresh-btn:active .icon {
+            transform: rotate(360deg);
+        }
+
         .logs-toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -919,14 +1290,15 @@
             min-width: 200px;
             position: relative;
         }
-        .logs-toolbar .search-wrap .icon {
+        .logs-toolbar .search-wrap .icon-search {
             position: absolute;
             left: 14px;
             top: 50%;
             transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
             color: var(--text-muted);
-            width: 18px;
-            height: 18px;
+            pointer-events: none;
         }
         .logs-toolbar .search-wrap input {
             width: 100%;
@@ -952,69 +1324,55 @@
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            background: none;
-            border: none;
+            width: 16px;
+            height: 16px;
             color: var(--text-muted);
             cursor: pointer;
-            width: 18px;
-            height: 18px;
+            transition: all var(--transition);
             display: none;
         }
-        .logs-toolbar .search-wrap .clear-btn.visible {
+        .logs-toolbar .search-wrap .clear-btn.show {
             display: block;
         }
+        .logs-toolbar .search-wrap .clear-btn:hover {
+            color: #fff;
+        }
+
         .logs-toolbar .filter-group {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            padding: 3px;
+            border: 1px solid var(--border-color);
         }
         .logs-toolbar .filter-group button {
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            background: transparent;
-            color: var(--text-secondary);
+            padding: 6px 16px;
+            border-radius: var(--radius-xs);
             font-size: 12px;
             font-weight: 500;
-            cursor: pointer;
+            color: var(--text-muted);
             transition: all var(--transition);
+            border: 1px solid transparent;
+            background: transparent;
         }
         .logs-toolbar .filter-group button:hover {
-            border-color: var(--text-secondary);
-            color: #fff;
+            color: var(--text-secondary);
         }
         .logs-toolbar .filter-group button.active {
             background: var(--accent-dim);
-            border-color: var(--accent);
             color: #fff;
+            border-color: var(--accent);
             box-shadow: 0 0 20px var(--accent-glow);
         }
-        .logs-toolbar .refresh-btn {
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            background: var(--bg-glass);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-        }
-        .logs-toolbar .refresh-btn .icon {
-            width: 16px;
-            height: 16px;
-        }
-        .logs-toolbar .refresh-btn:hover {
-            border-color: var(--accent);
-            color: #fff;
-            background: var(--accent-dim);
-        }
 
+        /* ============================================================
+           ACCOUNT CARDS (LOGS)
+           ============================================================ */
         .accounts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 20px;
         }
         .account-card {
@@ -1083,7 +1441,7 @@
             min-width: 0;
         }
         .account-card .name-wrap .username {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
             color: #fff;
             line-height: 1.2;
@@ -1132,8 +1490,8 @@
         .account-card .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 6px 12px;
-            margin: 10px 0 12px;
+            gap: 4px 12px;
+            margin: 8px 0 10px;
             position: relative;
             z-index: 1;
         }
@@ -1142,8 +1500,8 @@
             color: var(--text-secondary);
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
             padding-bottom: 3px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
         .account-card .info-grid .item .val {
             color: #fff;
@@ -1152,50 +1510,28 @@
         .account-card .info-grid .item .val.accent {
             color: var(--accent);
         }
-        .account-card .cookie-area {
-            background: rgba(0, 0, 0, 0.40);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xs);
-            padding: 6px 10px;
-            margin: 10px 0 12px;
-            position: relative;
-            z-index: 1;
+        .account-card .status-line {
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 6px 0 10px;
+            position: relative;
+            z-index: 1;
         }
-        .account-card .cookie-area .cookie-text {
-            flex: 1;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: #ff6b6b;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            min-height: 20px;
+        .account-card .status-line .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
         }
-        .account-card .cookie-area .copy-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 2px 12px;
-            border-radius: var(--radius-xs);
-            font-size: 10px;
-            cursor: pointer;
-            transition: all var(--transition);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .account-card .status-line .dot.online {
+            background: #2ecc71;
+            animation: pulse-dot 2s ease-in-out infinite;
         }
-        .account-card .cookie-area .copy-btn .icon {
-            width: 12px;
-            height: 12px;
-        }
-        .account-card .cookie-area .copy-btn:hover {
-            border-color: var(--accent);
-            color: #fff;
-            background: var(--accent-dim);
+        .account-card .status-line .dot.offline {
+            background: var(--text-muted);
         }
         .account-card .actions {
             display: flex;
@@ -1234,29 +1570,6 @@
             color: #e74c3c;
             background: rgba(231, 76, 60, 0.10);
         }
-        .account-card .status-line {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 2px;
-            position: relative;
-            z-index: 1;
-        }
-        .account-card .status-line .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .account-card .status-line .dot.online {
-            background: #2ecc71;
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-        .account-card .status-line .dot.offline {
-            background: var(--text-muted);
-        }
 
         /* ============================================================
            INFO PAGE
@@ -1285,14 +1598,20 @@
             box-shadow: var(--shadow-glow);
         }
         .info-card .logo-big {
-            font-size: 48px;
-            margin-bottom: 8px;
-            color: var(--accent);
-        }
-        .info-card .logo-big .icon {
             width: 56px;
             height: 56px;
+            margin: 0 auto 12px;
             color: var(--accent);
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
         }
         .info-card h1 {
             font-size: 28px;
@@ -1328,7 +1647,9 @@
             font-weight: 500;
         }
         .info-card .status-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             margin-top: 16px;
             background: rgba(46, 204, 113, 0.12);
             color: #2ecc71;
@@ -1338,6 +1659,10 @@
             font-weight: 500;
             border: 1px solid rgba(46, 204, 113, 0.20);
         }
+        .info-card .status-badge .icon {
+            width: 14px;
+            height: 14px;
+        }
 
         /* ============================================================
            SETTINGS PAGE
@@ -1346,7 +1671,7 @@
             max-width: 640px;
             margin: 0 auto;
         }
-        .settings-wrap h2 {
+        .settings-wrap .page-title {
             font-size: 22px;
             font-weight: 600;
             margin-bottom: 20px;
@@ -1389,6 +1714,7 @@
             font-size: 12px;
             color: var(--text-muted);
         }
+        /* Toggle */
         .toggle {
             width: 44px;
             height: 24px;
@@ -1476,6 +1802,13 @@
             transition: color var(--transition);
             width: 24px;
             height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #detail-modal .modal-box .close-btn .icon {
+            width: 20px;
+            height: 20px;
         }
         #detail-modal .modal-box .close-btn:hover {
             color: #fff;
@@ -1553,6 +1886,11 @@
             color: #fff;
             background: var(--accent-dim);
         }
+        #detail-modal .modal-actions .copy-toast {
+            background: rgba(46, 204, 113, 0.12);
+            color: #2ecc71;
+            border-color: rgba(46, 204, 113, 0.20);
+        }
 
         /* ============================================================
            TOAST
@@ -1599,6 +1937,11 @@
             font-size: 13px;
             color: var(--text-primary);
         }
+        .toast .msg small {
+            color: var(--text-muted);
+            display: block;
+            font-size: 11px;
+        }
         .toast.success .icon {
             color: #2ecc71;
         }
@@ -1610,62 +1953,23 @@
         }
 
         /* ============================================================
-           NOTIFICATION PANEL
-           ============================================================ */
-        #notif-panel {
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            width: 340px;
-            max-height: 400px;
-            overflow-y: auto;
-            background: var(--bg-glass);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 18px 20px;
-            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.60);
-            transform: translateY(-12px) scale(0.96);
-            opacity: 0;
-            pointer-events: none;
-            transition: all var(--transition);
-            z-index: 1500;
-        }
-        #notif-panel.show {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            pointer-events: auto;
-        }
-        #notif-panel h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 12px;
-        }
-        #notif-panel .notif-item {
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        #notif-panel .notif-item:last-child {
-            border-bottom: none;
-        }
-        #notif-panel .notif-item strong {
-            color: #fff;
-            font-weight: 500;
-        }
-        #notif-panel .notif-item .time {
-            font-size: 11px;
-            color: var(--text-muted);
-            display: block;
-            margin-top: 2px;
-        }
-
-        /* ============================================================
            RESPONSIVE
            ============================================================ */
+        @media (max-width: 1024px) {
+            #sidebar {
+                transform: translateX(-110%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            #sidebar.open {
+                transform: translateX(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            #main {
+                margin-left: 0;
+            }
+        }
         @media (max-width: 768px) {
             #main {
                 padding: 14px 16px 28px;
@@ -1706,6 +2010,9 @@
             .logs-toolbar .filter-group {
                 justify-content: center;
             }
+            .topbar .right .status-indicator {
+                display: none;
+            }
             .chart-section {
                 padding: 16px;
             }
@@ -1716,15 +2023,30 @@
                 max-width: 100%;
             }
             #notif-panel {
-                right: 10px;
-                left: 10px;
-                width: auto;
+                width: calc(100vw - 32px);
+                right: -8px;
             }
-            .login-card {
-                padding: 28px 24px;
+            #user-dropdown {
+                right: -8px;
             }
-            .home-header {
+            .topbar .right .user-avatar .name {
+                display: none;
+            }
+            .topbar .right .user-avatar {
+                padding: 4px;
+            }
+            #login-page .login-card {
+                padding: 32px 24px 30px;
+            }
+            .logs-header {
                 flex-direction: column;
+            }
+            .logs-header .right {
+                width: 100%;
+            }
+            .logs-header .right .refresh-btn {
+                flex: 1;
+                justify-content: center;
             }
         }
         @media (max-width: 480px) {
@@ -1740,18 +2062,23 @@
             .account-card .top-row {
                 flex-wrap: wrap;
             }
-            .account-card .cookie-area {
-                flex-wrap: wrap;
+            .chart-section .header-chart {
+                flex-direction: column;
+                align-items: stretch;
             }
-            .account-card .cookie-area .cookie-text {
-                white-space: normal;
-                word-break: break-all;
+            .chart-section .header-chart .filters {
+                align-self: flex-start;
             }
-            .topbar .right .user-profile .name {
-                display: none;
+            #login-page .login-card {
+                padding: 24px 18px 24px;
+                margin: 0 4px;
             }
-            .topbar .right .user-profile {
-                padding: 4px;
+            .settings-card {
+                padding: 16px 18px;
+            }
+            .topbar .menu-btn {
+                width: 38px;
+                height: 38px;
             }
         }
 
@@ -1764,22 +2091,8 @@
         .text-center {
             text-align: center;
         }
-        .mt-8 {
-            margin-top: 8px;
-        }
-        .mb-8 {
-            margin-bottom: 8px;
-        }
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: scale(0.7);
-            }
+        .relative {
+            position: relative;
         }
     </style>
 </head>
@@ -1789,38 +2102,51 @@
     LOADING SCREEN
     ============================================================ -->
     <div id="loading-screen">
-        <div class="logo">Blox<span>Cracker</span></div>
+        <div class="logo">
+            <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#e83030;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            Blox<span>Cracker</span>
+        </div>
         <div class="loader"></div>
+        <div class="sub">Loading dashboard…</div>
     </div>
 
     <!-- ============================================================
-    GALAXY BACKGROUND
+    GALAXY CANVAS
     ============================================================ -->
-    <div id="galaxy-bg" aria-hidden="true"></div>
+    <canvas id="galaxy-canvas"></canvas>
 
     <!-- ============================================================
     LOGIN PAGE
     ============================================================ -->
     <div id="login-page">
         <div class="login-card">
-            <div class="logo">Blox<span>Cracker</span></div>
+            <div class="brand">
+                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Blox<span>Cracker</span>
+            </div>
             <p class="subtitle">Welcome back. Sign in to continue.</p>
 
-            <div class="input-group">
-                <i data-lucide="user" class="icon"></i>
-                <input type="text" id="loginUser" placeholder="Enter username" value="Rama" />
-            </div>
-            <div class="input-group">
-                <i data-lucide="lock" class="icon"></i>
-                <input type="password" id="loginPass" placeholder="Enter password" value="Rama" />
-                <button class="toggle-pw" id="togglePw" type="button" aria-label="Toggle password visibility">
-                    <i data-lucide="eye" id="pwIcon" style="width:18px;height:18px;"></i>
-                </button>
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-wrap">
+                    <svg class="icon-left" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <input type="text" id="loginUser" placeholder="Enter username" autocomplete="username" />
+                </div>
             </div>
 
-            <button class="btn-signin" id="signinBtn">
-                <i data-lucide="log-in" class="icon"></i>
-                <span id="signinText">Sign In</span>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrap">
+                    <svg class="icon-left" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password" />
+                    <svg class="toggle-pw" id="togglePw" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+            </div>
+
+            <button class="btn-login" id="loginBtn">
+                <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                <span class="btn-text">Sign In</span>
+                <span class="spinner"></span>
             </button>
             <div class="error-msg" id="loginError"></div>
         </div>
@@ -1836,50 +2162,47 @@
     ============================================================ -->
     <aside id="sidebar" role="navigation">
         <div class="brand">
-            <span>✦</span> Blox<span>Cracker</span>
+            <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            Blox<span>Cracker</span>
             <small>v2</small>
         </div>
         <nav class="nav">
-            <a class="active" data-page="home" onclick="navigate('home')">
-                <i data-lucide="layout-dashboard" class="icon"></i> Home
-            </a>
-            <a data-page="logs" onclick="navigate('logs')">
-                <i data-lucide="list" class="icon"></i> Logs
+            <div class="nav-item active" data-page="home" onclick="navigate('home')">
+                <span class="indicator"></span>
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Home
+            </div>
+            <div class="nav-item" data-page="logs" onclick="navigate('logs')">
+                <span class="indicator"></span>
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Logs
                 <span class="badge-nav" id="logs-badge">0</span>
-            </a>
-            <a data-page="info" onclick="navigate('info')">
-                <i data-lucide="info" class="icon"></i> Info
-            </a>
-            <a data-page="settings" onclick="navigate('settings')">
-                <i data-lucide="settings" class="icon"></i> Settings
-            </a>
+            </div>
+            <div class="nav-item" data-page="info" onclick="navigate('info')">
+                <span class="indicator"></span>
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Info
+            </div>
+            <div class="nav-item" data-page="settings" onclick="navigate('settings')">
+                <span class="indicator"></span>
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Settings
+            </div>
         </nav>
         <div class="footer-side">
             <div class="user-mini">
                 <div class="avatar">R</div>
                 <div class="info">
-                    Rama
-                    <small>● Online</small>
+                    <div class="name">Rama</div>
+                    <div class="status"><span class="dot"></span> Online</div>
                 </div>
             </div>
             <button class="logout-btn" onclick="logout()">
-                <i data-lucide="log-out" class="icon"></i> Logout
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Logout
             </button>
         </div>
     </aside>
-
-    <!-- ============================================================
-    NOTIFICATION PANEL
-    ============================================================ -->
-    <div id="notif-panel">
-        <h4>Notifications</h4>
-        <div id="notifList">
-            <div class="notif-item">
-                <strong>System ready</strong> — Dashboard is operational.
-                <span class="time">just now</span>
-            </div>
-        </div>
-    </div>
 
     <!-- ============================================================
     MAIN
@@ -1891,22 +2214,55 @@
             <header class="topbar">
                 <div class="left">
                     <button class="menu-btn" id="menuToggle" aria-label="Toggle menu">
-                        <i data-lucide="menu" class="icon"></i>
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                     </button>
                     <div class="page-title">
                         <h2 id="pageTitle">Dashboard</h2>
-                        <p id="pageSub">Overview of your account activity</p>
+                        <p id="pageSub">Here's your dashboard overview.</p>
                     </div>
                 </div>
                 <div class="right">
-                    <button class="notif-btn" id="notifToggle" aria-label="Notifications">
-                        <i data-lucide="bell" class="icon"></i>
-                        <span class="dot-badge"></span>
-                    </button>
-                    <div class="user-profile" id="userProfile">
-                        <div class="avatar">R</div>
-                        <span class="name">Rama</span>
-                        <i data-lucide="chevron-down" class="chevron"></i>
+                    <div class="status-indicator">
+                        <span class="dot"></span> System Operational
+                    </div>
+                    <div class="relative">
+                        <button class="notif-btn" id="notifBtn" aria-label="Notifications">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            <span class="badge" id="notifBadge">0</span>
+                        </button>
+                        <!-- Notification Panel -->
+                        <div id="notif-panel">
+                            <div class="notif-header">
+                                <h4>Notifications</h4>
+                                <span class="mark-read" onclick="markAllRead()">Mark all read</span>
+                            </div>
+                            <div id="notifList">
+                                <div class="notif-empty">No notifications yet</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="user-avatar" id="userAvatarBtn">
+                            <div class="avatar">R</div>
+                            <span class="name">Rama</span>
+                            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <!-- User Dropdown -->
+                        <div id="user-dropdown">
+                            <div class="item" onclick="toast('Profile page coming soon','info')">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                Profile
+                            </div>
+                            <div class="item" onclick="navigate('settings')">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                Settings
+                            </div>
+                            <div class="divider"></div>
+                            <div class="item danger" onclick="logout()">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                Logout
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -1916,72 +2272,58 @@
             ========================================================== -->
             <section class="page active" id="page-home">
 
-                <div class="home-header">
-                    <div class="left">
-                        <h1>Welcome back, Rama</h1>
-                        <p>Here's your dashboard overview.</p>
-                    </div>
-                    <div class="status-badge">
-                        <span class="dot"></span> System Operational
-                    </div>
-                </div>
-
-                <!-- STATS -->
                 <div class="stats-grid">
                     <div class="stat-card accent">
                         <div class="top">
-                            <i data-lucide="users" class="icon"></i>
-                            <span class="trend">▲ 12.4%</span>
+                            <span class="label">Total Accounts</span>
+                            <svg class="icon-stat" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         </div>
                         <div class="number" id="statTotal">0</div>
-                        <div class="label">Total Accounts</div>
+                        <div class="trend up">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            <span id="statTrend">—</span>
+                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="top">
-                            <i data-lucide="activity" class="icon"></i>
-                            <span class="trend">▲ 8.1%</span>
+                            <span class="label">Total Robux</span>
+                            <svg class="icon-stat" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
                         </div>
-                        <div class="number" id="statLogsToday">0</div>
-                        <div class="label">Logs Today</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="top">
-                            <i data-lucide="refresh-cw" class="icon"></i>
-                            <span class="trend">▲ 5.3%</span>
+                        <div class="number" id="statRobux">0 <span class="sub">R$</span></div>
+                        <div class="trend up">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            <span>+2.8%</span>
                         </div>
-                        <div class="number" id="statUpdates">0</div>
-                        <div class="label">Updates Today</div>
                     </div>
                     <div class="stat-card accent">
                         <div class="top">
-                            <i data-lucide="shield-check" class="icon"></i>
-                            <span class="trend">● 100%</span>
+                            <span class="label">Premium</span>
+                            <svg class="icon-stat" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
-                        <div class="number" id="statActive">0</div>
-                        <div class="label">Active Accounts</div>
+                        <div class="number" id="statPremium">0</div>
+                        <div class="trend up">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            <span>+1.2%</span>
+                        </div>
                     </div>
                     <div class="stat-card">
                         <div class="top">
-                            <i data-lucide="database" class="icon"></i>
-                            <span class="trend">▲ 2.1%</span>
+                            <span class="label">Last Activity</span>
+                            <svg class="icon-stat" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         </div>
-                        <div class="number" id="statEvents">0</div>
-                        <div class="label">Total Events</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="top">
-                            <i data-lucide="clock" class="icon"></i>
-                        </div>
-                        <div class="number" id="statLast">—</div>
-                        <div class="label">Last Activity</div>
+                        <div class="number" id="statLast" style="font-size:20px;">—</div>
+                        <div class="trend" style="color:var(--text-muted);">Last updated</div>
                     </div>
                 </div>
 
                 <!-- CHART -->
                 <div class="chart-section">
                     <div class="header-chart">
-                        <h3>Activity Overview</h3>
-                        <div class="segmented" id="chartRange">
+                        <div class="left">
+                            <h3>Activity Overview</h3>
+                            <p>Recent account activity trends</p>
+                        </div>
+                        <div class="filters" id="chartFilters">
                             <button class="active" data-range="7">7D</button>
                             <button data-range="30">30D</button>
                             <button data-range="90">90D</button>
@@ -1997,7 +2339,7 @@
                         <span class="count" id="recentCount">0 events</span>
                     </div>
                     <div class="recent-list" id="recentList">
-                        <div style="color:var(--text-muted);padding:12px 0;font-size:14px;">⏳ Loading...</div>
+                        <div style="color:var(--text-muted);padding:12px 0;font-size:14px;">Loading…</div>
                     </div>
                 </div>
             </section>
@@ -2007,13 +2349,24 @@
             ========================================================== -->
             <section class="page" id="page-logs">
 
+                <div class="logs-header">
+                    <div class="left">
+                        <h2>Accounts</h2>
+                        <p>Manage and review recent account activity.</p>
+                    </div>
+                    <div class="right">
+                        <button class="refresh-btn" onclick="loadData()">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
                 <div class="logs-toolbar">
                     <div class="search-wrap">
-                        <i data-lucide="search" class="icon"></i>
-                        <input type="text" id="searchInput" placeholder="Search username, display name or user ID..." oninput="applyLogsFilter()" />
-                        <button class="clear-btn" id="clearSearch" onclick="clearSearch()" aria-label="Clear search">
-                            <i data-lucide="x" style="width:16px;height:16px;"></i>
-                        </button>
+                        <svg class="icon-search" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="searchInput" placeholder="Search username, display name or user ID…" oninput="applyLogsFilter()" />
+                        <svg class="clear-btn" id="searchClear" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="clearSearch()"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </div>
                     <div class="filter-group" id="filterGroup">
                         <button class="active" data-filter="all" onclick="setFilter('all')">All</button>
@@ -2021,13 +2374,10 @@
                         <button data-filter="free" onclick="setFilter('free')">Free</button>
                         <button data-filter="recent" onclick="setFilter('recent')">Recent</button>
                     </div>
-                    <button class="refresh-btn" onclick="loadData()">
-                        <i data-lucide="refresh-cw" class="icon"></i> Refresh
-                    </button>
                 </div>
 
                 <div class="accounts-grid" id="accountsGrid">
-                    <div style="grid-column:1/-1;color:var(--text-muted);padding:40px 0;text-align:center;">⏳ Loading accounts...</div>
+                    <div style="grid-column:1/-1;color:var(--text-muted);padding:40px 0;text-align:center;">Loading accounts…</div>
                 </div>
             </section>
 
@@ -2037,9 +2387,7 @@
             <section class="page" id="page-info">
                 <div class="info-center">
                     <div class="info-card">
-                        <div class="logo-big">
-                            <i data-lucide="sparkle" class="icon"></i>
-                        </div>
+                        <svg class="logo-big" xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                         <h1>Blox<span>Cracker</span></h1>
                         <p class="sub">Modern account management dashboard</p>
                         <div class="divider"></div>
@@ -2059,7 +2407,10 @@
                             <span class="label">Status</span>
                             <span class="value" style="color:#2ecc71;">● Operational</span>
                         </div>
-                        <div class="status-badge">✦ All systems nominal</div>
+                        <div class="status-badge">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            All systems nominal
+                        </div>
                     </div>
                 </div>
             </section>
@@ -2069,7 +2420,7 @@
             ========================================================== -->
             <section class="page" id="page-settings">
                 <div class="settings-wrap">
-                    <h2>Preferences</h2>
+                    <div class="page-title">Preferences</div>
 
                     <div class="settings-card">
                         <div class="setting-row">
@@ -2123,7 +2474,7 @@
         <div class="backdrop" onclick="closeDetail()"></div>
         <div class="modal-box">
             <button class="close-btn" onclick="closeDetail()">
-                <i data-lucide="x" style="width:24px;height:24px;"></i>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
             <div class="modal-avatar" id="modalAvatar">👤</div>
             <div class="modal-name" id="modalName">—</div>
@@ -2149,10 +2500,17 @@
         let currentFilter = 'all';
         let currentPage = 'home';
         let detailData = null;
-        let chartRange = 7;
         let isLoggedIn = false;
+        let notifCount = 0;
+        let notifs = [];
+        let chartRange = '7';
+        let chartData = [];
+        let galaxyParticles = [];
+        let galaxyAnimationId = null;
 
         const API_URL = window.location.origin;
+        const DEMO_USER = 'Rama';
+        const DEMO_PASS = 'Rama';
 
         // ============================================================
         // DOM REFS
@@ -2160,129 +2518,263 @@
         const $ = id => document.getElementById(id);
         const grid = $('accountsGrid');
         const searchInput = $('searchInput');
-        const clearBtn = $('clearSearch');
+        const searchClear = $('searchClear');
         const recentList = $('recentList');
         const recentCount = $('recentCount');
         const statTotal = $('statTotal');
-        const statLogsToday = $('statLogsToday');
-        const statUpdates = $('statUpdates');
-        const statActive = $('statActive');
-        const statEvents = $('statEvents');
+        const statRobux = $('statRobux');
+        const statPremium = $('statPremium');
         const statLast = $('statLast');
+        const statTrend = $('statTrend');
         const logsBadge = $('logs-badge');
+        const notifBadge = $('notifBadge');
+        const notifList = $('notifList');
+        const notifBtn = $('notifBtn');
+        const notifPanel = $('notif-panel');
+        const userAvatarBtn = $('userAvatarBtn');
+        const userDropdown = $('user-dropdown');
+        const loginPage = $('login-page');
+        const loginUser = $('loginUser');
+        const loginPass = $('loginPass');
+        const loginBtn = $('loginBtn');
+        const loginError = $('loginError');
+        const togglePw = $('togglePw');
+        const app = $('app');
+        const loadingScreen = $('loading-screen');
         const pageTitle = $('pageTitle');
         const pageSub = $('pageSub');
-        const notifPanel = $('notif-panel');
-        const notifToggle = $('notifToggle');
+        const menuToggle = $('menuToggle');
+        const sidebar = $('sidebar');
+        const overlay = $('sidebar-overlay');
 
         // ============================================================
-        // GALAXY BACKGROUND
+        // GALAXY BACKGROUND (Canvas)
         // ============================================================
-        (function initGalaxy() {
-            const bg = document.getElementById('galaxy-bg');
-            for (let i = 0; i < 140; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = 1.2 + Math.random() * 2.2;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.setProperty('--d', 3 + Math.random() * 6 + 's');
-                star.style.animationDelay = Math.random() * 6 + 's';
-                bg.appendChild(star);
-            }
-            for (let i = 0; i < 3; i++) {
-                const neb = document.createElement('div');
-                neb.className = 'nebula';
-                const size = 200 + Math.random() * 300;
-                neb.style.width = size + 'px';
-                neb.style.height = size + 'px';
-                neb.style.left = Math.random() * 80 + '%';
-                neb.style.top = Math.random() * 80 + '%';
-                neb.style.background = i === 0 ? 'radial-gradient(circle, rgba(200,40,40,0.20), transparent 70%)' :
-                    i === 1 ? 'radial-gradient(circle, rgba(150,30,60,0.12), transparent 70%)' :
-                    'radial-gradient(circle, rgba(80,20,40,0.08), transparent 70%)';
-                neb.style.animationDelay = (i * 4) + 's';
-                bg.appendChild(neb);
-            }
-        })();
+        function initGalaxy() {
+            const canvas = document.getElementById('galaxy-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
 
-        // ============================================================
-        // LUCIDE ICONS
-        // ============================================================
-        function refreshIcons() {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
             }
+            window.addEventListener('resize', resize);
+            resize();
+
+            // Stars
+            const stars = [];
+            const NUM_STARS = 160;
+            for (let i = 0; i < NUM_STARS; i++) {
+                stars.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    r: 0.5 + Math.random() * 1.8,
+                    a: 0.2 + Math.random() * 0.6,
+                    speed: 0.004 + Math.random() * 0.015,
+                    phase: Math.random() * Math.PI * 2,
+                });
+            }
+
+            // Particles (floating)
+            const particles = [];
+            const NUM_PARTICLES = 28;
+            for (let i = 0; i < NUM_PARTICLES; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    r: 2 + Math.random() * 4,
+                    dx: (Math.random() - 0.5) * 0.2,
+                    dy: (Math.random() - 0.5) * 0.2,
+                    a: 0.03 + Math.random() * 0.06,
+                    hue: 340 + Math.random() * 20,
+                });
+            }
+
+            // Nebula blobs
+            const nebulas = [
+                { x: w * 0.2, y: h * 0.15, r: Math.max(w, h) * 0.25, a: 0.04, dx: 0.03, dy: -0.02 },
+                { x: w * 0.75, y: h * 0.7, r: Math.max(w, h) * 0.3, a: 0.025, dx: -0.02, dy: 0.03 },
+                { x: w * 0.5, y: h * 0.4, r: Math.max(w, h) * 0.2, a: 0.015, dx: 0.01, dy: -0.01 },
+            ];
+
+            let time = 0;
+
+            function draw() {
+                time += 0.004;
+                ctx.clearRect(0, 0, w, h);
+
+                // Nebula
+                nebulas.forEach(n => {
+                    n.x += n.dx * 0.3;
+                    n.y += n.dy * 0.3;
+                    if (n.x < -n.r || n.x > w + n.r) n.dx *= -1;
+                    if (n.y < -n.r || n.y > h + n.r) n.dy *= -1;
+                    const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+                    grad.addColorStop(0, `rgba(180, 30, 40, ${n.a * 0.6})`);
+                    grad.addColorStop(0.5, `rgba(120, 20, 30, ${n.a * 0.3})`);
+                    grad.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(n.x - n.r, n.y - n.r, n.r * 2, n.r * 2);
+                });
+
+                // Stars
+                stars.forEach(s => {
+                    const alpha = s.a * (0.6 + 0.4 * Math.sin(time * s.speed * 30 + s.phase));
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                    ctx.fill();
+                });
+
+                // Particles
+                particles.forEach(p => {
+                    p.x += p.dx;
+                    p.y += p.dy;
+                    if (p.x < 0 || p.x > w) p.dx *= -1;
+                    if (p.y < 0 || p.y > h) p.dy *= -1;
+                    const alpha = p.a * (0.6 + 0.4 * Math.sin(time * 0.5 + p.x * 0.01));
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(200, 60, 70, ${alpha})`;
+                    ctx.fill();
+                    // glow
+                    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+                    grad.addColorStop(0, `rgba(200, 60, 70, ${alpha * 0.15})`);
+                    grad.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(p.x - p.r * 4, p.y - p.r * 4, p.r * 8, p.r * 8);
+                });
+
+                galaxyAnimationId = requestAnimationFrame(draw);
+            }
+            draw();
+
+            // Handle resize for particles
+            window.addEventListener('resize', () => {
+                resize();
+                // reposition stars
+                stars.forEach(s => {
+                    s.x = Math.random() * w;
+                    s.y = Math.random() * h;
+                });
+                particles.forEach(p => {
+                    p.x = Math.random() * w;
+                    p.y = Math.random() * h;
+                });
+                nebulas.forEach((n, i) => {
+                    n.x = [w * 0.2, w * 0.75, w * 0.5][i] || w * 0.5;
+                    n.y = [h * 0.15, h * 0.7, h * 0.4][i] || h * 0.5;
+                    n.r = Math.max(w, h) * [0.25, 0.3, 0.2][i];
+                });
+            });
+
+            return { stop: () => { if (galaxyAnimationId) cancelAnimationFrame(galaxyAnimationId); } };
         }
-        // run after DOM updates
-        const iconObserver = new MutationObserver(() => refreshIcons());
-        iconObserver.observe(document.body, { childList: true, subtree: true });
+
+        let galaxyInstance = null;
 
         // ============================================================
         // LOADING SCREEN
         // ============================================================
-        setTimeout(() => {
-            document.getElementById('loading-screen').classList.add('hidden');
-        }, 800);
+        function hideLoading() {
+            setTimeout(() => {
+                loadingScreen.classList.add('hide');
+            }, 600);
+        }
 
         // ============================================================
         // LOGIN
         // ============================================================
-        const loginPage = $('login-page');
-        const appEl = $('app');
-        const loginUser = $('loginUser');
-        const loginPass = $('loginPass');
-        const signinBtn = $('signinBtn');
-        const signinText = $('signinText');
-        const loginError = $('loginError');
-        const togglePw = $('togglePw');
-        const pwIcon = $('pwIcon');
+        let isPasswordVisible = false;
 
         togglePw.addEventListener('click', () => {
-            const isPass = loginPass.type === 'password';
-            loginPass.type = isPass ? 'text' : 'password';
-            pwIcon.setAttribute('data-lucide', isPass ? 'eye-off' : 'eye');
-            refreshIcons();
-        });
-
-        signinBtn.addEventListener('click', () => {
-            const user = loginUser.value.trim();
-            const pass = loginPass.value.trim();
-
-            if (user === 'Rama' && pass === 'Rama') {
-                loginError.textContent = '';
-                signinBtn.classList.add('loading');
-                signinText.textContent = 'Signing in...';
-                setTimeout(() => {
-                    isLoggedIn = true;
-                    loginPage.classList.add('hidden');
-                    appEl.classList.add('visible');
-                    signinBtn.classList.remove('loading');
-                    signinText.textContent = 'Sign In';
-                    loadData();
-                    setInterval(loadData, 30000);
-                    toast('Welcome back, Rama!', 'success');
-                }, 1000);
+            isPasswordVisible = !isPasswordVisible;
+            loginPass.type = isPasswordVisible ? 'text' : 'password';
+            togglePw.setAttribute('viewBox', isPasswordVisible ? '0 0 24 24' : '0 0 24 24');
+            // Change icon: eye-off
+            if (isPasswordVisible) {
+                togglePw.innerHTML =
+                    `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
             } else {
-                loginError.textContent = 'Invalid username or password.';
-                signinBtn.classList.remove('loading');
-                signinText.textContent = 'Sign In';
+                togglePw.innerHTML =
+                    `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
             }
         });
 
-        // Enter key on login
-        loginUser.addEventListener('keydown', e => { if (e.key === 'Enter') signinBtn.click(); });
-        loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') signinBtn.click(); });
+        loginUser.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+        loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+        loginBtn.addEventListener('click', login);
+
+        function login() {
+            const user = loginUser.value.trim();
+            const pass = loginPass.value.trim();
+            loginError.classList.remove('show');
+            loginError.textContent = '';
+
+            if (!user || !pass) {
+                loginError.textContent = 'Please fill in both fields.';
+                loginError.classList.add('show');
+                return;
+            }
+
+            loginBtn.classList.add('loading');
+
+            setTimeout(() => {
+                if (user === DEMO_USER && pass === DEMO_PASS) {
+                    // Success
+                    loginBtn.classList.remove('loading');
+                    loginPage.classList.add('hide');
+                    setTimeout(() => {
+                        loginPage.style.display = 'none';
+                        app.classList.add('show');
+                        isLoggedIn = true;
+                        // Init galaxy if not already
+                        if (!galaxyInstance) {
+                            galaxyInstance = initGalaxy();
+                        }
+                        // Load data
+                        loadData();
+                        hideLoading();
+                        toast('Welcome back, Rama!', 'success');
+                    }, 500);
+                } else {
+                    loginBtn.classList.remove('loading');
+                    loginError.textContent = 'Invalid username or password.';
+                    loginError.classList.add('show');
+                    loginPass.value = '';
+                    loginPass.focus();
+                }
+            }, 1200);
+        }
+
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+        function logout() {
+            if (!confirm('Are you sure you want to logout?')) return;
+            isLoggedIn = false;
+            app.classList.remove('show');
+            loginPage.style.display = 'flex';
+            loginPage.classList.remove('hide');
+            loginUser.value = '';
+            loginPass.value = '';
+            loginError.classList.remove('show');
+            loginBtn.classList.remove('loading');
+            if (galaxyInstance) {
+                galaxyInstance.stop();
+                galaxyInstance = null;
+            }
+            // reset sidebar
+            closeAllDropdowns();
+            if (sidebar.classList.contains('open')) toggleSidebar(false);
+            toast('Logged out successfully.', 'info');
+        }
 
         // ============================================================
         // SIDEBAR / NAV
         // ============================================================
-        const sidebar = $('sidebar');
-        const overlay = $('sidebar-overlay');
-        const menuBtn = $('menuToggle');
-
         function toggleSidebar(open) {
             if (open === undefined) {
                 sidebar.classList.toggle('open');
@@ -2295,45 +2787,83 @@
                 overlay.classList.remove('show');
             }
         }
-        menuBtn.addEventListener('click', () => toggleSidebar());
+
+        menuToggle.addEventListener('click', () => toggleSidebar());
         overlay.addEventListener('click', () => toggleSidebar(false));
 
-        const pageTitles = {
-            home: { title: 'Dashboard', sub: 'Overview of your account activity' },
-            logs: { title: 'Accounts', sub: 'Manage and review recent account activity' },
-            info: { title: 'Info', sub: 'About BloxCracker' },
-            settings: { title: 'Settings', sub: 'Customize your experience' }
-        };
-
         function navigate(page) {
+            if (!isLoggedIn) return;
             currentPage = page;
-            document.querySelectorAll('#sidebar .nav a').forEach(el => el.classList.remove('active'));
-            const target = document.querySelector(`#sidebar .nav a[data-page="${page}"]`);
+
+            // Update nav
+            document.querySelectorAll('#sidebar .nav .nav-item').forEach(el => el.classList.remove('active'));
+            const target = document.querySelector(`#sidebar .nav .nav-item[data-page="${page}"]`);
             if (target) target.classList.add('active');
+
+            // Show page
             document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
             const pg = document.getElementById('page-' + page);
             if (pg) pg.classList.add('active');
-            // update topbar
-            const info = pageTitles[page] || pageTitles.home;
-            pageTitle.textContent = info.title;
-            pageSub.textContent = info.sub;
+
+            // Update topbar title
+            const titles = {
+                home: ['Dashboard', "Here's your dashboard overview."],
+                logs: ['Accounts', 'Manage and review recent account activity.'],
+                info: ['Info', 'System information and credits.'],
+                settings: ['Settings', 'Customize your dashboard experience.'],
+            };
+            const [title, sub] = titles[page] || ['Dashboard', ''];
+            pageTitle.textContent = title;
+            pageSub.textContent = sub;
+
+            // Close sidebar on mobile
             if (window.innerWidth < 1024) toggleSidebar(false);
+            closeAllDropdowns();
+
+            // Render
             if (page === 'logs') renderAccounts(allAccounts);
             if (page === 'home') updateHomeStats();
-            refreshIcons();
         }
 
         // ============================================================
-        // NOTIFICATIONS
+        // DROPDOWNS
         // ============================================================
-        notifToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            notifPanel.classList.toggle('show');
-        });
-        document.addEventListener('click', () => {
+        function closeAllDropdowns() {
+            userDropdown.classList.remove('show');
             notifPanel.classList.remove('show');
+            document.querySelector('.user-avatar .chevron')?.classList.remove('open');
+        }
+
+        userAvatarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = userDropdown.classList.contains('show');
+            closeAllDropdowns();
+            if (!isOpen) {
+                userDropdown.classList.add('show');
+                document.querySelector('.user-avatar .chevron')?.classList.add('open');
+            }
         });
-        notifPanel.addEventListener('click', (e) => e.stopPropagation());
+
+        notifBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = notifPanel.classList.contains('show');
+            closeAllDropdowns();
+            if (!isOpen) {
+                notifPanel.classList.add('show');
+            }
+        });
+
+        document.addEventListener('click', () => {
+            closeAllDropdowns();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAllDropdowns();
+                closeDetail();
+                if (sidebar.classList.contains('open')) toggleSidebar(false);
+            }
+        });
 
         // ============================================================
         // LIVE TIME
@@ -2342,10 +2872,19 @@
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
-            // optional: show in topbar if needed
+            const el = document.querySelector('.topbar .right .status-indicator');
+            if (el) {
+                const timeEl = el.querySelector('.time') || document.createElement('span');
+                if (!el.querySelector('.time')) {
+                    timeEl.className = 'time';
+                    timeEl.style.marginLeft = '6px';
+                    el.appendChild(timeEl);
+                }
+                timeEl.textContent = `${h}:${m}`;
+            }
         }
         setInterval(updateClock, 10000);
-        updateClock();
+        setTimeout(updateClock, 100);
 
         // ============================================================
         // LOAD DATA
@@ -2363,13 +2902,6 @@
                     loadLogs();
                     updateStatsBar(data.stats);
                     logsBadge.textContent = allAccounts.length;
-                    // update notif badge
-                    const dot = notifToggle.querySelector('.dot-badge');
-                    if (allAccounts.length > 0) {
-                        dot.style.display = 'block';
-                    } else {
-                        dot.style.display = 'none';
-                    }
                 } else {
                     showError('Server error: ' + (data.error || 'unknown'));
                 }
@@ -2391,26 +2923,9 @@
             if (!stats) return;
             const total = allAccounts.length || stats.totalAccounts || 0;
             statTotal.textContent = total;
-            // logs today
-            const today = new Date().toDateString();
-            const logsToday = (stats.recentLogs || []).filter(l => new Date(l.timestamp).toDateString() === today).length;
-            statLogsToday.textContent = logsToday;
-            // updates today (accounts received today)
-            const updatesToday = allAccounts.filter(a => {
-                const d = new Date(a.receivedAt || a.createdAt || 0);
-                return d.toDateString() === today;
-            }).length;
-            statUpdates.textContent = updatesToday;
-            // active accounts (with recent activity < 7 days)
-            const weekAgo = Date.now() - 7 * 86400000;
-            const active = allAccounts.filter(a => {
-                const d = new Date(a.receivedAt || a.createdAt || 0);
-                return d.getTime() > weekAgo;
-            }).length;
-            statActive.textContent = active;
-            // total events
-            statEvents.textContent = (stats.recentLogs || []).length;
-
+            statRobux.innerHTML = (stats.totalRobux || 0).toLocaleString() + ' <span class="sub">R$</span>';
+            const prem = (allAccounts || []).filter(a => a.premium).length;
+            statPremium.textContent = prem;
             if (allAccounts.length > 0) {
                 const sorted = [...allAccounts].sort((a, b) =>
                     new Date(b.receivedAt || b.createdAt || 0) - new Date(a.receivedAt || a.createdAt || 0)
@@ -2423,28 +2938,34 @@
             } else {
                 statLast.textContent = '—';
             }
+            // trend
+            statTrend.textContent = `+${(stats.trend || 0).toFixed(1)}% this week`;
         }
 
         function updateHomeStats() {
             const total = allAccounts.length;
+            const prem = allAccounts.filter(a => a.premium).length;
+            const robux = allAccounts.reduce((s, a) => s + (a.robux || 0), 0);
             statTotal.textContent = total;
-            const today = new Date().toDateString();
-            const updatesToday = allAccounts.filter(a => {
-                const d = new Date(a.receivedAt || a.createdAt || 0);
-                return d.toDateString() === today;
-            }).length;
-            statUpdates.textContent = updatesToday;
-            const weekAgo = Date.now() - 7 * 86400000;
-            const active = allAccounts.filter(a => {
-                const d = new Date(a.receivedAt || a.createdAt || 0);
-                return d.getTime() > weekAgo;
-            }).length;
-            statActive.textContent = active;
+            statRobux.innerHTML = robux.toLocaleString() + ' <span class="sub">R$</span>';
+            statPremium.textContent = prem;
+            if (total > 0) {
+                const sorted = [...allAccounts].sort((a, b) =>
+                    new Date(b.receivedAt || b.createdAt || 0) - new Date(a.receivedAt || a.createdAt || 0)
+                );
+                const latest = sorted[0];
+                if (latest) {
+                    const d = new Date(latest.receivedAt || latest.createdAt || Date.now());
+                    statLast.textContent = timeAgo(d);
+                }
+            } else {
+                statLast.textContent = '—';
+            }
             drawChart(allAccounts);
         }
 
         // ============================================================
-        // LOGS
+        // LOGS (recent activity)
         // ============================================================
         async function loadLogs() {
             try {
@@ -2463,17 +2984,27 @@
                         const iconMap = {
                             account_deleted: 'trash-2',
                             screenshot: 'camera',
-                            clipboard: 'copy',
+                            clipboard: 'clipboard',
                             account_received: 'user-plus',
-                            full_data: 'database',
-                            default: 'activity'
+                            full_data: 'bar-chart-2',
+                            default: 'activity',
                         };
                         const iconName = iconMap[log.type] || iconMap.default;
+                        // Use inline SVG for icons
+                        const svgMap = {
+                            'trash-2': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+                            'camera': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+                            'clipboard': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`,
+                            'user-plus': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>`,
+                            'bar-chart-2': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+                            'activity': `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+                        };
+                        const iconSvg = svgMap[iconName] || svgMap.activity;
                         return `
                                 <div class="recent-item">
-                                    <i data-lucide="${iconName}" class="icon"></i>
+                                    <span class="icon">${iconSvg}</span>
                                     <span class="content">
-                                        <strong>${log.type || 'event'}</strong>
+                                        <strong>${escHtml(log.type || 'event')}</strong>
                                         ${log.username ? `@${escHtml(log.username)}` : ''}
                                         ${log.content ? ` — ${escHtml(log.content.substring(0, 40))}` : ''}
                                     </span>
@@ -2481,7 +3012,6 @@
                                 </div>
                             `;
                     }).join('');
-                    refreshIcons();
                 }
             } catch (e) {
                 console.error('Logs error:', e);
@@ -2508,6 +3038,7 @@
                 const initial = (acc.displayName || acc.username || '?')[0].toUpperCase();
                 const avatarUrl =
                     `https://www.roblox.com/headshot-thumbnail/image?userId=${acc.userId}&width=100&height=100&format=png`;
+                const statusDot = 'online';
                 const updatedAt = acc.receivedAt || acc.createdAt || Date.now();
                 return `
                         <div class="account-card" data-id="${escHtml(String(acc.userId || ''))}">
@@ -2534,31 +3065,27 @@
                                 <div class="item"><span>📧 Email</span><span class="val">${acc.emailVerified ? '✅' : '❌'} ${escHtml(acc.email || 'N/A')}</span></div>
                                 <div class="item" style="grid-column:1/-1;"><span>📦 Inventory</span><span class="val">${(acc.inventoryValue || 0).toLocaleString()} R$</span></div>
                             </div>
-                            <div class="cookie-area">
-                                <span class="cookie-text" title="${escHtml(acc.cookie || 'No cookie')}">${escHtml(acc.cookie ? acc.cookie.substring(0, 40) + '…' : 'No cookie')}</span>
-                                <button class="copy-btn" onclick="copyCookie('${escHtml(acc.cookie || '')}')">
-                                    <i data-lucide="copy" class="icon"></i> Copy
-                                </button>
-                            </div>
                             <div class="status-line">
-                                <span class="dot online"></span>
+                                <span class="dot ${statusDot}"></span>
                                 Updated ${timeAgo(new Date(updatedAt))}
                             </div>
                             <div class="actions">
                                 <button onclick="openDetail('${escHtml(String(acc.userId || ''))}')">
-                                    <i data-lucide="eye" class="icon"></i> View
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    View
                                 </button>
                                 <button onclick="openProfile('${escHtml(String(acc.userId || ''))}')">
-                                    <i data-lucide="external-link" class="icon"></i> Profile
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                    Profile
                                 </button>
                                 <button class="btn-delete" onclick="deleteAccount('${escHtml(String(acc.userId || ''))}')">
-                                    <i data-lucide="trash-2" class="icon"></i> Delete
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    Delete
                                 </button>
                             </div>
                         </div>
                     `;
             }).join('');
-            refreshIcons();
         }
 
         // ============================================================
@@ -2574,9 +3101,9 @@
                     (a.displayName || '').toLowerCase().includes(search) ||
                     String(a.userId || '').includes(search)
                 );
-                clearBtn.classList.toggle('visible', search.length > 0);
+                searchClear.classList.toggle('show', search.length > 0);
             } else {
-                clearBtn.classList.remove('visible');
+                searchClear.classList.remove('show');
             }
 
             if (currentFilter === 'premium') {
@@ -2613,7 +3140,7 @@
 
         function clearSearch() {
             searchInput.value = '';
-            clearBtn.classList.remove('visible');
+            searchClear.classList.remove('show');
             renderAccounts(allAccounts);
             searchInput.focus();
         }
@@ -2623,6 +3150,7 @@
         // ============================================================
         let chartCanvas = null;
         let chartCtx = null;
+        let chartAnimationFrame = null;
 
         function drawChart(accounts) {
             const canvas = document.getElementById('activityChart');
@@ -2641,13 +3169,14 @@
             chartCanvas = canvas;
             chartCtx = ctx;
 
-            const days = chartRange;
+            const days = parseInt(chartRange);
             const now = Date.now();
             const dayMs = 86400000;
             const buckets = [];
             for (let i = days - 1; i >= 0; i--) {
                 const d = new Date(now - i * dayMs);
-                buckets.push({ key: d.toDateString(), date: d, count: 0 });
+                const key = d.toDateString();
+                buckets.push({ key, date: d, count: 0 });
             }
 
             (accounts || []).forEach(a => {
@@ -2658,13 +3187,13 @@
             });
 
             const maxVal = Math.max(1, ...buckets.map(b => b.count));
-            const padding = { top: 12, bottom: 28, left: 28, right: 16 };
+            const padding = { top: 12, bottom: 32, left: 28, right: 16 };
             const chartW = w - padding.left - padding.right;
             const chartH = h - padding.top - padding.bottom;
 
             ctx.clearRect(0, 0, w, h);
 
-            // grid lines
+            // Grid
             ctx.strokeStyle = 'rgba(255,255,255,0.04)';
             ctx.lineWidth = 1;
             for (let i = 0; i <= 4; i++) {
@@ -2682,6 +3211,7 @@
                     return { x, y, count: b.count };
                 });
 
+                // Gradient fill
                 const grad = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
                 grad.addColorStop(0, 'rgba(232,48,48,0.25)');
                 grad.addColorStop(1, 'rgba(232,48,48,0.01)');
@@ -2693,6 +3223,7 @@
                 ctx.fillStyle = grad;
                 ctx.fill();
 
+                // Line
                 ctx.beginPath();
                 points.forEach((p, i) => {
                     if (i === 0) ctx.moveTo(p.x, p.y);
@@ -2705,6 +3236,7 @@
                 ctx.stroke();
                 ctx.shadowBlur = 0;
 
+                // Dots
                 points.forEach(p => {
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
@@ -2719,13 +3251,25 @@
                     ctx.fillText(p.count, p.x, padding.top + chartH + 18);
                 });
 
-                const labels = buckets.map(b => b.date.toLocaleDateString('en', { weekday: 'short' }));
+                // X labels
+                const labels = buckets.map(b => {
+                    const d = b.date;
+                    return d.toLocaleDateString('en', { weekday: 'short' });
+                });
                 ctx.fillStyle = 'var(--text-muted)';
                 ctx.font = '9px Inter, sans-serif';
                 ctx.textAlign = 'center';
                 points.forEach((p, i) => {
                     ctx.fillText(labels[i], p.x, padding.top + chartH + 34);
                 });
+
+                // Y max label
+                ctx.fillStyle = 'var(--text-muted)';
+                ctx.font = '8px Inter, sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText(maxVal, padding.left - 4, padding.top + 4);
+                ctx.fillText('0', padding.left - 4, padding.top + chartH + 4);
+
             } else {
                 ctx.fillStyle = 'var(--text-muted)';
                 ctx.font = '12px Inter, sans-serif';
@@ -2734,12 +3278,12 @@
             }
         }
 
-        // chart range buttons
-        document.querySelectorAll('#chartRange button').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('#chartRange button').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                chartRange = parseInt(this.dataset.range);
+        // Chart filters
+        document.querySelectorAll('#chartFilters button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#chartFilters button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                chartRange = btn.dataset.range;
                 drawChart(allAccounts);
             });
         });
@@ -2774,22 +3318,22 @@
             const actions = document.getElementById('modalActions');
             actions.innerHTML = `
                     <button onclick="copyText('${escHtml(acc.username || '')}', 'Username')">
-                        <i data-lucide="copy" class="icon"></i> Copy Username
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copy User
                     </button>
                     <button onclick="copyText('${escHtml(String(acc.userId || ''))}', 'User ID')">
-                        <i data-lucide="copy" class="icon"></i> Copy ID
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copy ID
                     </button>
-                    <button onclick="copyText('https://www.roblox.com/users/${acc.userId}/profile', 'Profile URL')">
-                        <i data-lucide="link" class="icon"></i> Copy URL
+                    <button onclick="openProfile('${escHtml(String(acc.userId || ''))}')">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        Profile
                     </button>
-                    <button onclick="closeDetail()">
-                        <i data-lucide="x" class="icon"></i> Close
-                    </button>
+                    <button onclick="closeDetail()">✕ Close</button>
                 `;
 
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
-            refreshIcons();
         }
 
         function closeDetail() {
@@ -2812,27 +3356,6 @@
                 document.execCommand('copy');
                 document.body.removeChild(ta);
                 toast(`✅ ${label} copied!`, 'success');
-            });
-        }
-
-        // ============================================================
-        // COPY COOKIE
-        // ============================================================
-        function copyCookie(cookie) {
-            if (!cookie || cookie === 'No cookie' || cookie === '') {
-                toast('❌ No cookie to copy', 'error');
-                return;
-            }
-            navigator.clipboard.writeText(cookie).then(() => {
-                toast('✅ Cookie copied!', 'success');
-            }).catch(() => {
-                const ta = document.createElement('textarea');
-                ta.value = cookie;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                toast('✅ Cookie copied!', 'success');
             });
         }
 
@@ -2873,18 +3396,54 @@
         }
 
         // ============================================================
-        // LOGOUT
+        // NOTIFICATIONS
         // ============================================================
-        function logout() {
-            if (confirm('Logout?')) {
-                isLoggedIn = false;
-                appEl.classList.remove('visible');
-                loginPage.classList.remove('hidden');
-                sidebar.classList.remove('open');
-                overlay.classList.remove('show');
-                toast('Logged out', 'info');
+        function addNotification(message, type = 'info') {
+            notifs.unshift({ message, type, time: Date.now() });
+            if (notifs.length > 50) notifs.pop();
+            notifCount = notifs.length;
+            updateNotifBadge();
+            renderNotifs();
+        }
+
+        function updateNotifBadge() {
+            const badge = notifBadge;
+            if (notifCount > 0) {
+                badge.textContent = notifCount > 99 ? '99+' : notifCount;
+                badge.classList.add('show');
+            } else {
+                badge.classList.remove('show');
             }
         }
+
+        function renderNotifs() {
+            if (notifs.length === 0) {
+                notifList.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+                return;
+            }
+            notifList.innerHTML = notifs.slice(0, 20).map(n => `
+                    <div class="notif-item">
+                        <span class="dot"></span>
+                        <span class="content"><strong>${escHtml(n.message)}</strong></span>
+                        <span class="time">${timeAgo(new Date(n.time))}</span>
+                    </div>
+                `).join('');
+        }
+
+        function markAllRead() {
+            notifs = [];
+            notifCount = 0;
+            updateNotifBadge();
+            renderNotifs();
+            toast('All notifications cleared', 'info');
+        }
+
+        // Auto-add sample notification on load
+        setTimeout(() => {
+            if (isLoggedIn) {
+                addNotification('Dashboard ready', 'info');
+            }
+        }, 1500);
 
         // ============================================================
         // TOAST SYSTEM
@@ -2892,20 +3451,25 @@
         function toast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const el = document.createElement('div');
-            const iconMap = {
+            const icons = {
                 success: 'check-circle',
                 error: 'alert-circle',
-                info: 'info'
+                info: 'info',
             };
+            const iconMap = {
+                'check-circle': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+                'alert-circle': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+                'info': `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+            };
+            const iconName = icons[type] || 'info';
             el.className = `toast ${type}`;
             el.innerHTML = `
-                    <i data-lucide="${iconMap[type] || 'info'}" class="icon"></i>
+                    <span class="icon">${iconMap[iconName] || iconMap.info}</span>
                     <span class="msg">${message}</span>
                 `;
             container.appendChild(el);
             requestAnimationFrame(() => {
                 el.classList.add('show');
-                refreshIcons();
             });
             setTimeout(() => {
                 el.classList.remove('show');
@@ -2942,24 +3506,19 @@
         }
 
         // ============================================================
-        // WINDOW RESIZE
+        // WINDOW RESIZE — redraw chart
         // ============================================================
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => drawChart(allAccounts), 200);
+            resizeTimer = setTimeout(() => {
+                if (isLoggedIn) drawChart(allAccounts);
+            }, 200);
         });
 
         // ============================================================
-        // KEYBOARD
+        // KEYBOARD: ESC already handled
         // ============================================================
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeDetail();
-                if (sidebar.classList.contains('open')) toggleSidebar(false);
-                notifPanel.classList.remove('show');
-            }
-        });
 
         // ============================================================
         // INIT
@@ -2967,13 +3526,27 @@
         console.log('✦ BloxCracker Dashboard v2 · Premium UI');
         console.log('📡 API:', API_URL);
 
+        // Start galaxy background (for login page)
+        galaxyInstance = initGalaxy();
+
+        // Show login page by default
+        loginPage.style.display = 'flex';
+        loginPage.classList.remove('hide');
+        app.classList.remove('show');
+
+        // Auto-login for demo? No, wait for user input.
+
+        // Hide loading screen after a moment even if not logged in
+        setTimeout(() => {
+            hideLoading();
+        }, 1200);
+
         // Override alert
         window.alert = function(msg) {
             toast(msg, 'info');
         };
 
-        // Initial icon render
-        setTimeout(refreshIcons, 300);
+        console.log('🔐 Login with: Rama / Rama');
     </script>
 </body>
 </html>
