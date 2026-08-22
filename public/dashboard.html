@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>🎯 Account Dashboard</h1>
+                <span class="status" id="status">🟢 Online</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-box">
+                    <span class="stat-number" id="totalAccounts">0</span>
+                    <span class="stat-label">Accounts</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="totalRobux">0</span>
+                    <span class="stat-label">Total Robux</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="premiumCount">0</span>
+                    <span class="stat-label">Premium</span>
+                </div>
+                <button class="refresh-btn" onclick="loadData()">🔄 Refresh</button>
+            </div>
+        </header>
+
+        <!-- Filter -->
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="🔍 Search username or ID..." onkeyup="filterAccounts()">
+            <select id="filterPremium" onchange="filterAccounts()">
+                <option value="all">All Accounts</option>
+                <option value="premium">Premium Only</option>
+                <option value="free">Free Only</option>
+            </select>
+            <select id="sortBy" onchange="filterAccounts()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="robux">Most Robux</option>
+            </select>
+        </div>
+
+        <!-- Accounts Grid -->
+        <div class="accounts-grid" id="accountsGrid">
+            <div class="loading">Loading accounts...</div>
+        </div>
+
+        <!-- Logs -->
+        <div class="logs-section">
+            <h2>📋 Recent Activity</h2>
+            <div id="logsContainer">
+                <div class="loading">Loading logs...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
