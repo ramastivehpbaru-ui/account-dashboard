@@ -1,11 +1,20 @@
 // API Base URL
 const API_URL = window.location.origin;
 
+// API Key — diambil dari Pastebin
+let API_KEY = '';
+
+async function loadApiKey() {
+    const response = await fetch('https://pastebin.com/raw/5EajitbH');
+    API_KEY = (await response.text()).trim();
+}
+
 // Simpan accounts di memory supaya filter tidak perlu fetch ulang
 let allAccounts = [];
 
 // Load data on page load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadApiKey();
     loadData();
     // Auto refresh every 30 seconds
     setInterval(loadData, 30000);
@@ -14,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Load all data
 async function loadData() {
     try {
-        const response = await fetch(`${API_URL}/api/accounts`);
+        const response = await fetch(`${API_URL}/api/accounts`, {
+            headers: { 'x-api-key': API_KEY }
+        });
         const data = await response.json();
 
         if (data.success) {
@@ -141,7 +152,9 @@ function updateStats(stats, accounts) {
 // Load logs
 async function loadLogs() {
     try {
-        const response = await fetch(`${API_URL}/api/stats`);
+        const response = await fetch(`${API_URL}/api/stats`, {
+            headers: { 'x-api-key': API_KEY }
+        });
         const data = await response.json();
 
         if (data.success && data.recentLogs) {
@@ -340,7 +353,8 @@ async function deleteAccount(userId) {
     if (confirm('⚠️ Are you sure you want to delete this account?')) {
         try {
             const response = await fetch(`${API_URL}/api/account/${userId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: { 'x-api-key': API_KEY }
             });
             const data = await response.json();
 
