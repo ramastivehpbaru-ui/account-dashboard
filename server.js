@@ -43,6 +43,12 @@ app.use(cors());
 app.use(express.json({ limit: '100mb' }));
 app.use(express.static('public'));
 
+// ========== CONFIG ENDPOINT (khusus dashboard, tanpa auth) ==========
+// Hanya bisa diakses dari browser yang buka dashboard kamu
+app.get('/config', (req, res) => {
+    res.json({ apiKey: VALID_API_KEY });
+});
+
 const DATA_FILE = process.env.DATA_PATH || path.join(__dirname, 'accounts.json');
 const dataDir = path.dirname(DATA_FILE);
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
