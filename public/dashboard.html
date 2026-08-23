@@ -2311,15 +2311,15 @@
         }
 
         .account-card .view-details-btn {
-            padding: 7px 12px;
-            background: rgba(0, 212, 255, 0.08);
-            border: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 7px 14px;
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.3);
             border-radius: var(--radius-sm);
             color: var(--accent-cyan);
             cursor: pointer;
             transition: all var(--transition-base);
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             font-family: var(--font-family);
             display: flex;
             align-items: center;
@@ -2329,8 +2329,10 @@
         }
 
         .account-card .view-details-btn:hover {
-            background: rgba(0, 212, 255, 0.15);
-            box-shadow: var(--shadow-glow-cyan);
+            background: rgba(0, 212, 255, 0.25);
+            box-shadow: 0 0 20px var(--accent-cyan-glow);
+            border-color: var(--accent-cyan);
+            transform: scale(1.02);
         }
 
         .account-card .view-details-btn svg {
@@ -2426,6 +2428,35 @@
             font-size: 11px;
             color: var(--success);
             white-space: nowrap;
+        }
+
+        .account-list-item .view-details-btn {
+            padding: 5px 10px;
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: var(--radius-sm);
+            color: var(--accent-cyan);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 12px;
+            font-weight: 500;
+            font-family: var(--font-family);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            height: 30px;
+        }
+
+        .account-list-item .view-details-btn:hover {
+            background: rgba(0, 212, 255, 0.25);
+            box-shadow: 0 0 16px var(--accent-cyan-glow);
+            border-color: var(--accent-cyan);
+        }
+
+        .account-list-item .view-details-btn svg {
+            width: 14px;
+            height: 14px;
         }
 
         /* tier styles for list view */
@@ -2737,13 +2768,61 @@
 
         .modal-actions {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-top: 16px;
+            flex-wrap: wrap;
         }
 
-        .modal-actions .btn {
+        .modal-actions .btn-profile {
             flex: 1;
+            padding: 10px 16px;
+            background: rgba(0, 212, 255, 0.12);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: var(--radius-md);
+            color: var(--accent-cyan);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font-family);
+            display: flex;
+            align-items: center;
             justify-content: center;
+            gap: 8px;
+            min-width: 120px;
+        }
+
+        .modal-actions .btn-profile:hover {
+            background: rgba(0, 212, 255, 0.25);
+            box-shadow: 0 0 24px var(--accent-cyan-glow);
+            border-color: var(--accent-cyan);
+            transform: translateY(-1px);
+        }
+
+        .modal-actions .btn-delete {
+            flex: 1;
+            padding: 10px 16px;
+            background: rgba(255, 59, 59, 0.12);
+            border: 1px solid rgba(255, 59, 59, 0.3);
+            border-radius: var(--radius-md);
+            color: var(--danger);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font-family);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 120px;
+        }
+
+        .modal-actions .btn-delete:hover {
+            background: rgba(255, 59, 59, 0.25);
+            box-shadow: 0 0 24px rgba(255, 59, 59, 0.3);
+            border-color: var(--danger);
+            transform: translateY(-1px);
         }
 
         /* ================================================================
@@ -3356,6 +3435,14 @@
             }
             .account-list-robux {
                 font-size: 12px;
+            }
+            .modal-actions {
+                flex-direction: column;
+            }
+            .modal-actions .btn-profile,
+            .modal-actions .btn-delete {
+                flex: none;
+                width: 100%;
             }
         }
 
@@ -4297,7 +4384,6 @@ SCRIPT
     let commandItems = [];
     let commandSelectedIndex = -1;
 
-    // ---- Avatar cache ----
     const avatarCache = new Map();
 
     // ================================================================
@@ -4550,9 +4636,7 @@ SCRIPT
     }
 
     function setupToggles() {
-        document.querySelectorAll('.toggle-switch').forEach(toggle => {
-            // preserve existing behavior
-        });
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {});
     }
 
     // ================================================================
@@ -5928,10 +6012,10 @@ SCRIPT
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button class="view-details-btn" onclick="openProfile('${escHtml(String(account.userId || ''))}')" style="flex:1; justify-content:center;">
+                    <button class="btn-profile" onclick="openProfile('${escHtml(String(account.userId || ''))}')">
                         <i data-lucide="external-link"></i> Open Profile
                     </button>
-                    <button class="refresh-button" onclick="deleteAccount('${escHtml(String(account.userId || ''))}')" style="flex:1; justify-content:center; background: rgba(255,59,59,0.1); border-color: rgba(255,59,59,0.3); color: var(--danger);">
+                    <button class="btn-delete" onclick="deleteAccount('${escHtml(String(account.userId || ''))}')">
                         <i data-lucide="trash-2"></i> Delete
                     </button>
                 </div>
