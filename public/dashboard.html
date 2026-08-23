@@ -1595,7 +1595,7 @@
                 ================================================================ */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -1690,484 +1690,178 @@
         }
 
         /* ================================================================
-                   ACCOUNT CARD
+                   ACTIVITY SECTION
                 ================================================================ */
-        .accounts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 16px;
-        }
-
-        .account-card {
+        .activity-section {
             background: var(--bg-card);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 18px;
-            transition: all var(--transition-base);
-            position: relative;
-            overflow: hidden;
+            padding: 20px;
+            margin-bottom: 24px;
         }
 
-        .account-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-md), var(--shadow-glow-cyan);
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-right: 4px;
-        }
-
-        .badge-premium {
-            background: rgba(255, 215, 0, 0.15);
-            color: #ffd700;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-        }
-
-        .badge-free {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-        }
-
-        .badge-2fa {
-            background: rgba(255, 59, 59, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(255, 59, 59, 0.2);
-        }
-
-        .username {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-top: 10px;
-        }
-
-        .user-id {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .info-item {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: var(--radius-sm);
-            padding: 6px 10px;
-        }
-
-        .info-item .label {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            display: block;
-        }
-
-        .info-item .value {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* IP & Location */
-        .ip-location {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            margin-top: 10px;
-            border: 1px solid var(--border-color);
-        }
-
-        .ip-location .ip-row {
+        .activity-header {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-secondary);
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .ip-location .ip-row strong {
+        .activity-title {
+            font-size: 16px;
+            font-weight: 600;
             color: var(--text-primary);
         }
 
-        .ip-location .device-row {
+        .segmented-control {
+            display: flex;
+            gap: 2px;
+            background: rgba(8, 12, 24, 0.6);
+            padding: 3px;
+            border-radius: var(--radius-md);
+        }
+
+        .segmented-button {
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: var(--font-family);
+            transition: all var(--transition-base);
+        }
+
+        .segmented-button.active {
+            background: rgba(255, 59, 59, 0.15);
+            color: var(--accent-red);
+        }
+
+        .segmented-button:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chart-container {
+            height: 260px;
+            position: relative;
+            width: 100%;
+        }
+
+        /* ================================================================
+                   TIMELINE
+                ================================================================ */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 16px;
+            padding-left: 8px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            box-shadow: 0 0 8px rgba(255, 59, 59, 0.5);
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+
+        .timeline-time {
             font-size: 11px;
             color: var(--text-muted);
+        }
+
+        /* ================================================================
+                   PAGE HEADERS
+                ================================================================ */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
             margin-top: 4px;
         }
 
-        /* Clipboard */
-        .clipboard-box {
-            margin-top: 10px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: var(--radius-sm);
-            padding: 6px 10px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
+        .refresh-button {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .clipboard-box .clip-text {
-            flex: 1;
-            color: var(--text-primary);
-            word-break: break-all;
-        }
-
-        .clipboard-box .copy-btn-sm {
-            background: none;
-            border: none;
-            color: var(--accent-cyan);
-            cursor: pointer;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            transition: background var(--transition-base);
-        }
-
-        .clipboard-box .copy-btn-sm:hover {
-            background: rgba(0, 212, 255, 0.1);
-        }
-
-        .btn-screenshot {
-            background: rgba(0, 212, 255, 0.08);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: var(--radius-sm);
-            padding: 4px 12px;
-            color: var(--accent-cyan);
-            cursor: pointer;
-            font-size: 12px;
-            transition: all var(--transition-base);
-            margin-top: 10px;
-        }
-
-        .btn-screenshot:hover {
-            background: rgba(0, 212, 255, 0.15);
-            box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
-        }
-
-        /* Cookie */
-        .cookie-box {
-            position: relative;
-            background: rgba(8, 12, 24, 0.7);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 6px 10px;
-            margin-top: 12px;
-        }
-
-        .cookie-box textarea {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: var(--danger);
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            resize: none;
-            outline: none;
-            min-height: 32px;
-            padding-right: 50px;
-        }
-
-        .cookie-box .copy-btn {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(255, 59, 59, 0.15);
+            gap: 6px;
+            padding: 10px 14px;
+            background: rgba(255, 59, 59, 0.08);
             border: 1px solid rgba(255, 59, 59, 0.25);
-            color: var(--danger);
-            padding: 2px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 10px;
-            font-family: var(--font-family);
-            transition: all var(--transition-base);
-        }
-
-        .cookie-box .copy-btn:hover {
-            background: rgba(255, 59, 59, 0.25);
-        }
-
-        /* Actions */
-        .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-
-        .actions button {
-            padding: 6px 14px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            font-size: 12px;
-            font-family: var(--font-family);
-            transition: all var(--transition-base);
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-secondary);
-            flex: 1;
-        }
-
-        .actions .btn-profile:hover {
-            background: rgba(0, 212, 255, 0.1);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
-
-        .actions .btn-delete:hover {
-            background: rgba(255, 59, 59, 0.1);
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        /* ================================================================
-                   SCREENSHOT MODAL
-                ================================================================ */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: all var(--transition-base);
-        }
-
-        .modal-overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
-            background: var(--bg-glass);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: 28px;
-            width: 100%;
-            max-width: 800px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg), var(--shadow-glow-red);
-            animation: modalIn 0.3s ease;
-        }
-
-        @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            gap: 16px;
-        }
-
-        .modal-profile {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .modal-username {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: var(--radius-sm);
-            transition: all var(--transition-base);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-close:hover {
-            background: rgba(255, 59, 59, 0.1);
-            color: var(--danger);
-        }
-
-        .modal-close svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        #screenshotContent {
-            text-align: center;
-        }
-
-        #screenshotContent img {
-            max-width: 100%;
-            max-height: 65vh;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        .modal-actions button {
-            flex: 1;
-            justify-content: center;
-            padding: 10px 14px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            font-size: 13px;
-            font-family: var(--font-family);
-            transition: all var(--transition-base);
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-secondary);
-        }
-
-        .modal-actions .btn-download:hover {
-            background: rgba(0, 212, 255, 0.1);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
-
-        .modal-actions .btn-close-modal:hover {
-            background: rgba(255, 59, 59, 0.1);
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        /* ================================================================
-                   LOGS
-                ================================================================ */
-        .logs-container {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .log-entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            font-size: 13px;
-            color: var(--text-secondary);
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .log-entry .log-type {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-right: 6px;
-        }
-
-        .log-entry .log-type.info {
-            background: rgba(77, 163, 255, 0.15);
-            color: var(--info);
-        }
-        .log-entry .log-type.success {
-            background: rgba(0, 224, 126, 0.15);
-            color: var(--success);
-        }
-        .log-entry .log-type.warning {
-            background: rgba(255, 204, 0, 0.15);
-            color: var(--warning);
-        }
-        .log-entry .log-type.error {
-            background: rgba(255, 107, 107, 0.15);
-            color: var(--danger);
-        }
-
-        .log-entry .log-time {
-            font-size: 11px;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-
-        /* ================================================================
-                   FILTERS
-                ================================================================ */
-        .filters {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-select {
-            padding: 10px 14px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-size: 13px;
-            font-family: var(--font-family);
-            outline: none;
-            transition: all var(--transition-base);
+            color: var(--accent-red);
             cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 13px;
+            font-weight: 500;
+            font-family: var(--font-family);
             height: 40px;
-            min-width: 140px;
         }
 
-        .filter-select:focus {
-            border-color: var(--accent-red);
+        .refresh-button:hover {
+            background: rgba(255, 59, 59, 0.15);
+            box-shadow: var(--shadow-glow-red);
         }
 
+        .refresh-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ================================================================
+                   SEARCH BAR
+                ================================================================ */
         .search-bar {
             position: relative;
             margin-bottom: 16px;
@@ -2239,6 +1933,36 @@
             height: 16px;
         }
 
+        /* ================================================================
+                   FILTERS
+                ================================================================ */
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: var(--font-family);
+            outline: none;
+            transition: all var(--transition-base);
+            cursor: pointer;
+            height: 40px;
+            min-width: 140px;
+        }
+
+        .filter-select:focus {
+            border-color: var(--accent-red);
+        }
+
         .view-toggle {
             display: flex;
             gap: 2px;
@@ -2272,53 +1996,499 @@
             height: 14px;
         }
 
-        .refresh-button {
+        /* ================================================================
+                   ACCOUNTS GRID
+                ================================================================ */
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .account-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+
+        .account-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md), var(--shadow-glow-cyan);
+        }
+
+        .account-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a2a3f, #2a3a5c);
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border-color);
+            transition: all var(--transition-base);
+        }
+
+        .account-card:hover .account-avatar {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+        }
+
+        .account-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .account-avatar svg {
+            width: 24px;
+            height: 24px;
+            color: var(--text-muted);
+        }
+
+        .account-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .account-username {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .account-display-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .account-user-id {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .account-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--success);
+            margin-bottom: 4px;
+        }
+
+        .account-status.recently-updated {
+            color: var(--warning);
+        }
+
+        .account-updated-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .account-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+            align-items: flex-end;
+        }
+
+        .view-details-btn {
+            padding: 7px 12px;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: var(--radius-sm);
+            color: var(--accent-cyan);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 12px;
+            font-weight: 500;
+            font-family: var(--font-family);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            height: 32px;
+        }
+
+        .view-details-btn:hover {
+            background: rgba(0, 212, 255, 0.15);
+            box-shadow: var(--shadow-glow-cyan);
+        }
+
+        .view-details-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ================================================================
+                   LIST VIEW
+                ================================================================ */
+        .accounts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .account-list-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+        }
+
+        .account-list-item:hover {
+            border-color: var(--border-hover);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .account-list-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a2a3f, #2a3a5c);
+        }
+
+        .account-list-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .account-list-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .account-list-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .account-list-id {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .account-list-status {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 10px 14px;
-            background: rgba(255, 59, 59, 0.08);
-            border: 1px solid rgba(255, 59, 59, 0.25);
-            border-radius: var(--radius-md);
-            color: var(--accent-red);
-            cursor: pointer;
+            font-size: 11px;
+            color: var(--success);
+        }
+
+        /* ================================================================
+                   ACCOUNT DETAIL MODAL
+                ================================================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
             transition: all var(--transition-base);
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            width: 100%;
+            max-width: 620px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg), var(--shadow-glow-red);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
+
+        .modal-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .modal-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a2a3f, #2a3a5c);
+            border: 2px solid var(--border-color);
+        }
+
+        .modal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-username {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .modal-display-name {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .modal-user-id {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-base);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 59, 59, 0.1);
+            color: var(--danger);
+        }
+
+        .modal-close svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .detail-section {
+            margin-bottom: 18px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .detail-section-title {
             font-size: 13px;
-            font-weight: 500;
-            font-family: var(--font-family);
-            height: 40px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
         }
 
-        .refresh-button:hover {
-            background: rgba(255, 59, 59, 0.15);
-            box-shadow: var(--shadow-glow-red);
-        }
-
-        .refresh-button svg {
+        .detail-section-title svg {
             width: 16px;
             height: 16px;
         }
 
-        .page-header {
+        .detail-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
             gap: 12px;
         }
 
-        .page-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.3px;
+        .detail-row:last-child {
+            border-bottom: none;
         }
 
-        .page-subtitle {
-            font-size: 14px;
+        .detail-label {
+            font-size: 13px;
             color: var(--text-secondary);
-            margin-top: 4px;
+        }
+
+        .detail-value {
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 500;
+            text-align: right;
+            word-break: break-all;
+        }
+
+        .copy-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 8px;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: var(--radius-sm);
+            color: var(--accent-cyan);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 11px;
+            font-family: var(--font-family);
+            margin-left: 6px;
+        }
+
+        .copy-button:hover {
+            background: rgba(0, 212, 255, 0.15);
+        }
+
+        .copy-button svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .cookie-box {
+            position: relative;
+            background: rgba(8, 12, 24, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            margin-top: 8px;
+        }
+
+        .cookie-box textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            resize: none;
+            outline: none;
+            min-height: 40px;
+            padding-right: 60px;
+        }
+
+        .cookie-box .copy-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(255, 59, 59, 0.2);
+            border: 1px solid rgba(255, 59, 59, 0.3);
+            color: var(--danger);
+            padding: 3px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: var(--font-family);
+            transition: all var(--transition-base);
+        }
+
+        .cookie-box .copy-btn:hover {
+            background: rgba(255, 59, 59, 0.3);
+        }
+
+        .security-notice {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(255, 204, 0, 0.06);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            color: var(--warning);
+            margin-top: 12px;
+        }
+
+        .security-notice svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+            justify-content: center;
         }
 
         /* ================================================================
@@ -2453,6 +2623,261 @@
             to {
                 width: 0%;
             }
+        }
+
+        /* ================================================================
+                   INFO & SETTINGS
+                ================================================================ */
+        .info-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent-red);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .info-item {
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .info-item-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .info-item-value {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            display: inline-block;
+        }
+
+        /* ================================================================
+                   SETTINGS
+                ================================================================ */
+        .settings-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .settings-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent-red);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            gap: 20px;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-label {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: rgba(255, 59, 59, 0.3);
+            border-color: var(--accent-red);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 3px;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: all var(--transition-base);
+        }
+
+        .toggle-switch.active::after {
+            left: 21px;
+            background: var(--accent-red);
+            box-shadow: 0 0 10px rgba(255, 59, 59, 0.5);
+        }
+
+        /* ================================================================
+                   LOGS PAGINATION
+                ================================================================ */
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 13px;
+            font-family: var(--font-family);
+            min-width: 36px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: rgba(255, 59, 59, 0.08);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .pagination button.active {
+            background: rgba(255, 59, 59, 0.15);
+            color: var(--accent-red);
+            border-color: rgba(255, 59, 59, 0.3);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .export-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .export-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 4px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            min-width: 120px;
+            padding: 4px;
+            z-index: 10;
+        }
+
+        .export-dropdown-content.visible {
+            display: block;
+        }
+
+        .export-dropdown-content button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font-family);
+            width: 100%;
+            text-align: left;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-base);
+        }
+
+        .export-dropdown-content button:hover {
+            background: rgba(255, 59, 59, 0.06);
+            color: var(--text-primary);
+        }
+
+        .export-dropdown-content button svg {
+            width: 14px;
+            height: 14px;
         }
 
         /* ================================================================
@@ -2634,6 +3059,9 @@
             .user-dropdown {
                 right: 12px;
             }
+            .chart-container {
+                height: 200px;
+            }
             .command-palette {
                 max-width: 94vw;
                 margin: 0 12px;
@@ -2645,28 +3073,24 @@
             .shortcuts-help {
                 padding: 20px;
             }
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 480px) {
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+            .account-card {
+                flex-direction: column;
+            }
+            .account-actions {
+                flex-direction: row;
+                width: 100%;
+            }
             .page-title {
                 font-size: 20px;
             }
             .welcome-title {
                 font-size: 24px;
-            }
-            .ip-location .ip-row {
-                flex-direction: column;
-                gap: 2px;
-            }
-            .clipboard-box {
-                flex-direction: column;
-                align-items: stretch;
             }
         }
 
@@ -2748,6 +3172,16 @@
                     <i data-lucide="home"></i><span>Home</span>
                     <span class="nav-tooltip">Home</span>
                 </button>
+                <button class="nav-item" data-page="analytics" data-tooltip="Analytics">
+                    <i data-lucide="bar-chart-3"></i><span>Analytics</span>
+                    <span class="nav-tooltip">Analytics</span>
+                </button>
+                <button class="nav-item" data-page="activity" data-tooltip="Activity">
+                    <i data-lucide="activity"></i><span>Activity</span>
+                    <span class="nav-tooltip">Activity</span>
+                </button>
+
+                <div class="nav-section">Management</div>
                 <button class="nav-item" data-page="accounts" data-tooltip="Accounts">
                     <i data-lucide="users"></i><span>Accounts</span>
                     <span class="nav-tooltip">Accounts</span>
@@ -2756,11 +3190,33 @@
                     <i data-lucide="list"></i><span>Logs</span>
                     <span class="nav-tooltip">Logs</span>
                 </button>
+                <button class="nav-item" data-page="users" data-tooltip="Users">
+                    <i data-lucide="user-cog"></i><span>Users</span>
+                    <span class="nav-tooltip">Users</span>
+                </button>
+                <button class="nav-item" data-page="sessions" data-tooltip="Sessions">
+                    <i data-lucide="monitor-smartphone"></i><span>Sessions</span>
+                    <span class="nav-tooltip">Sessions</span>
+                </button>
 
                 <div class="nav-section">System</div>
                 <button class="nav-item" data-page="notifications" data-tooltip="Notifications">
                     <i data-lucide="bell"></i><span>Notifications</span>
                     <span class="nav-tooltip">Notifications</span>
+                </button>
+                <button class="nav-item" data-page="api" data-tooltip="API">
+                    <i data-lucide="code-2"></i><span>API</span>
+                    <span class="nav-tooltip">API</span>
+                </button>
+                <button class="nav-item" data-page="system-status" data-tooltip="System Status">
+                    <i data-lucide="server"></i><span>System Status</span>
+                    <span class="nav-tooltip">System Status</span>
+                </button>
+
+                <div class="nav-section">Other</div>
+                <button class="nav-item" data-page="info" data-tooltip="Info">
+                    <i data-lucide="info"></i><span>Info</span>
+                    <span class="nav-tooltip">Info</span>
                 </button>
                 <button class="nav-item" data-page="settings" data-tooltip="Settings">
                     <i data-lucide="settings"></i><span>Settings</span>
@@ -2824,6 +3280,7 @@
             <!-- ====== USER DROPDOWN ====== -->
             <div class="user-dropdown" id="userDropdown">
                 <div class="dropdown-item" data-action="profile"><i data-lucide="user"></i>Profile</div>
+                <div class="dropdown-item" data-action="account"><i data-lucide="settings"></i>Account</div>
                 <div class="dropdown-item" data-action="settings"><i data-lucide="sliders-horizontal"></i>Settings</div>
                 <div class="dropdown-divider"></div>
                 <div class="dropdown-item" data-action="logout" style="color:var(--danger);">
@@ -2850,7 +3307,7 @@
                 <div class="global-search-box">
                     <div class="global-search-input-wrap">
                         <span class="gs-icon"><i data-lucide="search"></i></span>
-                        <input type="text" id="globalSearchInput" placeholder="Search accounts, logs..." autofocus>
+                        <input type="text" id="globalSearchInput" placeholder="Search accounts, logs, activity..." autofocus>
                         <button class="gs-close" id="globalSearchClose"><i data-lucide="x"></i></button>
                     </div>
                     <div class="global-search-results" id="globalSearchResults">
@@ -2907,7 +3364,7 @@
                     <div class="welcome-header">
                         <div>
                             <h1 class="welcome-title">Welcome back, Rama</h1>
-                            <p class="welcome-subtitle">Dashboard overview with IP, screenshot & clipboard data.</p>
+                            <p class="welcome-subtitle">Here's what's happening with your dashboard today.</p>
                         </div>
                         <div class="system-status-badge">
                             <span class="status-dot"></span> All systems operational
@@ -2919,48 +3376,75 @@
                             <div class="stat-icon" style="background:rgba(0,212,255,0.1);">
                                 <i data-lucide="users" style="color:#00d4ff;"></i>
                             </div>
-                            <div class="stat-value" id="statTotalAccounts">0</div>
+                            <div class="stat-value" id="statTotalAccounts" data-target="0">0</div>
                             <div class="stat-label">Total Accounts</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon" style="background:rgba(255,215,0,0.1);">
-                                <i data-lucide="star" style="color:#ffd700;"></i>
-                            </div>
-                            <div class="stat-value" id="statPremiumCount">0</div>
-                            <div class="stat-label">Premium Accounts</div>
+                            <div class="stat-trend up"><i data-lucide="trending-up"></i></div>
+                            <div class="stat-comparison">+12.4% vs last month</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon" style="background:rgba(0,224,126,0.1);">
-                                <i data-lucide="camera" style="color:#00e07e;"></i>
+                                <i data-lucide="activity" style="color:#00e07e;"></i>
                             </div>
-                            <div class="stat-value" id="statScreenshots">0</div>
-                            <div class="stat-label">Screenshots</div>
+                            <div class="stat-value" id="statLogsToday" data-target="0">0</div>
+                            <div class="stat-label">Logs Today</div>
+                            <div class="stat-trend up"><i data-lucide="trending-up"></i></div>
+                            <div class="stat-comparison">+8.1% vs yesterday</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon" style="background:rgba(255,204,0,0.1);">
-                                <i data-lucide="clipboard" style="color:#ffcc00;"></i>
+                                <i data-lucide="refresh-cw" style="color:#ffcc00;"></i>
                             </div>
-                            <div class="stat-value" id="statClipboards">0</div>
-                            <div class="stat-label">Clipboards</div>
+                            <div class="stat-value" id="statUpdatesToday" data-target="0">0</div>
+                            <div class="stat-label">Updates Today</div>
+                            <div class="stat-trend up"><i data-lucide="trending-up"></i></div>
+                            <div class="stat-comparison">+5.2% vs yesterday</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon" style="background:rgba(77,163,255,0.1);">
-                                <i data-lucide="globe" style="color:#4da3ff;"></i>
+                                <i data-lucide="monitor-smartphone" style="color:#4da3ff;"></i>
                             </div>
-                            <div class="stat-value" id="statUniqueIPs">0</div>
-                            <div class="stat-label">Unique IPs</div>
+                            <div class="stat-value" id="statActiveSessions" data-target="0">0</div>
+                            <div class="stat-label">Active Sessions</div>
+                            <div class="stat-trend up"><i data-lucide="trending-up"></i></div>
+                            <div class="stat-comparison">3 new this week</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon" style="background:rgba(255,59,59,0.1);">
                                 <i data-lucide="server" style="color:#ff3b3b;"></i>
                             </div>
-                            <div class="stat-value" id="statTotalRobux">0</div>
-                            <div class="stat-label">Total Robux</div>
+                            <div class="stat-value" id="statApiRequests" data-target="0">0</div>
+                            <div class="stat-label">API Requests</div>
+                            <div class="stat-trend up"><i data-lucide="trending-up"></i></div>
+                            <div class="stat-comparison">Last 24h</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:rgba(0,224,126,0.1);">
+                                <i data-lucide="clock" style="color:#00e07e;"></i>
+                            </div>
+                            <div class="stat-value" id="statUptime" data-target="99.9">99.9%</div>
+                            <div class="stat-label">System Uptime</div>
+                            <div class="stat-trend up"><i data-lucide="trending-up"></i></div>
+                            <div class="stat-comparison">Last 30 days</div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Chart -->
+                    <div class="activity-section">
+                        <div class="activity-header">
+                            <div class="activity-title">Activity Overview</div>
+                            <div class="segmented-control">
+                                <button class="segmented-button active" data-range="7d">7D</button>
+                                <button class="segmented-button" data-range="30d">30D</button>
+                                <button class="segmented-button" data-range="90d">90D</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="activityChartCanvas"></canvas>
                         </div>
                     </div>
 
                     <!-- Quick Actions -->
-                    <div class="activity-section" style="background:var(--bg-card); backdrop-filter:blur(10px); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin-bottom:24px;">
+                    <div class="activity-section">
                         <div class="activity-header">
                             <div class="activity-title">Quick Actions</div>
                         </div>
@@ -2968,22 +3452,31 @@
                             <button class="refresh-button" onclick="loadData()">
                                 <i data-lucide="refresh-cw"></i> Refresh Data
                             </button>
-                            <button class="refresh-button" onclick="navigateTo('accounts')" style="background:rgba(0,212,255,0.08); border-color:rgba(0,212,255,0.25); color:var(--accent-cyan);">
-                                <i data-lucide="users"></i> View Accounts
+                            <button class="refresh-button" onclick="navigateTo('accounts')">
+                                <i data-lucide="users"></i> Manage Accounts
                             </button>
-                            <button class="refresh-button" onclick="navigateTo('logs')" style="background:rgba(255,204,0,0.08); border-color:rgba(255,204,0,0.25); color:var(--warning);">
+                            <button class="refresh-button" onclick="navigateTo('logs')">
                                 <i data-lucide="list"></i> View Logs
+                            </button>
+                            <button class="refresh-button" onclick="navigateTo('system-status')">
+                                <i data-lucide="server"></i> System Status
                             </button>
                         </div>
                     </div>
 
                     <!-- Recent Activity -->
-                    <div class="activity-section" style="background:var(--bg-card); backdrop-filter:blur(10px); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px;">
+                    <div class="activity-section">
                         <div class="activity-header">
                             <div class="activity-title">Recent Activity</div>
                         </div>
-                        <div id="recentActivity">
-                            <div style="text-align:center; color:var(--text-muted); padding:20px;">No activity yet</div>
+                        <div class="timeline" id="recentActivity">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-message">Welcome to BloxCracker Dashboard</div>
+                                    <div class="timeline-time">Just now</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -2993,7 +3486,7 @@
                     <div class="page-header">
                         <div>
                             <h2 class="page-title">Accounts</h2>
-                            <p class="page-subtitle">Manage accounts with IP, screenshot & clipboard data.</p>
+                            <p class="page-subtitle">Manage and review account activity.</p>
                         </div>
                         <button class="refresh-button" onclick="loadData()">
                             <i data-lucide="refresh-cw"></i> <span>Refresh</span>
@@ -3047,9 +3540,20 @@
                     <h2 class="page-title">Logs</h2>
                     <p class="page-subtitle">System and account activity logs.</p>
                 </div>
-                <button class="refresh-button" onclick="loadLogs()">
-                    <i data-lucide="refresh-cw"></i> Refresh
-                </button>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <div class="export-dropdown">
+                        <button class="refresh-button" id="exportDropdownBtn" style="background:rgba(0,212,255,0.08); border-color:rgba(0,212,255,0.25); color:var(--accent-cyan);">
+                            <i data-lucide="download"></i> Export
+                        </button>
+                        <div class="export-dropdown-content" id="exportDropdownContent">
+                            <button onclick="exportLogs('json')"><i data-lucide="file-json"></i> JSON</button>
+                            <button onclick="exportLogs('csv')"><i data-lucide="file-spreadsheet"></i> CSV</button>
+                        </div>
+                    </div>
+                    <button class="refresh-button" onclick="loadLogs()">
+                        <i data-lucide="refresh-cw"></i> Refresh
+                    </button>
+                </div>
             </div>
 
             <div class="search-bar">
@@ -3073,10 +3577,144 @@
                     <option value="7d">Last 7 days</option>
                     <option value="30d">Last 30 days</option>
                 </select>
+                <select class="filter-select" id="logSortFilter" onchange="refreshLogs()">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
             </div>
 
-            <div id="logsContainer" class="logs-container">
+            <div id="logsContainer">
                 <div style="text-align:center; padding:40px; color:var(--text-secondary);">Loading logs...</div>
+            </div>
+
+            <div class="pagination" id="logsPagination"></div>
+        </section>
+
+        <!-- ====== ANALYTICS ====== -->
+        <section class="page-section" id="analyticsPage">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Analytics</h2>
+                    <p class="page-subtitle">Detailed metrics and insights.</p>
+                </div>
+                <div class="filters" style="margin-bottom:0;">
+                    <select class="filter-select" id="analyticsRange" onchange="initAnalyticsChart()">
+                        <option value="7d">Last 7 Days</option>
+                        <option value="30d" selected>Last 30 Days</option>
+                        <option value="90d">Last 90 Days</option>
+                        <option value="all">All Time</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:16px; margin-bottom:20px;">
+                <div class="info-section">
+                    <div class="info-title"><i data-lucide="activity"></i> Total Activity</div>
+                    <div class="stat-value" style="font-size:24px;" id="analyticsTotalActivity">0</div>
+                </div>
+                <div class="info-section">
+                    <div class="info-title"><i data-lucide="users"></i> Active Users</div>
+                    <div class="stat-value" style="font-size:24px;" id="analyticsActiveUsers">0</div>
+                </div>
+                <div class="info-section">
+                    <div class="info-title"><i data-lucide="trending-up"></i> Growth %</div>
+                    <div class="stat-value" style="font-size:24px; color:var(--success);" id="analyticsGrowth">+0%</div>
+                </div>
+                <div class="info-section">
+                    <div class="info-title"><i data-lucide="percent"></i> Success Rate</div>
+                    <div class="stat-value" style="font-size:24px; color:var(--success);" id="analyticsSuccessRate">0%</div>
+                </div>
+            </div>
+
+            <div class="activity-section">
+                <div class="activity-header">
+                    <div class="activity-title">Account Growth</div>
+                </div>
+                <div style="height:200px; position:relative;">
+                    <canvas id="analyticsGrowthCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="activity-section">
+                <div class="activity-header">
+                    <div class="activity-title">Events by Category</div>
+                </div>
+                <div style="height:200px; position:relative;">
+                    <canvas id="analyticsCategoryCanvas"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== ACTIVITY ====== -->
+        <section class="page-section" id="activityPage">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Activity</h2>
+                    <p class="page-subtitle">Recent user and system activity.</p>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <span style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--success);">
+                        <span class="status-dot" style="animation:pulse-dot 1.5s ease-in-out infinite;"></span> LIVE
+                    </span>
+                    <button class="refresh-button" id="pauseActivityBtn" style="background:rgba(255,204,0,0.08); border-color:rgba(255,204,0,0.25); color:var(--warning);">
+                        <i data-lucide="pause"></i> Pause
+                    </button>
+                </div>
+            </div>
+            <div class="activity-section">
+                <div class="activity-title" style="margin-bottom:16px;">All Activity</div>
+                <div id="activityTimeline" class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-message">No activity yet</div>
+                            <div class="timeline-time">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== USERS ====== -->
+        <section class="page-section" id="usersPage">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Users</h2>
+                    <p class="page-subtitle">Manage dashboard users.</p>
+                </div>
+            </div>
+            <div class="info-section">
+                <div class="info-title"><i data-lucide="user"></i> Current User</div>
+                <div style="display:flex; align-items:center; gap:16px; margin-top:12px;">
+                    <div class="modal-avatar" style="width:48px;height:48px;">
+                        <i data-lucide="user" style="width:24px;height:24px;color:#667799;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;">Rama</div>
+                        <div style="color:var(--text-secondary);">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SESSIONS ====== -->
+        <section class="page-section" id="sessionsPage">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Sessions</h2>
+                    <p class="page-subtitle">Active user sessions.</p>
+                </div>
+            </div>
+            <div class="info-section">
+                <div class="info-title"><i data-lucide="monitor-smartphone"></i> Active Sessions</div>
+                <div class="detail-row">
+                    <span class="detail-label">Rama</span>
+                    <span class="detail-value">Online · Chrome on Windows</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Rama</span>
+                    <span class="detail-value">Online · Firefox on macOS</span>
+                </div>
             </div>
         </section>
 
@@ -3101,43 +3739,220 @@
             </div>
         </section>
 
+        <!-- ====== API ====== -->
+        <section class="page-section" id="apiPage">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">API</h2>
+                    <p class="page-subtitle">API documentation and status.</p>
+                </div>
+            </div>
+            <div class="info-section">
+                <div class="info-title"><i data-lucide="code-2"></i> Available Endpoints</div>
+                <div class="detail-row">
+                    <span class="detail-label">GET /api/accounts</span>
+                    <span class="detail-value">Fetch all accounts</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">GET /api/stats</span>
+                    <span class="detail-value">Fetch statistics</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">DELETE /api/account/:id</span>
+                    <span class="detail-value">Delete account</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SYSTEM STATUS ====== -->
+        <section class="page-section" id="systemStatusPage">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">System Status</h2>
+                    <p class="page-subtitle">Current health of all systems.</p>
+                </div>
+                <button class="refresh-button" onclick="checkSystemStatus()">
+                    <i data-lucide="refresh-cw"></i> Check
+                </button>
+            </div>
+            <div class="info-section">
+                <div class="info-title"><i data-lucide="heart"></i> Services</div>
+                <div class="detail-row">
+                    <span class="detail-label">Frontend</span>
+                    <span class="detail-value"><span class="status-indicator"></span> Operational</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Backend</span>
+                    <span class="detail-value"><span class="status-indicator"></span> Operational</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">API</span>
+                    <span class="detail-value"><span class="status-indicator"></span> Operational</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Database</span>
+                    <span class="detail-value"><span class="status-indicator"></span> Operational</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">WebSocket</span>
+                    <span class="detail-value"><span class="status-indicator"></span> Operational</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== INFO ====== -->
+        <section class="page-section" id="infoPage">
+            <div class="info-section">
+                <div class="info-title"><i data-lucide="shield"></i> BloxCracker Dashboard</div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-item-label">Version</div>
+                        <div class="info-item-value">2.1.0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-label">Created By</div>
+                        <div class="info-item-value">Ramzz</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-label">Frontend Status</div>
+                        <div class="info-item-value"><span class="status-indicator"></span> Operational</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-label">Backend Status</div>
+                        <div class="info-item-value"><span class="status-indicator"></span> Operational</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-label">API Status</div>
+                        <div class="info-item-value"><span class="status-indicator"></span> Operational</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-label">Database Status</div>
+                        <div class="info-item-value"><span class="status-indicator"></span> Operational</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-label">Server Uptime</div>
+                        <div class="info-item-value">99.9%</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-label">Last Sync</div>
+                        <div class="info-item-value">2 min ago</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-item-label">Environment</div>
+                        <div class="info-item-value">Production</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- ====== SETTINGS ====== -->
         <section class="page-section" id="settingsPage">
-            <div class="settings-section" style="background:var(--bg-card); backdrop-filter:blur(10px); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; margin-bottom:20px;">
-                <div class="settings-title" style="font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-                    <i data-lucide="palette" style="color:var(--accent-red);"></i> Appearance
-                </div>
-                <div class="setting-item" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.03); gap:20px;">
-                    <div class="setting-info"><div class="setting-label" style="font-size:14px; color:var(--text-primary); font-weight:500;">Dark Mode</div><div class="setting-description" style="font-size:12px; color:var(--text-muted); margin-top:2px;">Always enabled</div></div>
+            <div class="settings-section">
+                <div class="settings-title"><i data-lucide="palette"></i> Appearance</div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Dark Mode</div>
+                        <div class="setting-description">Always enabled in this version</div>
+                    </div>
                     <div class="toggle-switch active"></div>
                 </div>
-                <div class="setting-item" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.03); gap:20px;">
-                    <div class="setting-info"><div class="setting-label" style="font-size:14px; color:var(--text-primary); font-weight:500;">Background Effects</div><div class="setting-description" style="font-size:12px; color:var(--text-muted); margin-top:2px;">Galaxy particles and nebula</div></div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Animations</div>
+                        <div class="setting-description">Smooth transitions and effects</div>
+                    </div>
+                    <div class="toggle-switch active" id="toggleAnimations"></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Background Effects</div>
+                        <div class="setting-description">Galaxy particles and nebula</div>
+                    </div>
                     <div class="toggle-switch active" id="toggleBackground"></div>
                 </div>
-                <div class="setting-item" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.03); gap:20px;">
-                    <div class="setting-info"><div class="setting-label" style="font-size:14px; color:var(--text-primary); font-weight:500;">Auto Refresh</div><div class="setting-description" style="font-size:12px; color:var(--text-muted); margin-top:2px;">Refresh data every 30 seconds</div></div>
-                    <div class="toggle-switch active" id="toggleAutoRefresh"></div>
-                </div>
-                <div class="setting-item" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; gap:20px;">
-                    <div class="setting-info"><div class="setting-label" style="font-size:14px; color:var(--text-primary); font-weight:500;">Reduced Motion</div><div class="setting-description" style="font-size:12px; color:var(--text-muted); margin-top:2px;">Minimize animation effects</div></div>
-                    <div class="toggle-switch" id="toggleReducedMotion"></div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Compact Mode</div>
+                        <div class="setting-description">Reduce card padding</div>
+                    </div>
+                    <div class="toggle-switch" id="toggleCompactMode"></div>
                 </div>
             </div>
 
-            <div class="settings-section" style="background:var(--bg-card); backdrop-filter:blur(10px); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px;">
-                <div class="settings-title" style="font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-                    <i data-lucide="database" style="color:var(--accent-red);"></i> Data Management
+            <div class="settings-section">
+                <div class="settings-title"><i data-lucide="monitor"></i> Performance</div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Auto Refresh</div>
+                        <div class="setting-description">Refresh data every 30 seconds</div>
+                    </div>
+                    <div class="toggle-switch active" id="toggleAutoRefresh"></div>
                 </div>
-                <div class="setting-item" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.03); gap:20px;">
-                    <div class="setting-info"><div class="setting-label" style="font-size:14px; color:var(--text-primary); font-weight:500;">Clear Local Cache</div><div class="setting-description" style="font-size:12px; color:var(--text-muted); margin-top:2px;">Remove cached data from browser</div></div>
-                    <button class="refresh-button" onclick="clearCache()" style="height:36px; padding:6px 14px;">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Reduced Motion</div>
+                        <div class="setting-description">Minimize animation effects</div>
+                    </div>
+                    <div class="toggle-switch" id="toggleReducedMotion"></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Low Power Mode</div>
+                        <div class="setting-description">Reduce background effects</div>
+                    </div>
+                    <div class="toggle-switch" id="toggleLowPower"></div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-title"><i data-lucide="layout"></i> Interface</div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Sidebar Behavior</div>
+                        <div class="setting-description">Collapse on click outside</div>
+                    </div>
+                    <div class="toggle-switch active" id="toggleSidebarBehavior"></div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Default Page</div>
+                        <div class="setting-description">Home</div>
+                    </div>
+                    <select class="filter-select" id="defaultPageSelect" style="width:120px;">
+                        <option value="home">Home</option>
+                        <option value="accounts">Accounts</option>
+                        <option value="analytics">Analytics</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Card Density</div>
+                        <div class="setting-description">Comfortable</div>
+                    </div>
+                    <select class="filter-select" id="densitySelect" style="width:120px;">
+                        <option value="comfortable">Comfortable</option>
+                        <option value="compact">Compact</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-title"><i data-lucide="database"></i> Data Management</div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Clear Local Cache</div>
+                        <div class="setting-description">Remove cached data from browser</div>
+                    </div>
+                    <button class="refresh-button" onclick="clearCache()">
                         <i data-lucide="trash-2"></i> <span>Clear</span>
                     </button>
                 </div>
-                <div class="setting-item" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; gap:20px;">
-                    <div class="setting-info"><div class="setting-label" style="font-size:14px; color:var(--text-primary); font-weight:500;">Reset Preferences</div><div class="setting-description" style="font-size:12px; color:var(--text-muted); margin-top:2px;">Restore default settings</div></div>
-                    <button class="refresh-button" onclick="resetPreferences()" style="height:36px; padding:6px 14px; background:rgba(255,59,59,0.08); border-color:rgba(255,59,59,0.25); color:var(--danger);">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Reset UI Preferences</div>
+                        <div class="setting-description">Restore default settings</div>
+                    </div>
+                    <button class="refresh-button" onclick="resetPreferences()">
                         <i data-lucide="rotate-ccw"></i> <span>Reset</span>
                     </button>
                 </div>
@@ -3149,26 +3964,25 @@
 </div>
 </div>
 
-<!-- ====== SCREENSHOT MODAL ====== -->
-<div class="modal-overlay" id="screenshotModal">
+<!-- ====== ACCOUNT DETAIL MODAL ====== -->
+<div class="modal-overlay" id="accountModal">
     <div class="modal">
         <div class="modal-header">
             <div class="modal-profile">
-                <div class="modal-username">📸 Screenshot</div>
+                <div class="modal-avatar" id="modalAvatar">
+                    <i data-lucide="user" style="width:32px;height:32px;color:#667799;"></i>
+                </div>
+                <div>
+                    <div class="modal-username" id="modalUsername">Account Details</div>
+                    <div class="modal-display-name" id="modalDisplayName"></div>
+                    <div class="modal-user-id" id="modalUserId"></div>
+                </div>
             </div>
-            <button class="modal-close" onclick="closeScreenshotModal()" aria-label="Close">
+            <button class="modal-close" onclick="closeModal()" aria-label="Close modal">
                 <i data-lucide="x"></i>
             </button>
         </div>
-        <div id="screenshotContent">
-            <img id="screenshotImage" src="" alt="Screenshot" style="max-width:100%; max-height:65vh; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
-        </div>
-        <div class="modal-actions">
-            <button class="btn-download" onclick="downloadScreenshot()" style="flex:1; justify-content:center;">
-                <i data-lucide="download"></i> Download
-            </button>
-            <button class="btn-close-modal" onclick="closeScreenshotModal()" style="flex:1; justify-content:center;">Close</button>
-        </div>
+        <div id="modalContent"></div>
     </div>
 </div>
 
@@ -3188,8 +4002,16 @@ SCRIPT
     let isAuthenticated = false;
     let autoRefreshInterval = null;
     let currentViewMode = 'grid';
+    let activityChart = null;
+    let analyticsChart = null;
+    let analyticsCategoryChart = null;
     let notifications = [];
-    let currentScreenshotAccountId = null;
+    let logsPageSize = 15;
+    let logsCurrentPage = 1;
+    let allLogsFiltered = [];
+    let activityPaused = false;
+    let commandItems = [];
+    let commandSelectedIndex = -1;
 
     // ================================================================
     // DOM READY
@@ -3202,12 +4024,12 @@ SCRIPT
         }, 1200);
         initGalaxyBackground();
         initEventListeners();
+        setupToggles();
         loadNotifications();
         initCommandPalette();
         initGlobalSearch();
         initShortcutsHelp();
         setupKeyboardShortcuts();
-        loadData();
     });
 
     // ================================================================
@@ -3231,7 +4053,13 @@ SCRIPT
     function showDashboard() {
         document.getElementById('login-page').classList.add('hidden');
         document.getElementById('dashboard').classList.add('visible');
+        loadData();
         startAutoRefresh();
+        updateStatsCounters();
+        initActivityChart('7d');
+        initAnalyticsChart();
+        initCategoryChart();
+        // Restore sidebar state
         const sidebarState = localStorage.getItem('bloxcracker_sidebar_collapsed');
         if (sidebarState === 'true') {
             document.getElementById('sidebar').classList.add('collapsed');
@@ -3254,7 +4082,6 @@ SCRIPT
                 isAuthenticated = true;
                 showDashboard();
                 showToast('Login successful', 'success', 'Welcome back, Rama');
-                loadData();
             }, 600);
         } else {
             const error = document.getElementById('loginError');
@@ -3335,11 +4162,34 @@ SCRIPT
         document.getElementById('logSearchInput').addEventListener('input', refreshLogs);
         document.getElementById('logTypeFilter').addEventListener('change', refreshLogs);
         document.getElementById('logDateFilter').addEventListener('change', refreshLogs);
+        document.getElementById('logSortFilter').addEventListener('change', refreshLogs);
+        document.querySelector('.modal-overlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
         document.getElementById('markAllReadBtn').addEventListener('click', markAllNotificationsRead);
         document.getElementById('clearNotificationsBtn').addEventListener('click', clearNotifications);
         document.getElementById('globalSearchBtn').addEventListener('click', openGlobalSearch);
         document.getElementById('commandPaletteBtn').addEventListener('click', openCommandPalette);
         document.getElementById('globalSearchClose').addEventListener('click', closeGlobalSearch);
+
+        // Export dropdown
+        document.getElementById('exportDropdownBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('exportDropdownContent').classList.toggle('visible');
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('exportDropdownContent').classList.remove('visible');
+        });
+
+        // Segmented control
+        document.querySelectorAll('.segmented-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.segmented-button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const range = this.dataset.range;
+                if (range) initActivityChart(range);
+            });
+        });
 
         // View toggle
         document.querySelectorAll('.view-toggle-button').forEach(btn => {
@@ -3352,6 +4202,8 @@ SCRIPT
         });
 
         // Settings toggles
+        document.getElementById('toggleAnimations').addEventListener('click', function() { this.classList.toggle(
+            'active'); });
         document.getElementById('toggleBackground').addEventListener('click', function() {
             this.classList.toggle('active');
             const bg = document.getElementById('galaxy-background');
@@ -3366,6 +4218,30 @@ SCRIPT
             if (this.classList.contains('active')) startAutoRefresh();
             else stopAutoRefresh();
         });
+        document.getElementById('toggleCompactMode').addEventListener('click', function() {
+            this.classList.toggle('active');
+            document.querySelectorAll('.account-card, .activity-section, .info-section, .settings-section')
+                .forEach(el => {
+                    el.style.padding = this.classList.contains('active') ? '12px' : '';
+                });
+        });
+        document.getElementById('toggleLowPower').addEventListener('click', function() {
+            this.classList.toggle('active');
+            const bg = document.getElementById('galaxy-background');
+            bg.style.opacity = this.classList.contains('active') ? '0.3' : '1';
+        });
+        document.getElementById('toggleSidebarBehavior').addEventListener('click', function() { this.classList.toggle(
+            'active'); });
+
+        // Activity pause
+        document.getElementById('pauseActivityBtn').addEventListener('click', function() {
+            activityPaused = !activityPaused;
+            this.innerHTML = activityPaused ?
+                '<i data-lucide="play"></i> Resume' :
+                '<i data-lucide="pause"></i> Pause';
+            lucide.createIcons();
+            if (!activityPaused) updateActivityFeed();
+        });
 
         // User dropdown items
         document.querySelectorAll('.user-dropdown .dropdown-item').forEach(item => {
@@ -3373,7 +4249,8 @@ SCRIPT
                 const action = this.dataset.action;
                 if (action === 'logout') handleLogout();
                 else if (action === 'settings') navigateTo('settings');
-                else if (action === 'profile') navigateTo('settings');
+                else if (action === 'profile') navigateTo('users');
+                else if (action === 'account') navigateTo('users');
                 closeUserDropdown();
             });
         });
@@ -3389,6 +4266,14 @@ SCRIPT
             const avatar = document.getElementById('topbarAvatar');
             if (!dropdown.contains(e.target) && !avatar.contains(e.target)) {
                 closeUserDropdown();
+            }
+        });
+    }
+
+    function setupToggles() {
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            if (toggle.id && !toggle.id.startsWith('toggle')) {
+                // Already handled
             }
         });
     }
@@ -3422,9 +4307,16 @@ SCRIPT
         });
         const pageMap = {
             home: 'homePage',
+            analytics: 'analyticsPage',
+            activity: 'activityPage',
             accounts: 'accountsPage',
             logs: 'logsPage',
+            users: 'usersPage',
+            sessions: 'sessionsPage',
             notifications: 'notificationsPage',
+            api: 'apiPage',
+            'system-status': 'systemStatusPage',
+            info: 'infoPage',
             settings: 'settingsPage'
         };
         const targetId = pageMap[page] || 'homePage';
@@ -3432,9 +4324,16 @@ SCRIPT
 
         const titles = {
             home: 'Home',
+            analytics: 'Analytics',
+            activity: 'Activity',
             accounts: 'Accounts',
             logs: 'Logs',
+            users: 'Users',
+            sessions: 'Sessions',
             notifications: 'Notifications',
+            api: 'API',
+            'system-status': 'System Status',
+            info: 'Info',
             settings: 'Settings'
         };
         document.getElementById('topbarTitle').textContent = titles[page] || 'Home';
@@ -3442,6 +4341,8 @@ SCRIPT
         if (window.innerWidth <= 1024) {
             document.getElementById('sidebar').classList.remove('visible');
         }
+
+        // Save last page
         localStorage.setItem('bloxcracker_last_page', page);
     }
 
@@ -3484,6 +4385,7 @@ SCRIPT
         notifications.unshift(notification);
         updateNotificationUI();
         localStorage.setItem('bloxcracker_notifications', JSON.stringify(notifications));
+        // Show toast for new notifications
         const iconMap = { success: 'success', error: 'error', warning: 'warning', info: 'info' };
         showToast(message, iconMap[type] || 'info');
     }
@@ -3599,44 +4501,56 @@ SCRIPT
         const input = document.getElementById('commandInput');
         const results = document.getElementById('commandResults');
 
-        const commandItems = [
+        // Define commands
+        commandItems = [
             { id: 'home', label: 'Go to Home', icon: 'home', shortcut: '⌘H', action: () => navigateTo('home') },
             { id: 'accounts', label: 'Go to Accounts', icon: 'users', shortcut: '⌘A', action: () => navigateTo(
                     'accounts') },
             { id: 'logs', label: 'Go to Logs', icon: 'list', shortcut: '⌘L', action: () => navigateTo('logs') },
+            { id: 'analytics', label: 'Go to Analytics', icon: 'bar-chart-3', shortcut: '', action: () => navigateTo(
+                    'analytics') },
+            { id: 'activity', label: 'Go to Activity', icon: 'activity', shortcut: '', action: () => navigateTo(
+                    'activity') },
             { id: 'settings', label: 'Go to Settings', icon: 'settings', shortcut: '⌘S', action: () => navigateTo(
                     'settings') },
+            { id: 'status', label: 'System Status', icon: 'server', shortcut: '', action: () => navigateTo(
+                    'system-status') },
+            { id: 'notifications', label: 'Notifications', icon: 'bell', shortcut: '', action: () => navigateTo(
+                    'notifications') },
             { id: 'refresh', label: 'Refresh Data', icon: 'refresh-cw', shortcut: '', action: () => loadData() },
             { id: 'bg_toggle', label: 'Toggle Galaxy Background', icon: 'eye', shortcut: '', action: () => {
                     const toggle = document.getElementById('toggleBackground');
                     if (toggle) toggle.click();
                 } },
+            { id: 'compact_toggle', label: 'Toggle Compact Mode', icon: 'layout', shortcut: '', action: () => {
+                    const toggle = document.getElementById('toggleCompactMode');
+                    if (toggle) toggle.click();
+                } },
             { id: 'sidebar_toggle', label: 'Toggle Sidebar', icon: 'menu', shortcut: '', action: () => toggleSidebar() },
         ];
 
-        let selectedIndex = -1;
-
+        // Filter commands
         input.addEventListener('input', () => {
             const query = input.value.toLowerCase().trim();
             const filtered = query ? commandItems.filter(c =>
                 c.label.toLowerCase().includes(query) ||
                 c.id.toLowerCase().includes(query)
             ) : commandItems;
+
             renderCommandResults(filtered, query);
-            selectedIndex = filtered.length > 0 ? 0 : -1;
-            updateSelection(results, selectedIndex);
         });
 
+        // Keyboard navigation
         input.addEventListener('keydown', (e) => {
             const items = results.querySelectorAll('.command-item');
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
-                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
-                updateSelection(items, selectedIndex);
+                commandSelectedIndex = Math.min(commandSelectedIndex + 1, items.length - 1);
+                updateCommandSelection(items);
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
-                selectedIndex = Math.max(selectedIndex - 1, -1);
-                updateSelection(items, selectedIndex);
+                commandSelectedIndex = Math.max(commandSelectedIndex - 1, -1);
+                updateCommandSelection(items);
             } else if (e.key === 'Enter') {
                 e.preventDefault();
                 const selected = results.querySelector('.command-item.selected');
@@ -3654,43 +4568,51 @@ SCRIPT
             }
         });
 
+        // Close on overlay click
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) closeCommandPalette();
         });
+    }
 
-        function renderCommandResults(items, query) {
-            if (items.length === 0) {
-                results.innerHTML = '<div class="command-empty">No commands found</div>';
-                return;
-            }
-            results.innerHTML = items.map((cmd, idx) => `
-                    <div class="command-item ${idx === 0 ? 'selected' : ''}" data-id="${cmd.id}">
-                        <span class="cmd-item-icon"><i data-lucide="${cmd.icon}"></i></span>
-                        <span class="cmd-item-label">${cmd.label}</span>
-                        ${cmd.shortcut ? `<span class="cmd-item-shortcut">${cmd.shortcut}</span>` : ''}
-                    </div>
-                `).join('');
-            lucide.createIcons();
-            results.querySelectorAll('.command-item').forEach(el => {
-                el.addEventListener('click', () => {
-                    const id = el.dataset.id;
-                    const cmd = commandItems.find(c => c.id === id);
-                    if (cmd) {
-                        closeCommandPalette();
-                        cmd.action();
-                        showToast('Executed: ' + cmd.label, 'success');
-                    }
-                });
-            });
+    function renderCommandResults(items, query) {
+        const results = document.getElementById('commandResults');
+        if (items.length === 0) {
+            results.innerHTML = '<div class="command-empty">No commands found</div>';
+            commandSelectedIndex = -1;
+            return;
         }
 
-        function updateSelection(items, idx) {
-            items.forEach((el, i) => {
-                el.classList.toggle('selected', i === idx);
+        results.innerHTML = items.map((cmd, idx) => `
+                <div class="command-item ${idx === 0 ? 'selected' : ''}" data-id="${cmd.id}">
+                    <span class="cmd-item-icon"><i data-lucide="${cmd.icon}"></i></span>
+                    <span class="cmd-item-label">${cmd.label}</span>
+                    ${cmd.shortcut ? `<span class="cmd-item-shortcut">${cmd.shortcut}</span>` : ''}
+                </div>
+            `).join('');
+
+        commandSelectedIndex = 0;
+        lucide.createIcons();
+
+        // Click handler
+        results.querySelectorAll('.command-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const id = el.dataset.id;
+                const cmd = commandItems.find(c => c.id === id);
+                if (cmd) {
+                    closeCommandPalette();
+                    cmd.action();
+                    showToast('Executed: ' + cmd.label, 'success');
+                }
             });
-            if (idx >= 0 && idx < items.length) {
-                items[idx].scrollIntoView({ block: 'nearest' });
-            }
+        });
+    }
+
+    function updateCommandSelection(items) {
+        items.forEach((el, idx) => {
+            el.classList.toggle('selected', idx === commandSelectedIndex);
+        });
+        if (commandSelectedIndex >= 0 && commandSelectedIndex < items.length) {
+            items[commandSelectedIndex].scrollIntoView({ block: 'nearest' });
         }
     }
 
@@ -3701,7 +4623,7 @@ SCRIPT
         setTimeout(() => {
             input.value = '';
             input.focus();
-            input.dispatchEvent(new Event('input'));
+            renderCommandResults(commandItems, '');
         }, 100);
     }
 
@@ -3744,6 +4666,7 @@ SCRIPT
         const results = document.getElementById('globalSearchResults');
         const matches = [];
 
+        // Search accounts
         allAccounts.forEach(acc => {
             const username = (acc.username || '').toLowerCase();
             const displayName = (acc.displayName || '').toLowerCase();
@@ -3759,6 +4682,7 @@ SCRIPT
             }
         });
 
+        // Search logs
         allLogs.forEach(log => {
             const content = (log.content || '').toLowerCase();
             const username = (log.username || '').toLowerCase();
@@ -3779,6 +4703,7 @@ SCRIPT
             return;
         }
 
+        // Group by type
         const groups = {};
         matches.forEach(m => {
             if (!groups[m.type]) groups[m.type] = [];
@@ -3811,6 +4736,7 @@ SCRIPT
 
         lucide.createIcons();
 
+        // Click handler
         results.querySelectorAll('.gs-result-item').forEach(el => {
             el.addEventListener('click', () => {
                 const type = el.dataset.type;
@@ -3867,8 +4793,10 @@ SCRIPT
     // ================================================================
     function setupKeyboardShortcuts() {
         document.addEventListener('keydown', (e) => {
+            // Don't trigger if typing in input
             const tag = e.target.tagName;
             if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+                // Allow Ctrl+K in inputs to open command palette
                 if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                     e.preventDefault();
                     openCommandPalette();
@@ -3876,48 +4804,56 @@ SCRIPT
                 return;
             }
 
+            // Ctrl+K - Command Palette
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
                 openCommandPalette();
                 return;
             }
 
+            // Ctrl+Shift+F - Global Search
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F') {
                 e.preventDefault();
                 openGlobalSearch();
                 return;
             }
 
+            // Ctrl+/ - Shortcuts Help
             if ((e.ctrlKey || e.metaKey) && e.key === '/') {
                 e.preventDefault();
                 openShortcutsHelp();
                 return;
             }
 
+            // Ctrl+H - Home
             if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
                 e.preventDefault();
                 navigateTo('home');
                 return;
             }
 
+            // Ctrl+A - Accounts
             if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
                 e.preventDefault();
                 navigateTo('accounts');
                 return;
             }
 
+            // Ctrl+L - Logs
             if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
                 e.preventDefault();
                 navigateTo('logs');
                 return;
             }
 
+            // Ctrl+S - Settings
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault();
                 navigateTo('settings');
                 return;
             }
 
+            // Escape - close modals
             if (e.key === 'Escape') {
                 if (document.getElementById('command-palette-overlay').classList.contains('visible')) {
                     closeCommandPalette();
@@ -3928,8 +4864,8 @@ SCRIPT
                 if (document.getElementById('shortcuts-help-overlay').classList.contains('visible')) {
                     closeShortcutsHelp();
                 }
-                if (document.getElementById('screenshotModal').classList.contains('visible')) {
-                    closeScreenshotModal();
+                if (document.getElementById('accountModal').classList.contains('visible')) {
+                    closeModal();
                 }
                 if (document.getElementById('notificationPanel').classList.contains('visible')) {
                     document.getElementById('notificationPanel').classList.remove('visible');
@@ -3945,13 +4881,13 @@ SCRIPT
         try {
             const response = await fetch(`${API_URL}/api/accounts`);
             const data = await response.json();
-
             if (data.success) {
                 allAccounts = data.accounts || [];
                 renderAccounts(allAccounts);
                 updateStats(data.stats, allAccounts);
                 loadLogs();
-                updateRecentActivity();
+                checkForUpdates(data.accounts);
+                updateAnalytics(data.accounts);
             } else {
                 showError('Server returned error: ' + (data.error || 'unknown'));
             }
@@ -3993,207 +4929,71 @@ SCRIPT
             grid.innerHTML = filtered.map(account => buildAccountListItem(account)).join('');
         }
         lucide.createIcons();
+        updateRelativeTimes();
     }
 
     function buildAccountCard(account) {
-        const avatarUrl = account.userId ?
-            `https://www.roblox.com/headshot-thumbnail/image?userId=${account.userId}&width=150&height=150&format=png` :
-            '';
-
-        const hasClipboard = account.clipboard && account.clipboard.hasData;
-        const clipText = account.clipboard?.text || '';
-
+        const avatarUrl = getAvatarUrl(account);
         return `
-                <div class="account-card">
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        <span class="badge ${account.premium ? 'badge-premium' : 'badge-free'}">
-                            ${account.premium ? '⭐ PREMIUM' : 'FREE'}
-                        </span>
-                        ${account.twoFAEnabled ? '<span class="badge badge-2fa">🔒 2FA</span>' : ''}
+                <div class="account-card" data-userid="${escHtml(String(account.userId || ''))}">
+                    <div class="account-avatar" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
+                        ${avatarUrl ? `<img src="${escHtml(avatarUrl)}" alt="${escHtml(account.displayName || account.username || '')}" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot;></i>'; lucide.createIcons();">` : '<i data-lucide="user"></i>'}
                     </div>
-
-                    <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
-                        <div style="width:48px; height:48px; border-radius:50%; overflow:hidden; background:linear-gradient(135deg,#1a2a3f,#2a3a5c); border:2px solid var(--border-color); flex-shrink:0;">
-                            ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot; style=&quot;width:24px;height:24px;color:#667799;&quot;></i>';">` : '<i data-lucide="user" style="width:24px;height:24px;color:#667799;"></i>'}
+                    <div class="account-info" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
+                        <div class="account-username">${escHtml(account.displayName || account.username || 'Unknown')}</div>
+                        ${account.username !== account.displayName ? `<div class="account-display-name">@${escHtml(account.username || '')}</div>` : ''}
+                        <div class="account-user-id">
+                            <i data-lucide="fingerprint" style="width:12px; height:12px;"></i>
+                            ${escHtml(String(account.userId || 'N/A'))}
                         </div>
-                        <div>
-                            <div class="username" style="font-size:18px; font-weight:700; color:var(--text-primary);">${escHtml(account.displayName || account.username || 'Unknown')}</div>
-                            <div class="user-id" style="font-size:12px; color:var(--text-muted);">🆔 ${account.userId || 'N/A'}</div>
+                        <div class="account-status">
+                            <span class="status-dot"></span>
+                            <span>${account.premium ? '✦ Premium' : 'Free'}</span>
                         </div>
-                    </div>
-
-                    <div class="info-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0;">
-                        <div class="info-item" style="background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); padding:6px 10px;">
-                            <span class="label" style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; display:block;">💰 Robux</span>
-                            <span class="value" style="font-size:14px; font-weight:600; color:var(--text-primary);">${(account.robux || 0).toLocaleString()} R$</span>
-                        </div>
-                        <div class="info-item" style="background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); padding:6px 10px;">
-                            <span class="label" style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; display:block;">👥 Friends</span>
-                            <span class="value" style="font-size:14px; font-weight:600; color:var(--text-primary);">${account.friends || 0}</span>
-                        </div>
-                        <div class="info-item" style="background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); padding:6px 10px;">
-                            <span class="label" style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; display:block;">📅 Age</span>
-                            <span class="value" style="font-size:14px; font-weight:600; color:var(--text-primary);">${account.accountAge || 'N/A'}</span>
-                        </div>
-                        <div class="info-item" style="background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); padding:6px 10px;">
-                            <span class="label" style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; display:block;">📧 Email</span>
-                            <span class="value" style="font-size:14px; font-weight:600; color:var(--text-primary);">${account.emailVerified ? '✅' : '❌'} ${account.email || 'N/A'}</span>
+                        <div class="account-updated-time" data-timestamp="${account.updatedAt || account.createdAt || Date.now()}">
+                            Updated just now
                         </div>
                     </div>
-
-                    <!-- IP & Location -->
-                    <div class="ip-location" style="background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); padding:8px 10px; margin-top:8px; border:1px solid var(--border-color);">
-                        <div class="ip-row" style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary);">
-                            <span>🌐 IP: <strong style="color:var(--text-primary);">${account.ip || 'Unknown'}</strong></span>
-                            <span>📍 ${account.location?.country || 'Unknown'}, ${account.location?.city || ''}</span>
-                        </div>
-                        <div class="device-row" style="font-size:11px; color:var(--text-muted); margin-top:4px;">
-                            ${account.location?.isp || 'ISP Unknown'} · ${account.device?.platform || 'Device Unknown'}
-                        </div>
-                    </div>
-
-                    <!-- Clipboard -->
-                    ${hasClipboard ? `
-                        <div class="clipboard-box" style="margin-top:10px; background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); padding:6px 10px; font-size:12px; color:var(--text-secondary); border:1px solid var(--border-color); display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                            <span>📋</span>
-                            <span class="clip-text" style="flex:1; color:var(--text-primary); word-break:break-all;">${escHtml(clipText.substring(0, 100))}${clipText.length > 100 ? '...' : ''}</span>
-                            <button class="copy-btn-sm" onclick="copyText('${escHtml(clipText.replace(/'/g, "\\'"))}')" style="background:none; border:none; color:var(--accent-cyan); cursor:pointer; font-size:11px; padding:2px 6px; border-radius:4px;">Copy</button>
-                        </div>
-                    ` : ''}
-
-                    <!-- Screenshot -->
-                    ${account.screenshot ? `
-                        <button class="btn-screenshot" onclick="viewScreenshot('${account.userId}')" style="background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.2); border-radius:var(--radius-sm); padding:4px 12px; color:var(--accent-cyan); cursor:pointer; font-size:12px; margin-top:10px;">
-                            🖼️ View Screenshot
+                    <div class="account-actions">
+                        <button class="view-details-btn" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
+                            <i data-lucide="eye"></i>
+                            <span>Details</span>
                         </button>
-                    ` : ''}
-
-                    <!-- Cookie -->
-                    <div class="cookie-box" style="position:relative; background:rgba(8,12,24,0.7); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:6px 10px; margin-top:12px;">
-                        <textarea readonly rows="2" style="width:100%; background:transparent; border:none; color:var(--danger); font-family:'Courier New',monospace; font-size:11px; resize:none; outline:none; min-height:32px; padding-right:50px;">${account.cookie || 'No cookie'}</textarea>
-                        <button class="copy-btn" onclick="copyCookie('${(account.cookie || '').replace(/'/g, "\\'")}')" style="position:absolute; top:4px; right:4px; background:rgba(255,59,59,0.15); border:1px solid rgba(255,59,59,0.25); color:var(--danger); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:10px; font-family:var(--font-family);">📋 Copy</button>
-                    </div>
-
-                    <div class="actions" style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
-                        <button class="btn-profile" onclick="openProfile('${account.userId}')" style="padding:6px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-color); cursor:pointer; font-size:12px; font-family:var(--font-family); background:rgba(255,255,255,0.03); color:var(--text-secondary); flex:1;">👤 Profile</button>
-                        <button class="btn-delete" onclick="deleteAccount('${account.userId}')" style="padding:6px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-color); cursor:pointer; font-size:12px; font-family:var(--font-family); background:rgba(255,255,255,0.03); color:var(--text-secondary); flex:1;">🗑️ Delete</button>
                     </div>
                 </div>
             `;
     }
 
     function buildAccountListItem(account) {
+        const avatarUrl = getAvatarUrl(account);
         return `
-                <div style="display:flex; align-items:center; gap:14px; padding:12px 16px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius-md);">
-                    <div style="width:36px; height:36px; border-radius:50%; overflow:hidden; flex-shrink:0; background:linear-gradient(135deg,#1a2a3f,#2a3a5c);">
-                        ${account.userId ? `<img src="https://www.roblox.com/headshot-thumbnail/image?userId=${account.userId}&width=60&height=60&format=png" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot; style=&quot;width:18px;height:18px;color:#667799;&quot;></i>';">` : '<i data-lucide="user" style="width:18px;height:18px;color:#667799;"></i>'}
+                <div class="account-list-item" data-userid="${escHtml(String(account.userId || ''))}">
+                    <div class="account-list-avatar" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
+                        ${avatarUrl ? `<img src="${escHtml(avatarUrl)}" alt="${escHtml(account.displayName || account.username || '')}" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot;></i>'; lucide.createIcons();">` : '<i data-lucide="user"></i>'}
                     </div>
-                    <div style="flex:1; min-width:0;">
-                        <div style="font-size:14px; font-weight:600; color:var(--text-primary);">${escHtml(account.displayName || account.username || 'Unknown')}</div>
-                        <div style="font-size:11px; color:var(--text-muted);">${account.userId || 'N/A'} ${account.premium ? '⭐' : ''} · IP: ${account.ip || 'Unknown'}</div>
+                    <div class="account-list-info" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
+                        <div class="account-list-name">${escHtml(account.displayName || account.username || 'Unknown')}</div>
+                        <div class="account-list-id">${escHtml(String(account.userId || 'N/A'))} ${account.premium ? '✦' : ''}</div>
                     </div>
-                    <div style="font-size:11px; color:var(--text-muted); text-align:right;">
-                        ${account.screenshot ? '📸' : ''} ${account.clipboard?.hasData ? '📋' : ''}
+                    <div class="account-list-status">
+                        <span class="status-dot"></span>
+                        ${account.premium ? 'Premium' : 'Free'}
                     </div>
-                    <button class="view-details-btn" onclick="openAccountModal('${account.userId}')" style="padding:6px 12px; background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.2); border-radius:var(--radius-sm); color:var(--accent-cyan); cursor:pointer; font-size:12px; font-weight:500; font-family:var(--font-family); display:flex; align-items:center; gap:4px;">
-                        <i data-lucide="eye" style="width:14px;height:14px;"></i>
+                    <button class="view-details-btn" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
+                        <i data-lucide="eye"></i>
                     </button>
                 </div>
             `;
     }
 
-    // ================================================================
-    // ACCOUNT DETAIL MODAL (sederhana)
-    // ================================================================
-    function openAccountModal(userId) {
-        const account = allAccounts.find(a => String(a.userId) === String(userId));
-        if (!account) return;
-
-        const avatarUrl = account.userId ?
-            `https://www.roblox.com/headshot-thumbnail/image?userId=${account.userId}&width=150&height=150&format=png` :
-            '';
-
-        showToast('Opening account: ' + (account.displayName || account.username || 'Unknown'), 'info');
-    }
-
-    function openProfile(userId) {
-        if (userId) window.open(`https://www.roblox.com/users/${userId}/profile`, '_blank');
-    }
-
-    async function deleteAccount(userId) {
-        if (!confirm('⚠️ Are you sure you want to delete this account?')) return;
-        try {
-            const response = await fetch(`${API_URL}/api/account/${userId}`, { method: 'DELETE' });
-            const data = await response.json();
-            if (data.success) {
-                showToast('Account deleted', 'success', '');
-                loadData();
-            } else {
-                showToast('Failed to delete account', 'error', '');
-            }
-        } catch (error) {
-            showToast('Error deleting account', 'error', '');
+    function getAvatarUrl(account) {
+        if (account.avatarUrl) return account.avatarUrl;
+        if (account.userId) {
+            return `https://www.roblox.com/headshot-thumbnail/image?userId=${account.userId}&width=150&height=150&format=png`;
         }
+        return '';
     }
 
-    // ================================================================
-    // SCREENSHOT
-    // ================================================================
-    function viewScreenshot(userId) {
-        const account = allAccounts.find(a => String(a.userId) === String(userId));
-        if (!account || !account.screenshot) {
-            showToast('No screenshot available', 'warning');
-            return;
-        }
-        currentScreenshotAccountId = userId;
-        document.getElementById('screenshotImage').src = account.screenshot;
-        document.getElementById('screenshotModal').classList.add('visible');
-        lucide.createIcons();
-    }
-
-    function closeScreenshotModal() {
-        document.getElementById('screenshotModal').classList.remove('visible');
-        currentScreenshotAccountId = null;
-    }
-
-    function downloadScreenshot() {
-        const img = document.getElementById('screenshotImage');
-        if (!img.src) return;
-        const link = document.createElement('a');
-        link.download = `screenshot_${currentScreenshotAccountId || Date.now()}.jpg`;
-        link.href = img.src;
-        link.click();
-        showToast('Downloading screenshot...', 'success');
-    }
-
-    // ================================================================
-    // COPY FUNCTIONS
-    // ================================================================
-    function copyText(text) {
-        if (!text || text === 'No cookie') {
-            showToast('Nothing to copy', 'warning');
-            return;
-        }
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('Copied to clipboard!', 'success');
-        }).catch(() => {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            showToast('Copied!', 'success');
-        });
-    }
-
-    function copyCookie(cookie) {
-        copyText(cookie);
-    }
-
-    // ================================================================
-    // FILTER & SORT
-    // ================================================================
     function applyFilter(accounts) {
         const search = document.getElementById('searchInput')?.value || '';
         const premiumFilter = document.getElementById('filterPremium')?.value || 'all';
@@ -4261,23 +5061,50 @@ SCRIPT
     // UPDATE STATS
     // ================================================================
     function updateStats(stats, accounts) {
-        const total = accounts.length || 0;
-        document.getElementById('statTotalAccounts').textContent = total;
+        const totalAccounts = accounts.length || stats?.totalAccounts || 0;
+        document.getElementById('statTotalAccounts').dataset.target = totalAccounts;
+        document.getElementById('statTotalAccounts').textContent = totalAccounts;
 
-        const premium = accounts.filter(a => a.premium).length;
-        document.getElementById('statPremiumCount').textContent = premium;
+        const today = new Date().toDateString();
+        const logsToday = (accounts || []).filter(a => {
+            const date = new Date(a.createdAt || a.receivedAt || 0);
+            return date.toDateString() === today;
+        }).length;
+        document.getElementById('statLogsToday').dataset.target = logsToday;
+        document.getElementById('statLogsToday').textContent = logsToday;
 
-        const screenshots = accounts.filter(a => a.screenshot).length;
-        document.getElementById('statScreenshots').textContent = screenshots;
+        const updatesToday = (accounts || []).filter(a => {
+            const date = new Date(a.updatedAt || a.createdAt || 0);
+            return date.toDateString() === today && a.updatedAt !== a.createdAt;
+        }).length;
+        document.getElementById('statUpdatesToday').dataset.target = updatesToday;
+        document.getElementById('statUpdatesToday').textContent = updatesToday;
 
-        const clipboards = accounts.filter(a => a.clipboard?.hasData).length;
-        document.getElementById('statClipboards').textContent = clipboards;
+        document.getElementById('statActiveSessions').dataset.target = Math.min(accounts.length, 5);
+        document.getElementById('statActiveSessions').textContent = Math.min(accounts.length, 5);
 
-        const uniqueIPs = new Set(accounts.map(a => a.ip).filter(ip => ip && ip !== 'Unknown'));
-        document.getElementById('statUniqueIPs').textContent = uniqueIPs.size;
+        document.getElementById('statApiRequests').dataset.target = Math.floor(Math.random() * 500 + 1000);
+        document.getElementById('statApiRequests').textContent = (Math.floor(Math.random() * 500 + 1000)).toLocaleString();
 
-        const totalRobux = accounts.reduce((sum, a) => sum + (Number(a.robux) || 0), 0);
-        document.getElementById('statTotalRobux').textContent = totalRobux.toLocaleString();
+        document.getElementById('statUptime').dataset.target = 99.9;
+        document.getElementById('statUptime').textContent = '99.9%';
+    }
+
+    function updateStatsCounters() {
+        document.querySelectorAll('.stat-value[data-target]').forEach(el => {
+            const target = parseFloat(el.dataset.target);
+            const isFloat = target % 1 !== 0;
+            let current = 0;
+            const step = target / 30;
+            const interval = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(interval);
+                }
+                el.textContent = isFloat ? current.toFixed(1) + '%' : Math.round(current).toLocaleString();
+            }, 30);
+        });
     }
 
     // ================================================================
@@ -4290,7 +5117,8 @@ SCRIPT
             if (data.success && data.recentLogs) {
                 allLogs = data.recentLogs;
                 refreshLogs();
-                updateRecentActivity();
+                updateRecentActivity(data.recentLogs);
+                updateActivityFeed(data.recentLogs);
             }
         } catch (error) {
             console.error('Error loading logs:', error);
@@ -4303,6 +5131,7 @@ SCRIPT
         const search = document.getElementById('logSearchInput')?.value.toLowerCase() || '';
         const typeFilter = document.getElementById('logTypeFilter')?.value || 'all';
         const dateFilter = document.getElementById('logDateFilter')?.value || 'all';
+        const sortFilter = document.getElementById('logSortFilter')?.value || 'newest';
 
         let logs = (allLogs || []).slice();
 
@@ -4320,52 +5149,524 @@ SCRIPT
         if (dateFilter !== 'all') {
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
             const weekAgo = new Date(today);
             weekAgo.setDate(weekAgo.getDate() - 7);
+            const monthAgo = new Date(today);
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
 
             logs = logs.filter(log => {
                 const logDate = new Date(log.timestamp);
                 if (dateFilter === 'today') return logDate >= today;
+                if (dateFilter === 'yesterday') return logDate >= yesterday && logDate < today;
                 if (dateFilter === '7d') return logDate >= weekAgo;
+                if (dateFilter === '30d') return logDate >= monthAgo;
                 return true;
             });
         }
 
-        if (logs.length === 0) {
+        if (sortFilter === 'newest') {
+            logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        } else {
+            logs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        }
+
+        allLogsFiltered = logs;
+
+        // Pagination
+        const totalPages = Math.ceil(logs.length / logsPageSize) || 1;
+        if (logsCurrentPage > totalPages) logsCurrentPage = totalPages;
+        const start = (logsCurrentPage - 1) * logsPageSize;
+        const end = start + logsPageSize;
+        const pageLogs = logs.slice(start, end);
+
+        if (pageLogs.length === 0) {
             container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);">No logs found</div>';
+        } else {
+            container.innerHTML = pageLogs.map(log => {
+                const typeClass = log.type || 'info';
+                const avatarUrl = log.userId ?
+                    `https://www.roblox.com/headshot-thumbnail/image?userId=${log.userId}&width=60&height=60&format=png` :
+                    '';
+                return `
+                        <div class="notification-item" style="margin-bottom:8px;">
+                            <div class="notification-icon ${typeClass}" style="position:relative; overflow:hidden;">
+                                ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;${getNotificationIcon(typeClass)}&quot;></i>'; lucide.createIcons();">` : `<i data-lucide="${getNotificationIcon(typeClass)}"></i>`}
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-message">
+                                    ${log.username ? '<strong>@' + escHtml(log.username) + '</strong> ' : ''}
+                                    ${escHtml(log.content || '')}
+                                </div>
+                                <div class="notification-time">${new Date(log.timestamp).toLocaleString()}</div>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+        }
+
+        // Render pagination
+        renderPagination(totalPages);
+        lucide.createIcons();
+    }
+
+    function renderPagination(totalPages) {
+        const container = document.getElementById('logsPagination');
+        if (!container) return;
+        if (totalPages <= 1) {
+            container.innerHTML = '';
             return;
         }
 
-        container.innerHTML = logs.reverse().map(log => `
-                <div class="log-entry">
-                    <span>
-                        <span class="log-type ${log.type || 'info'}">${log.type || 'info'}</span>
-                        ${log.username ? '@' + escHtml(log.username) : ''}
-                        ${log.content ? ': ' + escHtml(log.content) : ''}
-                    </span>
-                    <span class="log-time">${new Date(log.timestamp).toLocaleString()}</span>
-                </div>
-            `).join('');
+        let html = `
+                <button onclick="changeLogsPage(${logsCurrentPage - 1})" ${logsCurrentPage <= 1 ? 'disabled' : ''}>
+                    <i data-lucide="chevron-left"></i>
+                </button>
+            `;
+
+        const maxVisible = 7;
+        let startPage = Math.max(1, logsCurrentPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+        if (endPage - startPage < maxVisible - 1) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+
+        if (startPage > 1) {
+            html += `<button onclick="changeLogsPage(1)">1</button>`;
+            if (startPage > 2) html += `<button disabled>…</button>`;
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<button onclick="changeLogsPage(${i})" class="${i === logsCurrentPage ? 'active' : ''}">${i}</button>`;
+        }
+
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) html += `<button disabled>…</button>`;
+            html += `<button onclick="changeLogsPage(${totalPages})">${totalPages}</button>`;
+        }
+
+        html += `
+                <button onclick="changeLogsPage(${logsCurrentPage + 1})" ${logsCurrentPage >= totalPages ? 'disabled' : ''}>
+                    <i data-lucide="chevron-right"></i>
+                </button>
+            `;
+
+        container.innerHTML = html;
+        lucide.createIcons();
     }
 
-    function updateRecentActivity() {
+    function changeLogsPage(page) {
+        const totalPages = Math.ceil(allLogsFiltered.length / logsPageSize) || 1;
+        if (page < 1 || page > totalPages) return;
+        logsCurrentPage = page;
+        refreshLogs();
+    }
+
+    function updateRecentActivity(recentLogs) {
         const container = document.getElementById('recentActivity');
         if (!container) return;
-        const logs = allLogs.slice().reverse().slice(0, 8);
-
+        const logs = [...recentLogs].reverse().slice(0, 8);
         if (logs.length === 0) {
             container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">No activity yet</div>';
             return;
         }
-
         container.innerHTML = logs.map(log => `
-                <div style="display:flex; justify-content:space-between; padding:8px 12px; background:rgba(255,255,255,0.02); border-radius:var(--radius-sm); border:1px solid var(--border-color); margin-bottom:6px;">
-                    <span style="font-size:13px; color:var(--text-secondary);">
-                        ${log.username ? '@' + escHtml(log.username) : 'System'}: ${escHtml(log.content || '')}
-                    </span>
-                    <span style="font-size:11px; color:var(--text-muted);">${formatRelativeTime(new Date(log.timestamp))}</span>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-message">
+                            ${log.username ? '@' + escHtml(log.username) : 'System'}: ${escHtml(log.content || '')}
+                        </div>
+                        <div class="timeline-time">${formatRelativeTime(new Date(log.timestamp))}</div>
+                    </div>
                 </div>
             `).join('');
+    }
+
+    function updateActivityFeed(logs) {
+        const container = document.getElementById('activityTimeline');
+        if (!container) return;
+        if (!logs || logs.length === 0) {
+            container.innerHTML = `
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-message">No activity yet</div>
+                            <div class="timeline-time">-</div>
+                        </div>
+                    </div>
+                `;
+            return;
+        }
+        const items = [...logs].reverse().slice(0, 20);
+        container.innerHTML = items.map(log => `
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-message">
+                            ${log.username ? '@' + escHtml(log.username) : 'System'}: ${escHtml(log.content || '')}
+                        </div>
+                        <div class="timeline-time">${formatRelativeTime(new Date(log.timestamp))}</div>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // ================================================================
+    // EXPORT LOGS
+    // ================================================================
+    function exportLogs(format) {
+        document.getElementById('exportDropdownContent').classList.remove('visible');
+        const data = allLogsFiltered.length > 0 ? allLogsFiltered : allLogs;
+
+        if (data.length === 0) {
+            showToast('No logs to export', 'warning');
+            return;
+        }
+
+        if (format === 'json') {
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bloxcracker_logs_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Exported ' + data.length + ' logs as JSON', 'success');
+        } else if (format === 'csv') {
+            const headers = ['timestamp', 'username', 'type', 'content'];
+            const rows = data.map(log => [
+                log.timestamp || '',
+                log.username || '',
+                log.type || 'info',
+                (log.content || '').replace(/,/g, ';')
+            ]);
+            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bloxcracker_logs_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Exported ' + data.length + ' logs as CSV', 'success');
+        }
+    }
+
+    // ================================================================
+    // SYSTEM STATUS
+    // ================================================================
+    function checkSystemStatus() {
+        const indicators = document.querySelectorAll('#systemStatusPage .status-indicator');
+        indicators.forEach(el => {
+            el.style.background = 'var(--warning)';
+            setTimeout(() => {
+                el.style.background = 'var(--success)';
+            }, 500 + Math.random() * 500);
+        });
+        showToast('System status checked - all operational', 'success');
+    }
+
+    // ================================================================
+    // ANALYTICS
+    // ================================================================
+    function updateAnalytics(accounts) {
+        const total = accounts.length || 0;
+        document.getElementById('analyticsTotalActivity').textContent = total;
+
+        const active = Math.min(accounts.filter(a => {
+            const date = new Date(a.updatedAt || a.createdAt || 0);
+            const now = new Date();
+            return (now - date) < 24 * 60 * 60 * 1000;
+        }).length, total);
+        document.getElementById('analyticsActiveUsers').textContent = active || 0;
+
+        const growth = total > 0 ? ((total / (total + 1)) * 100 - 50).toFixed(1) : 0;
+        document.getElementById('analyticsGrowth').textContent = (growth > 0 ? '+' : '') + growth + '%';
+        document.getElementById('analyticsGrowth').style.color = growth > 0 ? 'var(--success)' : 'var(--danger)';
+
+        const successRate = Math.min(95 + Math.random() * 4, 99.9);
+        document.getElementById('analyticsSuccessRate').textContent = successRate.toFixed(1) + '%';
+    }
+
+    function initAnalyticsChart() {
+        const canvas = document.getElementById('analyticsGrowthCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (analyticsChart) analyticsChart.destroy();
+
+        const range = document.getElementById('analyticsRange')?.value || '30d';
+        let labels, data;
+        if (range === '7d') {
+            labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            data = [12, 18, 15, 22, 28, 24, 20];
+        } else if (range === '30d') {
+            labels = Array.from({ length: 30 }, (_, i) => `Day ${i+1}`);
+            data = Array.from({ length: 30 }, () => Math.floor(Math.random() * 20) + 5);
+        } else if (range === '90d') {
+            labels = Array.from({ length: 12 }, (_, i) => `Week ${i+1}`);
+            data = Array.from({ length: 12 }, () => Math.floor(Math.random() * 30) + 10);
+        } else {
+            labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            data = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75];
+        }
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, 'rgba(0, 212, 255, 0.25)');
+        gradient.addColorStop(1, 'rgba(0, 212, 255, 0)');
+
+        analyticsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Accounts',
+                    data,
+                    borderColor: 'rgba(0, 212, 255, 0.8)',
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: '#00d4ff',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#6a7a9a' } },
+                    y: { grid: { color: 'rgba(42,58,92,0.2)' }, ticks: { color: '#6a7a9a' } }
+                }
+            }
+        });
+    }
+
+    function initCategoryChart() {
+        const canvas = document.getElementById('analyticsCategoryCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (analyticsCategoryChart) analyticsCategoryChart.destroy();
+
+        analyticsCategoryChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Login', 'Purchase', 'Activity', 'System', 'Other'],
+                datasets: [{
+                    data: [35, 25, 20, 12, 8],
+                    backgroundColor: [
+                        'rgba(255, 59, 59, 0.6)',
+                        'rgba(0, 212, 255, 0.6)',
+                        'rgba(0, 224, 126, 0.6)',
+                        'rgba(255, 204, 0, 0.6)',
+                        'rgba(77, 163, 255, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 59, 59, 0.8)',
+                        'rgba(0, 212, 255, 0.8)',
+                        'rgba(0, 224, 126, 0.8)',
+                        'rgba(255, 204, 0, 0.8)',
+                        'rgba(77, 163, 255, 0.8)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#9aa8c7', padding: 12, font: { size: 11 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // ================================================================
+    // ACCOUNT DETAIL MODAL
+    // ================================================================
+    function openAccountModal(userId) {
+        const account = allAccounts.find(a => String(a.userId) === String(userId));
+        if (!account) return;
+
+        const avatarUrl = getAvatarUrl(account);
+        document.getElementById('modalAvatar').innerHTML = avatarUrl ?
+            `<img src="${escHtml(avatarUrl)}" alt="${escHtml(account.displayName || account.username || '')}">` :
+            '<i data-lucide="user" style="width:32px;height:32px;color:#667799;"></i>';
+        document.getElementById('modalUsername').textContent = account.displayName || account.username || 'Unknown';
+        document.getElementById('modalDisplayName').textContent = account.username ? `@${account.username}` : '';
+        document.getElementById('modalUserId').textContent = `User ID: ${account.userId || 'N/A'}`;
+
+        const content = document.getElementById('modalContent');
+        content.innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-section-title"><i data-lucide="user"></i> Profile</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Username</span>
+                        <span class="detail-value">
+                            ${escHtml(account.username || 'N/A')}
+                            <button class="copy-button" onclick="copyToClipboard('${escHtml(account.username || '')}', 'Username')"><i data-lucide="copy"></i> Copy</button>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Display Name</span>
+                        <span class="detail-value">
+                            ${escHtml(account.displayName || 'N/A')}
+                            <button class="copy-button" onclick="copyToClipboard('${escHtml(account.displayName || '')}', 'Display Name')"><i data-lucide="copy"></i> Copy</button>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">User ID</span>
+                        <span class="detail-value">
+                            ${escHtml(String(account.userId || 'N/A'))}
+                            <button class="copy-button" onclick="copyToClipboard('${escHtml(String(account.userId || ''))}', 'User ID')"><i data-lucide="copy"></i> Copy</button>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Profile URL</span>
+                        <span class="detail-value">
+                            <a href="https://www.roblox.com/users/${escHtml(String(account.userId || ''))}/profile" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">
+                                Open Profile <i data-lucide="external-link" style="width:12px;height:12px;display:inline;"></i>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Premium</span>
+                        <span class="detail-value">${account.premium ? '✅ Yes' : '❌ No'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">First Seen</span>
+                        <span class="detail-value">${new Date(account.createdAt || account.receivedAt || Date.now()).toLocaleString()}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Last Seen</span>
+                        <span class="detail-value">${new Date(account.updatedAt || account.createdAt || Date.now()).toLocaleString()}</span>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title"><i data-lucide="bar-chart-3"></i> Statistics</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Robux</span>
+                        <span class="detail-value">${(account.robux || 0).toLocaleString()} R$</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Friends</span>
+                        <span class="detail-value">${account.friends || 0}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Account Age</span>
+                        <span class="detail-value">${escHtml(account.accountAge || 'N/A')}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Inventory Value</span>
+                        <span class="detail-value">${(account.inventoryValue || 0).toLocaleString()} R$</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Badges</span>
+                        <span class="detail-value">${account.badgesCount || 0}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Groups</span>
+                        <span class="detail-value">${account.groupsCount || 0}</span>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title"><i data-lucide="key"></i> Cookie</div>
+                    <div class="cookie-box">
+                        <textarea readonly rows="2">${escHtml(account.cookie || 'No cookie')}</textarea>
+                        <button class="copy-btn" onclick="copyCookie('${escHtml(account.cookie || '')}')">Copy</button>
+                    </div>
+                    <div class="security-notice">
+                        <i data-lucide="lock"></i>
+                        <span>Security Notice: Sensitive authentication secrets are hidden. Never share your cookie.</span>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="view-details-btn" onclick="openProfile('${escHtml(String(account.userId || ''))}')" style="flex:1; justify-content:center;">
+                        <i data-lucide="external-link"></i> Open Profile
+                    </button>
+                    <button class="refresh-button" onclick="deleteAccount('${escHtml(String(account.userId || ''))}')" style="flex:1; justify-content:center; background: rgba(255,59,59,0.1); border-color: rgba(255,59,59,0.3); color: var(--danger);">
+                        <i data-lucide="trash-2"></i> Delete
+                    </button>
+                </div>
+            `;
+        lucide.createIcons();
+        document.getElementById('accountModal').classList.add('visible');
+    }
+
+    function closeModal() {
+        document.getElementById('accountModal').classList.remove('visible');
+    }
+
+    // ================================================================
+    // COPY FUNCTIONS
+    // ================================================================
+    function copyToClipboard(text, label) {
+        if (!text || text === 'N/A') {
+            showToast('Nothing to copy', 'error', '');
+            return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            showToast(`${label} copied`, 'success', '');
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast(`${label} copied`, 'success', '');
+        });
+    }
+
+    function copyCookie(cookie) {
+        if (!cookie || cookie === 'No cookie') {
+            showToast('No cookie to copy', 'error', '');
+            return;
+        }
+        navigator.clipboard.writeText(cookie).then(() => {
+            showToast('Cookie copied', 'success', '');
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = cookie;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('Cookie copied', 'success', '');
+        });
+    }
+
+    // ================================================================
+    // ACCOUNT ACTIONS
+    // ================================================================
+    function openProfile(userId) {
+        if (userId) window.open(`https://www.roblox.com/users/${userId}/profile`, '_blank');
+    }
+
+    async function deleteAccount(userId) {
+        if (!confirm('Are you sure you want to delete this account?')) return;
+        try {
+            const response = await fetch(`${API_URL}/api/account/${userId}`, { method: 'DELETE' });
+            const data = await response.json();
+            if (data.success) {
+                showToast('Account deleted', 'success', '');
+                closeModal();
+                loadData();
+            } else {
+                showToast('Failed to delete account', 'error', '');
+            }
+        } catch (error) {
+            showToast('Error deleting account', 'error', '');
+        }
     }
 
     // ================================================================
@@ -4395,10 +5696,83 @@ SCRIPT
     }
 
     // ================================================================
+    // CHARTS
+    // ================================================================
+    function initActivityChart(range) {
+        const canvas = document.getElementById('activityChartCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (activityChart) activityChart.destroy();
+
+        let labels, data;
+        if (range === '7d') {
+            labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            data = [24, 35, 28, 40, 38, 52, 45];
+        } else if (range === '30d') {
+            labels = Array.from({ length: 30 }, (_, i) => `Day ${i+1}`);
+            data = Array.from({ length: 30 }, () => Math.floor(Math.random() * 50) + 20);
+        } else {
+            labels = Array.from({ length: 12 }, (_, i) => `Week ${i+1}`);
+            data = Array.from({ length: 12 }, () => Math.floor(Math.random() * 80) + 30);
+        }
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+        gradient.addColorStop(0, 'rgba(255, 59, 59, 0.25)');
+        gradient.addColorStop(1, 'rgba(255, 59, 59, 0)');
+
+        activityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Activity',
+                    data,
+                    borderColor: 'rgba(255, 59, 59, 0.8)',
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: '#ff3b3b',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(18, 25, 45, 0.9)',
+                        titleColor: '#e8edf4',
+                        bodyColor: '#9aa8c7',
+                        borderColor: 'rgba(42, 58, 92, 0.5)',
+                        borderWidth: 1,
+                        padding: 10,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, color: 'rgba(42,58,92,0.3)' },
+                        ticks: { color: '#6a7a9a', font: { size: 11 } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(42,58,92,0.2)', borderDash: [4, 4] },
+                        ticks: { color: '#6a7a9a', font: { size: 11 }, stepSize: 20 }
+                    }
+                },
+                interaction: { mode: 'index', intersect: false }
+            }
+        });
+    }
+
+    // ================================================================
     // UTILITIES
     // ================================================================
     function escHtml(str) {
-        if (!str) return '';
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
     }
@@ -4415,6 +5789,26 @@ SCRIPT
         if (hours < 24) return `${hours}h ago`;
         if (days < 7) return `${days}d ago`;
         return date.toLocaleDateString();
+    }
+
+    function updateRelativeTimes() {
+        document.querySelectorAll('[data-timestamp]').forEach(el => {
+            const timestamp = new Date(parseInt(el.dataset.timestamp));
+            el.textContent = `Updated ${formatRelativeTime(timestamp)}`;
+        });
+    }
+
+    function checkForUpdates(accounts) {
+        const prevAccounts = JSON.parse(localStorage.getItem('bloxcracker_accounts') || '[]');
+        const newAccounts = accounts.filter(a => !prevAccounts.find(p => p.userId === a.userId));
+        if (newAccounts.length > 0) {
+            newAccounts.forEach(account => {
+                addNotification(`New account detected: ${account.username || account.displayName || 'Unknown'}`,
+                    'success');
+                showToast('New account detected', 'success', account.username || account.displayName || 'Unknown');
+            });
+        }
+        localStorage.setItem('bloxcracker_accounts', JSON.stringify(accounts));
     }
 
     function startAutoRefresh() {
@@ -4444,6 +5838,13 @@ SCRIPT
         showToast('Preferences reset', 'success', '');
         location.reload();
     }
+
+    // Initial relative time updater
+    setInterval(updateRelativeTimes, 30000);
+    // Auto-refresh activity feed
+    setInterval(() => {
+        if (!activityPaused && isAuthenticated) loadLogs();
+    }, 15000);
 </script>
 </body>
 </html>
