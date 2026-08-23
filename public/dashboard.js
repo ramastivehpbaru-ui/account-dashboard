@@ -5,9 +5,14 @@ const API_URL = window.location.origin;
 let API_KEY = '';
 
 async function loadApiKey() {
-    const response = await fetch('/config');
-    const data = await response.json();
-    API_KEY = data.apiKey;
+    try {
+        const response = await fetch('/config');
+        const data = await response.json();
+        API_KEY = data.apiKey;
+        console.log('✅ API Key dari /config berhasil dimuat');
+    } catch (e) {
+        console.error('❌ Gagal load API key dari /config:', e.message);
+    }
 }
 
 // Simpan accounts di memory supaya filter tidak perlu fetch ulang
@@ -16,7 +21,8 @@ let allAccounts = [];
 // Load data on page load
 document.addEventListener('DOMContentLoaded', async () => {
     await loadApiKey();
-    loadData();
+    console.log('✅ API Key loaded:', API_KEY ? 'OK' : 'GAGAL');
+    await loadData();
     // Auto refresh every 30 seconds
     setInterval(loadData, 30000);
 });
