@@ -5551,9 +5551,10 @@ SCRIPT
     }
 
     // ================================================================
-    // AVATAR HELPER (Roblox Avatar Headshot API)
+    // AVATAR HELPER (Roblox Thumbnails API v1 — avatar-headshot 420x420)
     // ================================================================
-    // Avatar: ambil dari cache, kalau belum ada return URL proxy Roblox langsung (bukan batch API)
+    // Kalau sudah di-cache, langsung return. Kalau belum, return string kosong
+    // dan biarkan batchFetchAvatars mengisi cache lalu re-render.
     function getAvatarUrl(account) {
         if (!account) return '';
         const userId = account.userId;
@@ -5561,11 +5562,9 @@ SCRIPT
         const cacheKey = String(userId);
         if (avatarCache.has(cacheKey)) {
             const cached = avatarCache.get(cacheKey);
-            if (cached && cached !== 'fallback') return cached;
-            if (cached === 'fallback') return '';
+            return (cached && cached !== 'fallback') ? cached : '';
         }
-        // URL gambar langsung dari Roblox (ini sudah jadi image URL, bukan JSON)
-        return `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
+        return ''; // belum di-fetch; batchFetchAvatars akan isi cache
     }
 
     async function batchFetchAvatars(accounts) {
@@ -5575,13 +5574,13 @@ SCRIPT
 
         if (userIds.length === 0) return;
 
-        const chunkSize = 100; // Roblox thumbnail API support sampai 100
+        const chunkSize = 100; // Roblox Thumbnails API max 100 IDs per request
         for (let i = 0; i < userIds.length; i += chunkSize) {
             const chunk = userIds.slice(i, i + chunkSize);
             try {
-                // Pakai thumbnail API yang proper — returns JSON dengan imageUrl per user
+                // Thumbnails API — return JSON { data: [{ targetId, state, imageUrl }] }
                 const response = await fetch(
-                    `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk.join(',')}&size=150x150&format=Png&isCircular=false`,
+                    `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk.join(',')}&size=420x420&format=Png&isCircular=false`,
                     { headers: { 'Accept': 'application/json' } }
                 );
                 if (!response.ok) throw new Error('API responded with ' + response.status);
@@ -5592,17 +5591,14 @@ SCRIPT
                         if (item.imageUrl && item.state === 'Completed') {
                             avatarCache.set(targetId, item.imageUrl);
                         } else {
-                            // Fallback ke URL langsung
-                            avatarCache.set(targetId, `https://www.roblox.com/headshot-thumbnail/image?userId=${targetId}&width=150&height=150&format=png`);
+                            avatarCache.set(targetId, 'fallback');
                         }
                     });
                 }
             } catch (error) {
-                console.warn('Failed to fetch avatar batch, using direct URLs:', error);
-                // Fallback: set URL langsung per user
-                chunk.forEach(id => {
-                    avatarCache.set(String(id), `https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=150&height=150&format=png`);
-                });
+                console.warn('batchFetchAvatars gagal untuk chunk:', error);
+                // Tandai sebagai fallback supaya tidak di-retry terus
+                chunk.forEach(id => avatarCache.set(String(id), 'fallback'));
             }
         }
     }
@@ -5635,7 +5631,11 @@ SCRIPT
             const data = await response.json();
             if (data.success) {
                 allAccounts = data.accounts || [];
+                // Render dulu tanpa avatar (cepat), lalu fetch avatar dan re-render
+                renderAccounts(allAccounts);
+                renderSpyData();
                 await batchFetchAvatars(allAccounts);
+                // Re-render setelah avatar di-cache supaya gambar muncul
                 renderAccounts(allAccounts);
                 renderSpyData();
                 updateStats(data.stats, allAccounts);
@@ -5956,9 +5956,9 @@ SCRIPT
         } else {
             container.innerHTML = pageLogs.map(log => {
                 const typeClass = log.type || 'info';
-                const avatarUrl = log.userId ?
-                    `https://www.roblox.com/headshot-thumbnail/image?userId=${log.userId}&width=60&height=60&format=png` :
-                    '';
+                // Pakai cache avatar jika tersedia, fallback ke string kosong
+                const logAccount = allAccounts.find(a => String(a.userId) === String(log.userId));
+                const avatarUrl = logAccount ? getAvatarUrl(logAccount) : '';
                 return `
                         <div class="notification-item" style="margin-bottom:8px;">
                             <div class="notification-icon ${typeClass}" style="position:relative; overflow:hidden;">
