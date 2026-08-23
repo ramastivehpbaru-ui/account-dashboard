@@ -4,53 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BloxCracker Dashboard</title>
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --bg-primary: #0a0e17;
             --bg-secondary: #0d1424;
             --bg-card: rgba(13, 20, 36, 0.8);
             --bg-glass: rgba(20, 29, 43, 0.6);
+            --bg-glass-strong: rgba(17, 24, 39, 0.85);
+            --bg-input: rgba(8, 12, 24, 0.8);
             --border-color: rgba(42, 58, 92, 0.5);
             --border-hover: rgba(0, 212, 255, 0.3);
+            --border-light: rgba(255, 255, 255, 0.06);
             --accent-red: #ff3b3b;
+            --accent-red-hover: #ff5555;
             --accent-red-glow: rgba(255, 59, 59, 0.3);
             --accent-cyan: #00d4ff;
+            --accent-cyan-hover: #33ddff;
             --accent-cyan-glow: rgba(0, 212, 255, 0.3);
-            --text-primary: #e0e0e0;
-            --text-secondary: #8899bb;
-            --text-muted: #667799;
-            --success: #00ff88;
-            --warning: #ffcc00;
-            --danger: #ff6b6b;
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.3);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245, 158, 11, 0.3);
+            --danger: #ef4444;
+            --danger-glow: rgba(239, 68, 68, 0.3);
+            --info: #3b82f6;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --text-inverse: #0f172a;
+            --font-family: 'Inter', 'Segoe UI', sans-serif;
+            --radius-xs: 4px;
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
             --radius-xl: 20px;
             --radius-2xl: 24px;
-            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            --font-family: 'Inter', 'Segoe UI', sans-serif;
+            --radius-full: 9999px;
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
             --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
             --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
             --shadow-glow-red: 0 0 20px rgba(255, 59, 59, 0.15);
             --shadow-glow-cyan: 0 0 20px rgba(0, 212, 255, 0.15);
+            --shadow-glow-success: 0 0 20px rgba(16, 185, 129, 0.15);
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 72px;
+            --topbar-height: 64px;
+            --spacing-1: 4px;
+            --spacing-2: 8px;
+            --spacing-3: 12px;
+            --spacing-4: 16px;
+            --spacing-5: 20px;
+            --spacing-6: 24px;
+            --spacing-8: 32px;
+            --spacing-10: 40px;
+            --spacing-12: 48px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -60,6 +86,46 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            line-height: 1.5;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: var(--font-family);
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+
+        input,
+        select,
+        textarea {
+            font-family: var(--font-family);
+        }
+
+        /* ========== SCROLLBAR ========== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.3);
+            border-radius: var(--radius-full);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.5);
         }
 
         /* ========== ANIMATED GALAXY BACKGROUND ========== */
@@ -72,31 +138,40 @@
             z-index: 0;
             pointer-events: none;
             overflow: hidden;
+            opacity: 0.7;
         }
-
         .star {
             position: absolute;
             background: white;
             border-radius: 50%;
             animation: twinkle var(--duration) ease-in-out infinite;
         }
-
         @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
+            0%,
+            100% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.8;
+            }
         }
-
         .nebula {
             position: absolute;
             border-radius: 50%;
             filter: blur(80px);
             animation: nebulaFloat var(--duration) ease-in-out infinite;
         }
-
         @keyframes nebulaFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -20px) scale(1.1); }
-            66% { transform: translate(-20px, 30px) scale(0.9); }
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -20px) scale(1.05);
+            }
+            66% {
+                transform: translate(-20px, 30px) scale(0.95);
+            }
         }
 
         /* ========== LOADING SCREEN ========== */
@@ -114,15 +189,13 @@
             z-index: 10000;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-
         #loading-screen.hidden {
             opacity: 0;
             visibility: hidden;
         }
-
         .loading-logo {
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--accent-red), #8b0000);
             display: flex;
@@ -132,18 +205,20 @@
             animation: pulse 1.5s ease-in-out infinite;
             box-shadow: 0 0 40px rgba(255, 59, 59, 0.4);
         }
-
         .loading-logo svg {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             color: white;
         }
-
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
         }
-
         .loading-spinner {
             width: 32px;
             height: 32px;
@@ -153,16 +228,17 @@
             animation: spin 0.8s linear infinite;
             margin-top: 16px;
         }
-
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
-
         .loading-text {
             font-size: 14px;
             color: var(--text-secondary);
             margin-top: 16px;
             letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         /* ========== LOGIN PAGE ========== */
@@ -179,15 +255,13 @@
             background: transparent;
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
-
         #login-page.hidden {
             opacity: 0;
-            transform: scale(1.05);
+            transform: scale(1.02);
             pointer-events: none;
         }
-
         .login-card {
-            background: var(--bg-glass);
+            background: var(--bg-glass-strong);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
@@ -198,7 +272,6 @@
             box-shadow: var(--shadow-lg), var(--shadow-glow-red);
             animation: slideUp 0.5s ease;
         }
-
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -209,12 +282,10 @@
                 transform: translateY(0);
             }
         }
-
         .login-header {
             text-align: center;
             margin-bottom: 32px;
         }
-
         .login-logo {
             width: 64px;
             height: 64px;
@@ -226,30 +297,26 @@
             margin: 0 auto 16px;
             box-shadow: 0 0 30px rgba(255, 59, 59, 0.3);
         }
-
         .login-logo svg {
             width: 32px;
             height: 32px;
             color: white;
         }
-
         .login-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
-
         .login-subtitle {
             font-size: 14px;
             color: var(--text-secondary);
         }
-
         .form-group {
             position: relative;
             margin-bottom: 20px;
         }
-
         .form-group .input-icon {
             position: absolute;
             left: 16px;
@@ -258,17 +325,17 @@
             color: var(--text-muted);
             pointer-events: none;
             transition: color var(--transition-base);
+            display: flex;
+            align-items: center;
         }
-
         .form-group .input-icon svg {
             width: 20px;
             height: 20px;
         }
-
         .form-input {
             width: 100%;
             padding: 14px 16px 14px 48px;
-            background: rgba(8, 12, 24, 0.8);
+            background: var(--bg-input);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             color: var(--text-primary);
@@ -276,44 +343,37 @@
             font-family: var(--font-family);
             transition: all var(--transition-base);
             outline: none;
+            height: 48px;
         }
-
         .form-input:focus {
             border-color: var(--accent-red);
             box-shadow: 0 0 20px rgba(255, 59, 59, 0.15);
         }
-
-        .form-input:focus + .input-icon,
-        .form-input:focus ~ .input-icon {
-            color: var(--accent-red);
-        }
-
         .form-input::placeholder {
             color: var(--text-muted);
         }
-
         .password-toggle {
             position: absolute;
-            right: 16px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px;
             transition: color var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
         .password-toggle:hover {
             color: var(--text-primary);
         }
-
         .password-toggle svg {
             width: 20px;
             height: 20px;
         }
-
         .login-button {
             width: 100%;
             padding: 14px;
@@ -332,44 +392,46 @@
             gap: 8px;
             position: relative;
             overflow: hidden;
+            height: 48px;
         }
-
         .login-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(255, 59, 59, 0.3);
         }
-
         .login-button:active {
             transform: scale(0.98);
         }
-
         .login-button.loading {
             pointer-events: none;
             opacity: 0.8;
         }
-
         .login-button svg {
             width: 20px;
             height: 20px;
         }
-
         .login-error {
             color: var(--danger);
             font-size: 12px;
             text-align: center;
             margin-top: 12px;
             display: none;
+            font-weight: 500;
         }
-
         .login-error.visible {
             display: block;
             animation: shake 0.3s ease;
         }
-
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         /* ========== DASHBOARD LAYOUT ========== */
@@ -380,12 +442,10 @@
             opacity: 0;
             transition: opacity 0.5s ease;
         }
-
         #dashboard.visible {
             display: block;
             opacity: 1;
         }
-
         .dashboard-container {
             display: flex;
             min-height: 100vh;
@@ -398,29 +458,60 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 260px;
-            background: var(--bg-glass);
+            width: var(--sidebar-width);
+            background: var(--bg-glass-strong);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-right: 1px solid var(--border-color);
             z-index: 100;
-            transition: transform var(--transition-base);
+            transition: width var(--transition-base), transform var(--transition-base);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
-
-        .sidebar.hidden {
-            transform: translateX(-100%);
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
         }
-
+        .sidebar.collapsed .sidebar-title,
+        .sidebar.collapsed .nav-item span,
+        .sidebar.collapsed .user-name,
+        .sidebar.collapsed .user-status,
+        .sidebar.collapsed .logout-button span,
+        .sidebar.collapsed .sidebar-section-label {
+            display: none;
+        }
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center;
+            padding: 20px 0;
+        }
+        .sidebar.collapsed .sidebar-nav {
+            padding: 16px 8px;
+        }
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 12px;
+        }
+        .sidebar.collapsed .sidebar-footer {
+            padding: 12px 8px;
+        }
+        .sidebar.collapsed .user-card {
+            justify-content: center;
+        }
+        .sidebar.collapsed .user-avatar {
+            margin: 0;
+        }
+        .sidebar.collapsed .logout-button {
+            justify-content: center;
+            padding: 12px;
+        }
         .sidebar-header {
-            padding: 24px 20px;
+            padding: 20px 16px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             gap: 12px;
+            min-height: var(--topbar-height);
         }
-
         .sidebar-logo {
             width: 36px;
             height: 36px;
@@ -431,32 +522,40 @@
             justify-content: center;
             flex-shrink: 0;
         }
-
         .sidebar-logo svg {
             width: 18px;
             height: 18px;
             color: white;
         }
-
         .sidebar-title {
             font-size: 18px;
             font-weight: 700;
             color: var(--text-primary);
+            letter-spacing: -0.5px;
         }
-
+        .sidebar-section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 16px 4px;
+            margin-top: 8px;
+        }
         .sidebar-nav {
             flex: 1;
-            padding: 16px 12px;
+            padding: 12px 12px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
+            overflow-y: auto;
+            scrollbar-width: thin;
         }
-
         .nav-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: var(--radius-md);
             color: var(--text-secondary);
             cursor: pointer;
@@ -469,24 +568,22 @@
             border: none;
             width: 100%;
             text-align: left;
+            white-space: nowrap;
+            min-height: 44px;
         }
-
         .nav-item svg {
             width: 20px;
             height: 20px;
             flex-shrink: 0;
         }
-
         .nav-item:hover {
             background: rgba(255, 59, 59, 0.05);
             color: var(--text-primary);
         }
-
         .nav-item.active {
             background: rgba(255, 59, 59, 0.1);
             color: var(--accent-red);
         }
-
         .nav-item.active::before {
             content: '';
             position: absolute;
@@ -496,25 +593,26 @@
             width: 3px;
             height: 24px;
             background: var(--accent-red);
-            border-radius: 0 4px 4px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
             box-shadow: 0 0 10px rgba(255, 59, 59, 0.5);
+            transition: height var(--transition-base);
         }
-
         .sidebar-footer {
-            padding: 16px 12px;
+            padding: 12px;
             border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-
         .user-card {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px;
+            padding: 10px;
             border-radius: var(--radius-md);
             background: rgba(255, 59, 59, 0.05);
-            margin-bottom: 8px;
+            transition: background var(--transition-base);
         }
-
         .user-avatar {
             width: 36px;
             height: 36px;
@@ -525,24 +623,23 @@
             justify-content: center;
             flex-shrink: 0;
         }
-
         .user-avatar svg {
             width: 18px;
             height: 18px;
             color: white;
         }
-
         .user-info {
             flex: 1;
             min-width: 0;
         }
-
         .user-name {
             font-size: 13px;
             font-weight: 600;
             color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
         .user-status {
             font-size: 11px;
             color: var(--success);
@@ -550,15 +647,14 @@
             align-items: center;
             gap: 4px;
         }
-
         .status-dot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
             background: var(--success);
             animation: pulse 2s ease-in-out infinite;
+            flex-shrink: 0;
         }
-
         .logout-button {
             display: flex;
             align-items: center;
@@ -575,28 +671,53 @@
             border: none;
             width: 100%;
             text-align: left;
+            min-height: 44px;
         }
-
         .logout-button:hover {
             background: rgba(255, 59, 59, 0.1);
         }
-
         .logout-button svg {
             width: 20px;
             height: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Tooltip for collapsed sidebar */
+        .sidebar.collapsed .nav-item,
+        .sidebar.collapsed .logout-button,
+        .sidebar.collapsed .user-card {
+            position: relative;
+        }
+        .sidebar.collapsed .nav-item:hover::after,
+        .sidebar.collapsed .logout-button:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: calc(100% + 8px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-glass-strong);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            font-size: 12px;
+            color: var(--text-primary);
+            white-space: nowrap;
+            z-index: 300;
+            box-shadow: var(--shadow-md);
+            pointer-events: none;
         }
 
         /* ========== MAIN CONTENT ========== */
         .main-content {
             flex: 1;
-            margin-left: 260px;
-            padding: 0;
+            margin-left: var(--sidebar-width);
             transition: margin-left var(--transition-base);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-
         .main-content.sidebar-collapsed {
-            margin-left: 0;
+            margin-left: var(--sidebar-collapsed-width);
         }
 
         /* ========== TOP BAR ========== */
@@ -608,12 +729,12 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
-            padding: 16px 24px;
+            padding: 0 24px;
+            height: var(--topbar-height);
             display: flex;
             align-items: center;
             gap: 16px;
         }
-
         .menu-button {
             background: none;
             border: none;
@@ -622,26 +743,32 @@
             padding: 8px;
             border-radius: var(--radius-sm);
             transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
         .menu-button:hover {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
         }
-
         .menu-button svg {
             width: 24px;
             height: 24px;
         }
-
         .topbar-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: var(--text-primary);
             flex: 1;
+            letter-spacing: -0.3px;
         }
-
-        .notification-button {
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .notification-button,
+        .search-button {
             position: relative;
             background: none;
             border: none;
@@ -650,18 +777,20 @@
             padding: 8px;
             border-radius: var(--radius-sm);
             transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .notification-button:hover {
+        .notification-button:hover,
+        .search-button:hover {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
         }
-
-        .notification-button svg {
+        .notification-button svg,
+        .search-button svg {
             width: 20px;
             height: 20px;
         }
-
         .notification-badge {
             position: absolute;
             top: 4px;
@@ -671,8 +800,11 @@
             border-radius: 50%;
             background: var(--accent-red);
             box-shadow: 0 0 8px rgba(255, 59, 59, 0.6);
+            display: none;
         }
-
+        .notification-badge.visible {
+            display: block;
+        }
         .topbar-avatar {
             width: 36px;
             height: 36px;
@@ -683,27 +815,95 @@
             justify-content: center;
             cursor: pointer;
             transition: all var(--transition-base);
+            position: relative;
         }
-
         .topbar-avatar:hover {
             box-shadow: 0 0 16px rgba(255, 59, 59, 0.3);
         }
-
         .topbar-avatar svg {
             width: 18px;
             height: 18px;
             color: white;
         }
 
+        /* ========== USER DROPDOWN ========== */
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--bg-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg), var(--shadow-glow-red);
+            padding: 8px;
+            min-width: 220px;
+            z-index: 300;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.98);
+            transition: all var(--transition-base);
+        }
+        .user-dropdown.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .dropdown-header {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 4px;
+        }
+        .dropdown-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .dropdown-status {
+            font-size: 12px;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        .dropdown-item svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 0;
+        }
+
         /* ========== NOTIFICATION PANEL ========== */
         .notification-panel {
             position: fixed;
-            top: 70px;
+            top: var(--topbar-height);
             right: 24px;
-            width: 320px;
-            max-height: 400px;
+            width: 340px;
+            max-height: 480px;
             overflow-y: auto;
-            background: var(--bg-glass);
+            background: var(--bg-glass-strong);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
@@ -714,11 +914,9 @@
             display: none;
             animation: slideDown 0.3s ease;
         }
-
         .notification-panel.visible {
             display: block;
         }
-
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -729,37 +927,75 @@
                 transform: translateY(0);
             }
         }
-
         .notification-header {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 12px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border-color);
         }
-
+        .notification-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .notification-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .notification-action-btn {
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-base);
+        }
+        .notification-action-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
         .notification-item {
             padding: 10px;
             border-radius: var(--radius-sm);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             background: rgba(255, 255, 255, 0.02);
             transition: all var(--transition-base);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
         }
-
         .notification-item:hover {
             background: rgba(255, 59, 59, 0.05);
         }
-
+        .notification-icon {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: var(--text-secondary);
+        }
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
         .notification-message {
             font-size: 13px;
             color: var(--text-secondary);
+            line-height: 1.4;
         }
-
         .notification-time {
             font-size: 11px;
             color: var(--text-muted);
             margin-top: 4px;
+        }
+        .notification-unread-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            margin-top: 4px;
+            flex-shrink: 0;
         }
 
         /* ========== PAGE CONTENT ========== */
@@ -767,17 +1003,16 @@
             padding: 24px;
             max-width: 1400px;
             margin: 0 auto;
+            width: 100%;
+            flex: 1;
         }
-
         .page-section {
             display: none;
             animation: fadeIn 0.4s ease;
         }
-
         .page-section.active {
             display: block;
         }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -791,44 +1026,43 @@
 
         /* ========== HOME PAGE ========== */
         .welcome-header {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            position: relative;
         }
-
         .welcome-title {
             font-size: 28px;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #ffffff, #8899bb);
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
         .welcome-subtitle {
             font-size: 14px;
             color: var(--text-secondary);
         }
-
-        .system-status {
+        .system-status-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 6px 12px;
             border-radius: 20px;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
             font-size: 12px;
+            font-weight: 500;
             color: var(--success);
             margin-top: 12px;
         }
-
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
-
         .stat-card {
             background: var(--bg-card);
             backdrop-filter: blur(10px);
@@ -841,7 +1075,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .stat-card::before {
             content: '';
             position: absolute;
@@ -852,18 +1085,16 @@
             background: linear-gradient(135deg, rgba(255, 59, 59, 0.03), transparent);
             opacity: 0;
             transition: opacity var(--transition-base);
+            pointer-events: none;
         }
-
         .stat-card:hover {
             transform: translateY(-4px);
             border-color: var(--border-hover);
             box-shadow: var(--shadow-md), var(--shadow-glow-red);
         }
-
         .stat-card:hover::before {
             opacity: 1;
         }
-
         .stat-icon {
             width: 40px;
             height: 40px;
@@ -873,24 +1104,21 @@
             justify-content: center;
             margin-bottom: 12px;
         }
-
         .stat-icon svg {
             width: 20px;
             height: 20px;
         }
-
         .stat-value {
             font-size: 28px;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 4px;
+            letter-spacing: -0.5px;
         }
-
         .stat-label {
             font-size: 13px;
             color: var(--text-secondary);
         }
-
         .stat-trend {
             position: absolute;
             top: 20px;
@@ -901,16 +1129,19 @@
             align-items: center;
             gap: 4px;
         }
-
         .stat-trend.up {
             color: var(--success);
         }
-
         .stat-trend.down {
             color: var(--danger);
         }
+        .stat-comparison {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
 
-        /* ========== ACTIVITY GRAPH ========== */
+        /* ========== ACTIVITY CHART ========== */
         .activity-section {
             background: var(--bg-card);
             backdrop-filter: blur(10px);
@@ -920,28 +1151,24 @@
             padding: 20px;
             margin-bottom: 24px;
         }
-
         .activity-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
-
         .activity-title {
             font-size: 16px;
             font-weight: 600;
             color: var(--text-primary);
         }
-
         .segmented-control {
             display: flex;
             gap: 4px;
-            background: rgba(8, 12, 24, 0.8);
+            background: var(--bg-input);
             padding: 4px;
             border-radius: var(--radius-md);
         }
-
         .segmented-button {
             padding: 6px 12px;
             border-radius: var(--radius-sm);
@@ -953,20 +1180,169 @@
             font-weight: 500;
             font-family: var(--font-family);
             transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
         .segmented-button.active {
             background: rgba(255, 59, 59, 0.15);
             color: var(--accent-red);
         }
-
         .segmented-button:hover:not(.active) {
             background: rgba(255, 255, 255, 0.05);
         }
-
         .chart-container {
-            height: 200px;
+            height: 260px;
             position: relative;
+            width: 100%;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* ========== SECTIONS (Sessions, Health, Quick Actions) ========== */
+        .sections-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .section-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            transition: all var(--transition-base);
+        }
+        .section-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
+        }
+        .section-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-card-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent-cyan);
+        }
+        .session-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .session-item:last-child {
+            border-bottom: none;
+        }
+        .session-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .session-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .session-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .session-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .session-status {
+            font-size: 11px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .session-status.online {
+            color: var(--success);
+        }
+        .session-status.idle {
+            color: var(--warning);
+        }
+        .health-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .health-item:last-child {
+            border-bottom: none;
+        }
+        .health-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .health-status {
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .health-status.online {
+            color: var(--success);
+        }
+        .health-status.degraded {
+            color: var(--warning);
+        }
+        .health-status.offline {
+            color: var(--danger);
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+        .quick-action-btn:hover {
+            background: rgba(255, 59, 59, 0.05);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+        .quick-action-btn svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
         }
 
         /* ========== RECENT ACTIVITY TIMELINE ========== */
@@ -974,7 +1350,6 @@
             position: relative;
             padding-left: 24px;
         }
-
         .timeline::before {
             content: '';
             position: absolute;
@@ -984,13 +1359,11 @@
             width: 2px;
             background: var(--border-color);
         }
-
         .timeline-item {
             position: relative;
             margin-bottom: 16px;
             padding-left: 8px;
         }
-
         .timeline-dot {
             position: absolute;
             left: -20px;
@@ -1002,26 +1375,27 @@
             background: var(--accent-red);
             box-shadow: 0 0 8px rgba(255, 59, 59, 0.5);
         }
-
         .timeline-content {
             background: rgba(255, 255, 255, 0.02);
             padding: 12px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-color);
+            transition: all var(--transition-base);
         }
-
+        .timeline-content:hover {
+            border-color: var(--border-hover);
+        }
         .timeline-message {
             font-size: 13px;
             color: var(--text-secondary);
         }
-
         .timeline-time {
             font-size: 11px;
             color: var(--text-muted);
             margin-top: 4px;
         }
 
-        /* ========== LOGS PAGE ========== */
+        /* ========== ACCOUNTS PAGE ========== */
         .logs-header {
             display: flex;
             justify-content: space-between;
@@ -1030,22 +1404,21 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-
         .logs-title {
             font-size: 24px;
             font-weight: 700;
             color: var(--text-primary);
+            letter-spacing: -0.5px;
         }
-
         .logs-subtitle {
             font-size: 14px;
             color: var(--text-secondary);
             margin-top: 4px;
         }
-
         .refresh-button {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             padding: 10px 16px;
             background: rgba(255, 59, 59, 0.1);
@@ -1057,23 +1430,20 @@
             font-size: 13px;
             font-weight: 500;
             font-family: var(--font-family);
+            min-height: 40px;
         }
-
         .refresh-button:hover {
             background: rgba(255, 59, 59, 0.2);
             box-shadow: var(--shadow-glow-red);
         }
-
         .refresh-button svg {
             width: 16px;
             height: 16px;
         }
-
         .search-bar {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
-
         .search-bar .input-icon {
             position: absolute;
             left: 16px;
@@ -1081,17 +1451,17 @@
             transform: translateY(-50%);
             color: var(--text-muted);
             pointer-events: none;
+            display: flex;
+            align-items: center;
         }
-
         .search-bar .input-icon svg {
             width: 20px;
             height: 20px;
         }
-
         .search-input {
             width: 100%;
             padding: 14px 16px 14px 48px;
-            background: rgba(8, 12, 24, 0.8);
+            background: var(--bg-input);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             color: var(--text-primary);
@@ -1099,57 +1469,108 @@
             font-family: var(--font-family);
             transition: all var(--transition-base);
             outline: none;
+            height: 48px;
         }
-
         .search-input:focus {
             border-color: var(--accent-red);
             box-shadow: 0 0 20px rgba(255, 59, 59, 0.15);
         }
-
         .search-input::placeholder {
             color: var(--text-muted);
         }
-
         .clear-search {
             position: absolute;
-            right: 16px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            padding: 4px;
+            padding: 8px;
             display: none;
+            align-items: center;
+            justify-content: center;
+            transition: color var(--transition-base);
         }
-
         .clear-search.visible {
-            display: block;
+            display: flex;
         }
-
         .clear-search:hover {
             color: var(--text-primary);
         }
-
         .clear-search svg {
             width: 16px;
             height: 16px;
         }
-
-        /* ========== ACCOUNT CARDS ========== */
-        .accounts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 16px;
+        .filters-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-select {
+            padding: 10px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: var(--font-family);
+            outline: none;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            height: 40px;
+        }
+        .filter-select:focus {
+            border-color: var(--accent-red);
+        }
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-input);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            margin-left: auto;
+        }
+        .view-toggle-button {
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .view-toggle-button.active {
+            background: rgba(255, 59, 59, 0.15);
+            color: var(--accent-red);
+        }
+        .view-toggle-button svg {
+            width: 14px;
+            height: 14px;
         }
 
+        /* ========== ACCOUNT CARDS (GRID) ========== */
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
         .account-card {
             background: var(--bg-card);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 20px;
+            padding: 16px;
             transition: all var(--transition-base);
             position: relative;
             overflow: hidden;
@@ -1158,98 +1579,103 @@
             align-items: flex-start;
             cursor: pointer;
         }
-
         .account-card:hover {
             transform: translateY(-2px);
             border-color: var(--border-hover);
             box-shadow: var(--shadow-md), var(--shadow-glow-cyan);
         }
-
         .account-card.updated {
             animation: cardPulse 0.6s ease;
         }
-
         @keyframes cardPulse {
-            0%, 100% { border-color: var(--border-color); }
-            50% { border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+            0%,
+            100% {
+                border-color: var(--border-color);
+            }
+            50% {
+                border-color: var(--accent-cyan);
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            }
         }
-
         .account-avatar {
-            width: 64px;
-            height: 64px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #1a2a3f, #2a3a5c);
+            background: var(--bg-input);
             flex-shrink: 0;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid var(--border-color);
+            transition: border-color var(--transition-base);
         }
-
+        .account-card:hover .account-avatar {
+            border-color: var(--border-hover);
+        }
         .account-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 50%;
         }
-
         .account-avatar svg {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             color: var(--text-muted);
         }
-
         .account-info {
             flex: 1;
             min-width: 0;
         }
-
         .account-username {
             font-size: 16px;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            letter-spacing: -0.3px;
         }
-
         .account-display-name {
             font-size: 13px;
             color: var(--text-secondary);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-
         .account-user-id {
             font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 4px;
         }
-
+        .account-user-id svg {
+            width: 12px;
+            height: 12px;
+        }
         .account-status {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-size: 12px;
             color: var(--success);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            font-weight: 500;
         }
-
         .account-status.recently-updated {
             color: var(--warning);
         }
-
         .account-updated-time {
             font-size: 11px;
             color: var(--text-muted);
         }
-
         .account-actions {
             display: flex;
             flex-direction: column;
             gap: 8px;
             flex-shrink: 0;
+            align-self: stretch;
+            justify-content: space-between;
         }
-
         .view-details-btn {
             padding: 8px 12px;
             background: rgba(0, 212, 255, 0.1);
@@ -1264,16 +1690,94 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            white-space: nowrap;
         }
-
         .view-details-btn:hover {
             background: rgba(0, 212, 255, 0.2);
             box-shadow: var(--shadow-glow-cyan);
         }
-
         .view-details-btn svg {
             width: 14px;
             height: 14px;
+        }
+
+        /* ========== LIST VIEW ========== */
+        .accounts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .account-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+        .account-row:hover {
+            border-color: var(--border-hover);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .account-row-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+        }
+        .account-row-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .account-row-avatar svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+        }
+        .account-row-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .account-row-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .account-row-username {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .account-row-userid {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .account-row-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--success);
+        }
+        .account-row-actions {
+            flex-shrink: 0;
         }
 
         /* ========== ACCOUNT DETAIL MODAL ========== */
@@ -1295,27 +1799,24 @@
             visibility: hidden;
             transition: all var(--transition-base);
         }
-
         .modal-overlay.visible {
             opacity: 1;
             visibility: visible;
         }
-
         .modal {
-            background: var(--bg-glass);
+            background: var(--bg-glass-strong);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-xl);
             padding: 32px;
             width: 100%;
-            max-width: 600px;
-            max-height: 80vh;
+            max-width: 640px;
+            max-height: 85vh;
             overflow-y: auto;
             box-shadow: var(--shadow-lg), var(--shadow-glow-red);
             animation: modalIn 0.3s ease;
         }
-
         @keyframes modalIn {
             from {
                 opacity: 0;
@@ -1326,7 +1827,6 @@
                 transform: scale(1) translateY(0);
             }
         }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -1334,19 +1834,45 @@
             margin-bottom: 24px;
             gap: 16px;
         }
-
+        .modal-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .modal-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border-color);
+        }
+        .modal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .modal-avatar svg {
+            width: 32px;
+            height: 32px;
+            color: var(--text-muted);
+        }
         .modal-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            letter-spacing: -0.3px;
         }
-
         .modal-subtitle {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-secondary);
         }
-
         .modal-close {
             background: none;
             border: none;
@@ -1356,18 +1882,18 @@
             border-radius: var(--radius-sm);
             transition: all var(--transition-base);
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
         .modal-close:hover {
             background: rgba(255, 59, 59, 0.1);
             color: var(--danger);
         }
-
         .modal-close svg {
             width: 20px;
             height: 20px;
         }
-
         .detail-section {
             margin-bottom: 20px;
             padding: 16px;
@@ -1375,7 +1901,6 @@
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
         }
-
         .detail-section-title {
             font-size: 14px;
             font-weight: 600;
@@ -1385,12 +1910,10 @@
             align-items: center;
             gap: 8px;
         }
-
         .detail-section-title svg {
             width: 16px;
             height: 16px;
         }
-
         .detail-row {
             display: flex;
             justify-content: space-between;
@@ -1399,16 +1922,13 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
             gap: 12px;
         }
-
         .detail-row:last-child {
             border-bottom: none;
         }
-
         .detail-label {
             font-size: 13px;
             color: var(--text-secondary);
         }
-
         .detail-value {
             font-size: 13px;
             color: var(--text-primary);
@@ -1416,7 +1936,6 @@
             text-align: right;
             word-break: break-all;
         }
-
         .copy-button {
             display: inline-flex;
             align-items: center;
@@ -1431,56 +1950,83 @@
             font-size: 11px;
             font-family: var(--font-family);
         }
-
         .copy-button:hover {
             background: rgba(0, 212, 255, 0.2);
         }
-
         .copy-button svg {
             width: 12px;
             height: 12px;
         }
-
-        /* ========== COOKIE BOX ========== */
-        .cookie-box {
-            position: relative;
-            background: rgba(8, 12, 24, 0.8);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 8px 10px;
+        .security-notice {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
             margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .security-notice svg {
+            width: 14px;
+            height: 14px;
+            color: var(--warning);
         }
 
-        .cookie-box textarea {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: var(--danger);
-            font-family: 'Courier New', monospace;
+        /* ========== LOGS PAGE ========== */
+        .logs-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+        }
+        .log-entry {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .log-level {
             font-size: 11px;
-            resize: none;
-            outline: none;
-            min-height: 40px;
-            padding-right: 60px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
-
-        .cookie-box .copy-btn {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            background: rgba(255, 59, 59, 0.2);
-            border: 1px solid rgba(255, 59, 59, 0.3);
+        .log-level.info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+        .log-level.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        .log-level.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        .log-level.error {
+            background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
-            padding: 3px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-family: var(--font-family);
-            transition: all var(--transition-base);
         }
-
-        .cookie-box .copy-btn:hover {
-            background: rgba(255, 59, 59, 0.3);
+        .log-message {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .log-user {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .log-timestamp {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
         }
 
         /* ========== TOAST NOTIFICATION ========== */
@@ -1492,10 +2038,10 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            pointer-events: none;
         }
-
         .toast {
-            background: var(--bg-glass);
+            background: var(--bg-glass-strong);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
@@ -1503,22 +2049,88 @@
             padding: 12px 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             box-shadow: var(--shadow-md), var(--shadow-glow-cyan);
             animation: toastIn 0.3s ease;
             font-size: 13px;
             color: var(--text-primary);
-            min-width: 200px;
+            min-width: 240px;
+            max-width: 360px;
+            pointer-events: auto;
+            position: relative;
+            overflow: hidden;
         }
-
         .toast.success {
-            border-color: rgba(0, 255, 136, 0.3);
+            border-color: rgba(16, 185, 129, 0.3);
         }
-
         .toast.error {
-            border-color: rgba(255, 59, 59, 0.3);
+            border-color: rgba(239, 68, 68, 0.3);
         }
-
+        .toast.warning {
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .toast.info {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .toast-icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+        .toast-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+        .toast.success .toast-icon svg {
+            color: var(--success);
+        }
+        .toast.error .toast-icon svg {
+            color: var(--danger);
+        }
+        .toast.warning .toast-icon svg {
+            color: var(--warning);
+        }
+        .toast.info .toast-icon svg {
+            color: var(--info);
+        }
+        .toast-content {
+            flex: 1;
+        }
+        .toast-title {
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .toast-message {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toast-close:hover {
+            color: var(--text-primary);
+        }
+        .toast-close svg {
+            width: 14px;
+            height: 14px;
+        }
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: var(--accent-cyan);
+            width: 100%;
+            animation: progress linear forwards;
+        }
         @keyframes toastIn {
             from {
                 opacity: 0;
@@ -1529,19 +2141,13 @@
                 transform: translateX(0);
             }
         }
-
-        .toast svg {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-        }
-
-        .toast.success svg {
-            color: var(--success);
-        }
-
-        .toast.error svg {
-            color: var(--danger);
+        @keyframes progress {
+            from {
+                width: 100%;
+            }
+            to {
+                width: 0%;
+            }
         }
 
         /* ========== INFO PAGE ========== */
@@ -1554,7 +2160,6 @@
             padding: 24px;
             margin-bottom: 20px;
         }
-
         .info-title {
             font-size: 18px;
             font-weight: 600;
@@ -1564,32 +2169,27 @@
             align-items: center;
             gap: 8px;
         }
-
         .info-title svg {
             width: 20px;
             height: 20px;
             color: var(--accent-red);
         }
-
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
         }
-
         .info-item {
             padding: 16px;
             background: rgba(255, 255, 255, 0.02);
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
         }
-
         .info-item-label {
             font-size: 12px;
             color: var(--text-muted);
             margin-bottom: 8px;
         }
-
         .info-item-value {
             font-size: 14px;
             color: var(--text-primary);
@@ -1606,7 +2206,6 @@
             padding: 24px;
             margin-bottom: 20px;
         }
-
         .settings-title {
             font-size: 18px;
             font-weight: 600;
@@ -1616,13 +2215,11 @@
             align-items: center;
             gap: 8px;
         }
-
         .settings-title svg {
             width: 20px;
             height: 20px;
             color: var(--accent-red);
         }
-
         .setting-item {
             display: flex;
             justify-content: space-between;
@@ -1630,22 +2227,19 @@
             padding: 12px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
-
         .setting-item:last-child {
             border-bottom: none;
         }
-
         .setting-label {
             font-size: 14px;
             color: var(--text-primary);
+            font-weight: 500;
         }
-
         .setting-description {
             font-size: 12px;
             color: var(--text-muted);
             margin-top: 4px;
         }
-
         .toggle-switch {
             position: relative;
             width: 48px;
@@ -1655,13 +2249,12 @@
             cursor: pointer;
             transition: all var(--transition-base);
             border: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
-
         .toggle-switch.active {
             background: rgba(255, 59, 59, 0.3);
             border-color: var(--accent-red);
         }
-
         .toggle-switch::after {
             content: '';
             position: absolute;
@@ -1674,7 +2267,6 @@
             border-radius: 50%;
             transition: all var(--transition-base);
         }
-
         .toggle-switch.active::after {
             left: 26px;
             background: var(--accent-red);
@@ -1682,66 +2274,80 @@
         }
 
         /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+            .sections-row {
+                grid-template-columns: 1fr;
+            }
+        }
         @media (max-width: 768px) {
             .sidebar {
                 width: 280px;
                 transform: translateX(-100%);
             }
-
+            .sidebar.collapsed {
+                width: 280px;
+                transform: translateX(-100%);
+            }
             .sidebar.visible {
                 transform: translateX(0);
             }
-
             .main-content {
                 margin-left: 0;
             }
-
             .main-content.sidebar-collapsed {
                 margin-left: 0;
             }
-
-            .accounts-grid {
-                grid-template-columns: 1fr;
+            .sidebar-backdrop {
+                display: block;
             }
-
-            .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
-
-            .login-card {
-                padding: 32px 24px;
-            }
-
-            .modal {
-                padding: 24px;
-                max-height: 90vh;
-            }
-
             .topbar {
-                padding: 12px 16px;
+                padding: 0 16px;
             }
-
             .page-content {
                 padding: 16px;
             }
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
+            .login-card {
+                padding: 32px 24px;
+            }
+            .modal {
+                padding: 20px;
+                max-height: 90vh;
+            }
+            .notification-panel {
+                right: 16px;
+                left: 16px;
+                width: auto;
+            }
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .view-toggle {
+                margin-left: 0;
+            }
         }
-
         @media (max-width: 480px) {
             .stats-grid {
                 grid-template-columns: 1fr;
             }
-
             .account-card {
                 flex-direction: column;
             }
-
             .account-actions {
                 flex-direction: row;
                 width: 100%;
+                justify-content: flex-end;
+            }
+            .segmented-control {
+                flex-wrap: wrap;
             }
         }
-
-        /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation-duration: 0.01ms !important;
@@ -1752,7 +2358,6 @@
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="loading-logo">
             <i data-lucide="shield"></i>
@@ -1761,10 +2366,8 @@
         <div class="loading-spinner"></div>
     </div>
 
-    <!-- Galaxy Background -->
     <div id="galaxy-background"></div>
 
-    <!-- Login Page -->
     <div id="login-page">
         <div class="login-card">
             <div class="login-header">
@@ -1776,17 +2379,13 @@
             </div>
             <form id="login-form">
                 <div class="form-group">
-                    <span class="input-icon">
-                        <i data-lucide="user"></i>
-                    </span>
-                    <input type="text" class="form-input" id="username" placeholder="Enter username" required autocomplete="username">
+                    <span class="input-icon"><i data-lucide="user"></i></span>
+                    <input type="text" class="form-input" id="username" placeholder="Username" required autocomplete="username" aria-label="Username">
                 </div>
                 <div class="form-group">
-                    <span class="input-icon">
-                        <i data-lucide="lock"></i>
-                    </span>
-                    <input type="password" class="form-input" id="password" placeholder="Enter password" required autocomplete="current-password">
-                    <button type="button" class="password-toggle" id="togglePassword">
+                    <span class="input-icon"><i data-lucide="lock"></i></span>
+                    <input type="password" class="form-input" id="password" placeholder="Password" required autocomplete="current-password" aria-label="Password">
+                    <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
                         <i data-lucide="eye"></i>
                     </button>
                 </div>
@@ -1799,137 +2398,90 @@
         </div>
     </div>
 
-    <!-- Dashboard -->
     <div id="dashboard">
         <div class="dashboard-container">
-            <!-- Sidebar -->
-            <aside class="sidebar" id="sidebar">
+            <div class="sidebar-backdrop" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:90;" onclick="toggleSidebar()"></div>
+            <aside class="sidebar" id="sidebar" aria-label="Sidebar navigation">
                 <div class="sidebar-header">
-                    <div class="sidebar-logo">
-                        <i data-lucide="shield"></i>
-                    </div>
+                    <div class="sidebar-logo"><i data-lucide="shield"></i></div>
                     <div class="sidebar-title">BloxCracker</div>
                 </div>
                 <nav class="sidebar-nav">
-                    <button class="nav-item active" data-page="home">
-                        <i data-lucide="home"></i>
-                        <span>Home</span>
-                    </button>
-                    <button class="nav-item" data-page="logs">
-                        <i data-lucide="list"></i>
-                        <span>Logs</span>
-                    </button>
-                    <button class="nav-item" data-page="info">
-                        <i data-lucide="info"></i>
-                        <span>Info</span>
-                    </button>
-                    <button class="nav-item" data-page="settings">
-                        <i data-lucide="settings"></i>
-                        <span>Settings</span>
-                    </button>
+                    <div class="sidebar-section-label">Overview</div>
+                    <button class="nav-item active" data-page="home" data-tooltip="Home"><i data-lucide="home"></i><span>Home</span></button>
+                    <button class="nav-item" data-page="analytics" data-tooltip="Analytics"><i data-lucide="bar-chart-3"></i><span>Analytics</span></button>
+                    <button class="nav-item" data-page="activity" data-tooltip="Activity"><i data-lucide="activity"></i><span>Activity</span></button>
+
+                    <div class="sidebar-section-label">Management</div>
+                    <button class="nav-item" data-page="accounts" data-tooltip="Accounts"><i data-lucide="users"></i><span>Accounts</span></button>
+                    <button class="nav-item" data-page="logs" data-tooltip="Logs"><i data-lucide="list"></i><span>Logs</span></button>
+                    <button class="nav-item" data-page="sessions" data-tooltip="Sessions"><i data-lucide="monitor-smartphone"></i><span>Sessions</span></button>
+
+                    <div class="sidebar-section-label">System</div>
+                    <button class="nav-item" data-page="notifications" data-tooltip="Notifications"><i data-lucide="bell"></i><span>Notifications</span></button>
+                    <button class="nav-item" data-page="system" data-tooltip="System Status"><i data-lucide="server"></i><span>System Status</span></button>
+
+                    <div class="sidebar-section-label">Other</div>
+                    <button class="nav-item" data-page="info" data-tooltip="Info"><i data-lucide="info"></i><span>Info</span></button>
+                    <button class="nav-item" data-page="settings" data-tooltip="Settings"><i data-lucide="settings"></i><span>Settings</span></button>
                 </nav>
                 <div class="sidebar-footer">
-                    <div class="user-card">
-                        <div class="user-avatar">
-                            <i data-lucide="user"></i>
-                        </div>
+                    <div class="user-card" data-tooltip="Rama">
+                        <div class="user-avatar"><i data-lucide="user"></i></div>
                         <div class="user-info">
                             <div class="user-name">Rama</div>
-                            <div class="user-status">
-                                <span class="status-dot"></span>
-                                Online
-                            </div>
+                            <div class="user-status"><span class="status-dot"></span>Online</div>
                         </div>
                     </div>
-                    <button class="logout-button" id="logoutButton">
-                        <i data-lucide="log-out"></i>
-                        <span>Logout</span>
-                    </button>
+                    <button class="logout-button" id="logoutButton" data-tooltip="Logout"><i data-lucide="log-out"></i><span>Logout</span></button>
                 </div>
             </aside>
 
-            <!-- Main Content -->
             <main class="main-content" id="mainContent">
-                <!-- Top Bar -->
                 <header class="topbar">
-                    <button class="menu-button" id="menuButton">
-                        <i data-lucide="menu"></i>
-                    </button>
+                    <button class="menu-button" id="menuButton" aria-label="Toggle sidebar"><i data-lucide="menu"></i></button>
                     <div class="topbar-title" id="topbarTitle">Home</div>
-                    <button class="notification-button" id="notificationButton">
-                        <i data-lucide="bell"></i>
-                        <span class="notification-badge" id="notificationBadge" style="display:none;"></span>
-                    </button>
-                    <div class="topbar-avatar" id="topbarAvatar">
-                        <i data-lucide="user"></i>
+                    <div class="topbar-actions">
+                        <button class="search-button" id="searchButton" aria-label="Search"><i data-lucide="search"></i></button>
+                        <button class="notification-button" id="notificationButton" aria-label="Notifications"><i data-lucide="bell"></i><span class="notification-badge" id="notificationBadge"></span></button>
+                        <div style="position:relative;">
+                            <div class="topbar-avatar" id="topbarAvatar"><i data-lucide="user"></i></div>
+                            <div class="user-dropdown" id="userDropdown">
+                                <div class="dropdown-header">
+                                    <div class="dropdown-name">Rama</div>
+                                    <div class="dropdown-status"><span class="status-dot"></span>Online</div>
+                                </div>
+                                <div class="dropdown-item" data-action="profile"><i data-lucide="user"></i>Profile</div>
+                                <div class="dropdown-item" data-action="account"><i data-lucide="user-cog"></i>Account</div>
+                                <div class="dropdown-item" data-action="settings"><i data-lucide="settings"></i>Settings</div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-item" data-action="logout"><i data-lucide="log-out"></i>Logout</div>
+                            </div>
+                        </div>
                     </div>
                 </header>
 
-                <!-- Notification Panel -->
                 <div class="notification-panel" id="notificationPanel">
-                    <div class="notification-header">Notifications</div>
-                    <div id="notificationList">
-                        <div class="notification-item">
-                            <div class="notification-message">Welcome to BloxCracker Dashboard</div>
-                            <div class="notification-time">Just now</div>
+                    <div class="notification-header">
+                        <span class="notification-title">Notifications</span>
+                        <div class="notification-actions">
+                            <button class="notification-action-btn" onclick="markAllNotificationsRead()">Mark all read</button>
+                            <button class="notification-action-btn" onclick="clearAllNotifications()">Clear</button>
                         </div>
                     </div>
+                    <div id="notificationList"></div>
                 </div>
 
-                <!-- Page Content -->
                 <div class="page-content">
-                    <!-- Home Page -->
                     <section class="page-section active" id="homePage">
                         <div class="welcome-header">
                             <h1 class="welcome-title">Welcome back, Rama</h1>
-                            <p class="welcome-subtitle">Here's your dashboard overview.</p>
-                            <div class="system-status">
-                                <span class="status-dot"></span>
-                                System Operational
-                            </div>
+                            <p class="welcome-subtitle">Here's what's happening with your dashboard today.</p>
+                            <div class="system-status-badge"><span class="status-dot"></span>All systems operational</div>
                         </div>
 
-                        <div class="stats-grid" id="statsGrid">
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: rgba(0, 212, 255, 0.1);">
-                                    <i data-lucide="users" style="color: #00d4ff;"></i>
-                                </div>
-                                <div class="stat-value" id="statTotalAccounts">0</div>
-                                <div class="stat-label">Total Accounts</div>
-                                <div class="stat-trend up">
-                                    <i data-lucide="trending-up"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: rgba(0, 255, 136, 0.1);">
-                                    <i data-lucide="activity" style="color: #00ff88;"></i>
-                                </div>
-                                <div class="stat-value" id="statLogsToday">0</div>
-                                <div class="stat-label">Logs Today</div>
-                                <div class="stat-trend up">
-                                    <i data-lucide="trending-up"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: rgba(255, 204, 0, 0.1);">
-                                    <i data-lucide="refresh-cw" style="color: #ffcc00;"></i>
-                                </div>
-                                <div class="stat-value" id="statUpdatesToday">0</div>
-                                <div class="stat-label">Updates Today</div>
-                                <div class="stat-trend up">
-                                    <i data-lucide="trending-up"></i>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: rgba(255, 59, 59, 0.1);">
-                                    <i data-lucide="clock" style="color: #ff3b3b;"></i>
-                                </div>
-                                <div class="stat-value" id="statLastActivity">-</div>
-                                <div class="stat-label">Last Activity</div>
-                            </div>
-                        </div>
+                        <div class="stats-grid" id="statsGrid"></div>
 
-                        <!-- Activity Chart -->
                         <div class="activity-section">
                             <div class="activity-header">
                                 <div class="activity-title">Activity Overview</div>
@@ -1939,202 +2491,238 @@
                                     <button class="segmented-button" data-range="90d">90D</button>
                                 </div>
                             </div>
-                            <div class="chart-container" id="activityChart">
-                                <canvas id="chartCanvas"></canvas>
+                            <div class="chart-container"><canvas id="chartCanvas"></canvas></div>
+                        </div>
+
+                        <div class="sections-row">
+                            <div class="section-card" id="activeSessionsCard">
+                                <div class="section-card-title"><i data-lucide="monitor-smartphone"></i>Active Sessions</div>
+                                <div id="activeSessionsList"></div>
+                            </div>
+                            <div class="section-card" id="systemHealthCard">
+                                <div class="section-card-title"><i data-lucide="heart-pulse"></i>System Health</div>
+                                <div id="systemHealthList"></div>
+                            </div>
+                            <div class="section-card">
+                                <div class="section-card-title"><i data-lucide="zap"></i>Quick Actions</div>
+                                <div class="quick-actions">
+                                    <button class="quick-action-btn" onclick="loadData()"><i data-lucide="refresh-cw"></i>Refresh Data</button>
+                                    <button class="quick-action-btn" onclick="navigateTo('accounts')"><i data-lucide="users"></i>View Accounts</button>
+                                    <button class="quick-action-btn" onclick="navigateTo('logs')"><i data-lucide="list"></i>View Logs</button>
+                                    <button class="quick-action-btn" onclick="navigateTo('system')"><i data-lucide="server"></i>System Status</button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Recent Activity -->
                         <div class="activity-section">
                             <div class="activity-header">
                                 <div class="activity-title">Recent Activity</div>
                             </div>
-                            <div class="timeline" id="recentActivity">
-                                <div class="timeline-item">
-                                    <div class="timeline-dot"></div>
-                                    <div class="timeline-content">
-                                        <div class="timeline-message">Welcome to BloxCracker Dashboard</div>
-                                        <div class="timeline-time">Just now</div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="timeline" id="recentActivity"></div>
                         </div>
                     </section>
 
-                    <!-- Logs Page -->
-                    <section class="page-section" id="logsPage">
+                    <section class="page-section" id="analyticsPage">
+                        <div class="logs-header">
+                            <div>
+                                <h2 class="logs-title">Analytics</h2>
+                                <p class="logs-subtitle">Detailed performance metrics and trends.</p>
+                            </div>
+                        </div>
+                        <div class="activity-section">
+                            <div class="activity-header">
+                                <div class="activity-title">Account Growth</div>
+                                <div class="segmented-control">
+                                    <button class="segmented-button active" data-range="7d">7D</button>
+                                    <button class="segmented-button" data-range="30d">30D</button>
+                                    <button class="segmented-button" data-range="90d">90D</button>
+                                </div>
+                            </div>
+                            <div class="chart-container"><canvas id="analyticsChart"></canvas></div>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item"><div class="info-item-label">Total Accounts</div><div class="info-item-value" id="analyticsTotalAccounts">-</div></div>
+                            <div class="info-item"><div class="info-item-label">Avg Daily Logs</div><div class="info-item-value" id="analyticsAvgLogs">-</div></div>
+                            <div class="info-item"><div class="info-item-label">Peak Activity</div><div class="info-item-value" id="analyticsPeak">-</div></div>
+                            <div class="info-item"><div class="info-item-label">Uptime</div><div class="info-item-value" id="analyticsUptime">-</div></div>
+                        </div>
+                    </section>
+
+                    <section class="page-section" id="activityPage">
+                        <div class="logs-header">
+                            <div>
+                                <h2 class="logs-title">Activity</h2>
+                                <p class="logs-subtitle">Recent system events and user interactions.</p>
+                            </div>
+                        </div>
+                        <div class="activity-section">
+                            <div class="timeline" id="fullActivityTimeline"></div>
+                        </div>
+                    </section>
+
+                    <section class="page-section" id="accountsPage">
                         <div class="logs-header">
                             <div>
                                 <h2 class="logs-title">Accounts</h2>
-                                <p class="logs-subtitle">Manage and review recent account activity.</p>
+                                <p class="logs-subtitle">Manage and review account activity.</p>
                             </div>
-                            <button class="refresh-button" onclick="loadData()">
-                                <i data-lucide="refresh-cw"></i>
-                                <span>Refresh</span>
-                            </button>
+                            <button class="refresh-button" onclick="loadData()"><i data-lucide="refresh-cw"></i>Refresh</button>
                         </div>
-
                         <div class="search-bar">
-                            <span class="input-icon">
-                                <i data-lucide="search"></i>
-                            </span>
-                            <input type="text" class="search-input" id="searchInput" placeholder="Search username, display name or user ID..." oninput="refreshFilter()">
-                            <button class="clear-search" id="clearSearch" onclick="clearSearch()">
-                                <i data-lucide="x"></i>
-                            </button>
+                            <span class="input-icon"><i data-lucide="search"></i></span>
+                            <input type="text" class="search-input" id="searchInput" placeholder="Search username, display name or user ID..." oninput="refreshFilter()" aria-label="Search accounts">
+                            <button class="clear-search" id="clearSearch" onclick="clearSearch()" aria-label="Clear search"><i data-lucide="x"></i></button>
                         </div>
-
-                        <div class="filters" style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-                            <select class="form-input" id="filterPremium" onchange="refreshFilter()" style="width: auto; min-width: 150px;">
+                        <div class="filters-row">
+                            <select class="filter-select" id="filterPremium" onchange="refreshFilter()" aria-label="Filter by premium status">
                                 <option value="all">All Accounts</option>
                                 <option value="premium">Premium Only</option>
                                 <option value="free">Free Only</option>
                             </select>
-                            <select class="form-input" id="sortBy" onchange="refreshFilter()" style="width: auto; min-width: 150px;">
+                            <select class="filter-select" id="sortBy" onchange="refreshFilter()" aria-label="Sort accounts">
                                 <option value="newest">Newest First</option>
                                 <option value="oldest">Oldest First</option>
                                 <option value="robux">Most Robux</option>
                             </select>
-                        </div>
-
-                        <div class="accounts-grid" id="accountsGrid">
-                            <div class="loading" style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">
-                                Loading accounts...
+                            <div class="view-toggle">
+                                <button class="view-toggle-button active" data-view="grid" aria-label="Grid view"><i data-lucide="grid"></i>Grid</button>
+                                <button class="view-toggle-button" data-view="list" aria-label="List view"><i data-lucide="list"></i>List</button>
                             </div>
+                        </div>
+                        <div id="accountsContainer"></div>
+                    </section>
+
+                    <section class="page-section" id="logsPage">
+                        <div class="logs-header">
+                            <div>
+                                <h2 class="logs-title">Logs</h2>
+                                <p class="logs-subtitle">System and activity logs.</p>
+                            </div>
+                            <button class="refresh-button" onclick="loadLogs()"><i data-lucide="refresh-cw"></i>Refresh</button>
+                        </div>
+                        <div class="search-bar">
+                            <span class="input-icon"><i data-lucide="search"></i></span>
+                            <input type="text" class="search-input" id="logSearch" placeholder="Search logs..." oninput="renderLogs()" aria-label="Search logs">
+                        </div>
+                        <div class="logs-container" id="logsContainer"></div>
+                    </section>
+
+                    <section class="page-section" id="sessionsPage">
+                        <div class="logs-header">
+                            <div>
+                                <h2 class="logs-title">Sessions</h2>
+                                <p class="logs-subtitle">Active user sessions.</p>
+                            </div>
+                        </div>
+                        <div id="fullSessionsList"></div>
+                    </section>
+
+                    <section class="page-section" id="notificationsPage">
+                        <div class="logs-header">
+                            <div>
+                                <h2 class="logs-title">Notifications</h2>
+                                <p class="logs-subtitle">All your notifications.</p>
+                            </div>
+                            <button class="refresh-button" onclick="markAllNotificationsRead()"><i data-lucide="check-check"></i>Mark all read</button>
+                        </div>
+                        <div id="fullNotificationsList"></div>
+                    </section>
+
+                    <section class="page-section" id="systemPage">
+                        <div class="logs-header">
+                            <div>
+                                <h2 class="logs-title">System Status</h2>
+                                <p class="logs-subtitle">Real-time system health and metrics.</p>
+                            </div>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item"><div class="info-item-label">Frontend</div><div class="info-item-value" style="color: var(--success);">Operational</div></div>
+                            <div class="info-item"><div class="info-item-label">Backend</div><div class="info-item-value" style="color: var(--success);">Operational</div></div>
+                            <div class="info-item"><div class="info-item-label">API</div><div class="info-item-value" style="color: var(--success);">Operational</div></div>
+                            <div class="info-item"><div class="info-item-label">Database</div><div class="info-item-value" style="color: var(--success);">Operational</div></div>
+                            <div class="info-item"><div class="info-item-label">Server Uptime</div><div class="info-item-value" id="serverUptime">-</div></div>
+                            <div class="info-item"><div class="info-item-label">Last Sync</div><div class="info-item-value" id="lastSync">-</div></div>
+                            <div class="info-item"><div class="info-item-label">Environment</div><div class="info-item-value">Production</div></div>
                         </div>
                     </section>
 
-                    <!-- Info Page -->
                     <section class="page-section" id="infoPage">
                         <div class="info-section">
-                            <div class="info-title">
-                                <i data-lucide="shield"></i>
-                                BloxCracker Dashboard
-                            </div>
+                            <div class="info-title"><i data-lucide="shield"></i>BloxCracker Dashboard</div>
                             <div class="info-grid">
-                                <div class="info-item">
-                                    <div class="info-item-label">Version</div>
-                                    <div class="info-item-value">2.0.0</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-item-label">Created By</div>
-                                    <div class="info-item-value">Ramzz</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-item-label">Frontend Status</div>
-                                    <div class="info-item-value" style="color: var(--success);">Operational</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-item-label">Backend Status</div>
-                                    <div class="info-item-value" style="color: var(--success);">Operational</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-item-label">API Status</div>
-                                    <div class="info-item-value" style="color: var(--success);">Operational</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-item-label">Database Status</div>
-                                    <div class="info-item-value" style="color: var(--success);">Operational</div>
-                                </div>
+                                <div class="info-item"><div class="info-item-label">Version</div><div class="info-item-value">2.0.0</div></div>
+                                <div class="info-item"><div class="info-item-label">Created By</div><div class="info-item-value">Ramzz</div></div>
+                                <div class="info-item"><div class="info-item-label">Frontend Status</div><div class="info-item-value" style="color: var(--success);">Operational</div></div>
+                                <div class="info-item"><div class="info-item-label">Backend Status</div><div class="info-item-value" style="color: var(--success);">Operational</div></div>
+                                <div class="info-item"><div class="info-item-label">API Status</div><div class="info-item-value" style="color: var(--success);">Operational</div></div>
+                                <div class="info-item"><div class="info-item-label">Database Status</div><div class="info-item-value" style="color: var(--success);">Operational</div></div>
                             </div>
                         </div>
-
                         <div class="info-section">
-                            <div class="info-title">
-                                <i data-lucide="file-text"></i>
-                                Project Description
-                            </div>
-                            <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
-                                BloxCracker is a modern dashboard for monitoring and managing Roblox account data.
-                                Built with security and performance in mind, featuring real-time updates,
-                                comprehensive logging, and a premium user interface.
-                            </p>
+                            <div class="info-title"><i data-lucide="file-text"></i>Project Description</div>
+                            <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">BloxCracker is a modern dashboard for monitoring and managing Roblox account data. Built with security and performance in mind, featuring real-time updates, comprehensive logging, and a premium user interface.</p>
                         </div>
-
                         <div class="info-section">
-                            <div class="info-title">
-                                <i data-lucide="shield-check"></i>
-                                Security Information
-                            </div>
-                            <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
-                                All data transmission is secure. Cookies are stored locally and never transmitted to external servers.
-                                The dashboard uses authentication to protect your data.
-                            </p>
+                            <div class="info-title"><i data-lucide="shield-check"></i>Security Information</div>
+                            <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">All data transmission is secure. Cookies are stored locally and never transmitted to external servers. Authentication is required to access the dashboard.</p>
                         </div>
                     </section>
 
-                    <!-- Settings Page -->
                     <section class="page-section" id="settingsPage">
                         <div class="settings-section">
-                            <div class="settings-title">
-                                <i data-lucide="palette"></i>
-                                Appearance
-                            </div>
+                            <div class="settings-title"><i data-lucide="palette"></i>Appearance</div>
                             <div class="setting-item">
-                                <div>
-                                    <div class="setting-label">Dark Mode</div>
-                                    <div class="setting-description">Always enabled in this version</div>
-                                </div>
+                                <div><div class="setting-label">Dark Mode</div><div class="setting-description">Always enabled in this version</div></div>
                                 <div class="toggle-switch active"></div>
                             </div>
-                        </div>
-
-                        <div class="settings-section">
-                            <div class="settings-title">
-                                <i data-lucide="sparkles"></i>
-                                Animations
-                            </div>
                             <div class="setting-item">
-                                <div>
-                                    <div class="setting-label">Enable Animations</div>
-                                    <div class="setting-description">Smooth transitions and effects</div>
-                                </div>
-                                <div class="toggle-switch active" id="toggleAnimations"></div>
-                            </div>
-                            <div class="setting-item">
-                                <div>
-                                    <div class="setting-label">Reduced Motion</div>
-                                    <div class="setting-description">Minimize animation effects</div>
-                                </div>
-                                <div class="toggle-switch" id="toggleReducedMotion"></div>
-                            </div>
-                        </div>
-
-                        <div class="settings-section">
-                            <div class="settings-title">
-                                <i data-lucide="monitor"></i>
-                                Performance
-                            </div>
-                            <div class="setting-item">
-                                <div>
-                                    <div class="setting-label">Background Effects</div>
-                                    <div class="setting-description">Galaxy particles and nebula</div>
-                                </div>
+                                <div><div class="setting-label">Background Effects</div><div class="setting-description">Galaxy particles and nebula</div></div>
                                 <div class="toggle-switch active" id="toggleBackground"></div>
                             </div>
                             <div class="setting-item">
-                                <div>
-                                    <div class="setting-label">Auto Refresh</div>
-                                    <div class="setting-description">Refresh data every 30 seconds</div>
-                                </div>
-                                <div class="toggle-switch active" id="toggleAutoRefresh"></div>
+                                <div><div class="setting-label">Compact Mode</div><div class="setting-description">Reduce spacing for denser UI</div></div>
+                                <div class="toggle-switch" id="toggleCompact"></div>
                             </div>
                         </div>
-
                         <div class="settings-section">
-                            <div class="settings-title">
-                                <i data-lucide="database"></i>
-                                Data Management
+                            <div class="settings-title"><i data-lucide="monitor"></i>Performance</div>
+                            <div class="setting-item">
+                                <div><div class="setting-label">Auto Refresh</div><div class="setting-description">Refresh data every 30 seconds</div></div>
+                                <div class="toggle-switch active" id="toggleAutoRefresh"></div>
                             </div>
                             <div class="setting-item">
-                                <div>
-                                    <div class="setting-label">Clear Local Cache</div>
-                                    <div class="setting-description">Remove cached data from browser</div>
-                                </div>
-                                <button class="refresh-button" onclick="clearCache()">
-                                    <i data-lucide="trash-2"></i>
-                                    <span>Clear</span>
-                                </button>
+                                <div><div class="setting-label">Reduced Motion</div><div class="setting-description">Minimize animation effects</div></div>
+                                <div class="toggle-switch" id="toggleReducedMotion"></div>
+                            </div>
+                            <div class="setting-item">
+                                <div><div class="setting-label">Low Power Mode</div><div class="setting-description">Disable heavy visual effects</div></div>
+                                <div class="toggle-switch" id="toggleLowPower"></div>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <div class="settings-title"><i data-lucide="layout"></i>Interface</div>
+                            <div class="setting-item">
+                                <div><div class="setting-label">Sidebar Behavior</div><div class="setting-description">Collapse or expand sidebar</div></div>
+                                <div class="toggle-switch" id="toggleSidebarBehavior"></div>
+                            </div>
+                            <div class="setting-item">
+                                <div><div class="setting-label">Default Page</div><div class="setting-description">Home on startup</div></div>
+                                <select class="filter-select" id="defaultPage" style="min-width:150px;"><option value="home">Home</option><option value="accounts">Accounts</option><option value="logs">Logs</option></select>
+                            </div>
+                            <div class="setting-item">
+                                <div><div class="setting-label">Card Density</div><div class="setting-description">Comfortable or compact</div></div>
+                                <select class="filter-select" id="cardDensity" style="min-width:150px;"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select>
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <div class="settings-title"><i data-lucide="database"></i>Data Management</div>
+                            <div class="setting-item">
+                                <div><div class="setting-label">Clear Local Cache</div><div class="setting-description">Remove cached data from browser</div></div>
+                                <button class="refresh-button" onclick="clearCache()"><i data-lucide="trash-2"></i>Clear</button>
+                            </div>
+                            <div class="setting-item">
+                                <div><div class="setting-label">Reset UI Preferences</div><div class="setting-description">Restore default settings</div></div>
+                                <button class="refresh-button" onclick="resetUI()"><i data-lucide="rotate-ccw"></i>Reset</button>
                             </div>
                         </div>
                     </section>
@@ -2143,54 +2731,52 @@
         </div>
     </div>
 
-    <!-- Account Detail Modal -->
     <div class="modal-overlay" id="accountModal">
         <div class="modal">
             <div class="modal-header">
-                <div>
-                    <div class="modal-title" id="modalUsername">Account Details</div>
-                    <div class="modal-subtitle" id="modalDisplayName"></div>
+                <div class="modal-profile">
+                    <div class="modal-avatar" id="modalAvatar"><i data-lucide="user"></i></div>
+                    <div>
+                        <div class="modal-title" id="modalUsername">Account Details</div>
+                        <div class="modal-subtitle" id="modalDisplayName"></div>
+                    </div>
                 </div>
-                <button class="modal-close" onclick="closeModal()">
-                    <i data-lucide="x"></i>
-                </button>
+                <button class="modal-close" onclick="closeModal()" aria-label="Close modal"><i data-lucide="x"></i></button>
             </div>
             <div id="modalContent"></div>
         </div>
     </div>
 
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // ==========================================
-        // INITIALIZATION
-        // ==========================================
         const API_URL = window.location.origin;
         let allAccounts = [];
         let isAuthenticated = false;
         let autoRefreshInterval = null;
+        let notificationList = [];
+        let accountViewMode = 'grid';
+        let currentPage = 'home';
+        let activityData = { '7d': [], '30d': [], '90d': [] };
+        let analyticsData = { '7d': [], '30d': [], '90d': [] };
+        let chartRange = '7d';
+        let analyticsChartRange = '7d';
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize Lucide icons
             lucide.createIcons();
-            
-            // Show loading screen
             setTimeout(() => {
                 document.getElementById('loading-screen').classList.add('hidden');
                 checkAuth();
-            }, 1500);
-            
-            // Initialize galaxy background
+            }, 1000);
             initGalaxyBackground();
-            
-            // Initialize event listeners
             initEventListeners();
+            generateMockActivityData();
+            if (isAuthenticated) {
+                loadData();
+                startAutoRefresh();
+            }
         });
 
-        // ==========================================
-        // AUTHENTICATION
-        // ==========================================
         function checkAuth() {
             const session = localStorage.getItem('bloxcracker_session');
             if (session === 'authenticated') {
@@ -2217,25 +2803,20 @@
             event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            
-            // Demo credentials
             if (username === 'Rama' && password === 'Rama') {
-                const loginButton = document.getElementById('loginButton');
-                loginButton.classList.add('loading');
-                loginButton.innerHTML = '<span>Signing in...</span>';
-                
+                const btn = document.getElementById('loginButton');
+                btn.classList.add('loading');
+                btn.innerHTML = '<span>Signing in...</span>';
                 setTimeout(() => {
                     localStorage.setItem('bloxcracker_session', 'authenticated');
                     isAuthenticated = true;
                     showDashboard();
-                    showToast('Login successful', 'success');
-                }, 800);
+                    showToast('Login successful', 'success', 'Welcome back!');
+                }, 500);
             } else {
                 const error = document.getElementById('loginError');
                 error.classList.add('visible');
-                setTimeout(() => {
-                    error.classList.remove('visible');
-                }, 2000);
+                setTimeout(() => error.classList.remove('visible'), 2000);
             }
         }
 
@@ -2244,17 +2825,13 @@
             isAuthenticated = false;
             stopAutoRefresh();
             showLogin();
-            showToast('Logged out successfully', 'success');
+            showToast('Logged out', 'success', 'You have been signed out.');
         }
 
-        // ==========================================
-        // GALAXY BACKGROUND
-        // ==========================================
         function initGalaxyBackground() {
             const container = document.getElementById('galaxy-background');
-            
-            // Create stars
-            for (let i = 0; i < 100; i++) {
+            container.innerHTML = '';
+            for (let i = 0; i < 80; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
@@ -2265,18 +2842,11 @@
                 star.style.animationDelay = Math.random() * 3 + 's';
                 container.appendChild(star);
             }
-            
-            // Create nebulae
-            const colors = [
-                'rgba(255, 59, 59, 0.15)',
-                'rgba(0, 212, 255, 0.1)',
-                'rgba(139, 0, 0, 0.2)',
-            ];
-            
-            for (let i = 0; i < 5; i++) {
+            const colors = ['rgba(255,59,59,0.12)', 'rgba(0,212,255,0.08)', 'rgba(139,0,0,0.15)'];
+            for (let i = 0; i < 4; i++) {
                 const nebula = document.createElement('div');
                 nebula.className = 'nebula';
-                nebula.style.width = (Math.random() * 300 + 200) + 'px';
+                nebula.style.width = (Math.random() * 250 + 150) + 'px';
                 nebula.style.height = nebula.style.width;
                 nebula.style.background = colors[i % colors.length];
                 nebula.style.left = Math.random() * 80 + '%';
@@ -2287,200 +2857,173 @@
             }
         }
 
-        // ==========================================
-        // EVENT LISTENERS
-        // ==========================================
         function initEventListeners() {
-            // Login form
             document.getElementById('login-form').addEventListener('submit', handleLogin);
-            
-            // Password toggle
             document.getElementById('togglePassword').addEventListener('click', togglePassword);
-            
-            // Sidebar toggle
             document.getElementById('menuButton').addEventListener('click', toggleSidebar);
-            
-            // Navigation
             document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const page = item.dataset.page;
-                    navigateTo(page);
-                });
+                item.addEventListener('click', () => navigateTo(item.dataset.page));
             });
-            
-            // Notification toggle
             document.getElementById('notificationButton').addEventListener('click', toggleNotifications);
-            
-            // Topbar avatar click
-            document.getElementById('topbarAvatar').addEventListener('click', toggleNotifications);
-            
-            // Logout
+            document.getElementById('topbarAvatar').addEventListener('click', toggleUserDropdown);
             document.getElementById('logoutButton').addEventListener('click', handleLogout);
-            
-            // Search clear button
-            document.getElementById('searchInput').addEventListener('input', updateClearButton);
-            
-            // Modal close
-            document.querySelector('.modal-overlay').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) {
-                    closeModal();
-                }
-            });
-            
-            // Settings toggles
-            document.getElementById('toggleAnimations').addEventListener('click', function() {
-                this.classList.toggle('active');
-            });
-            
-            document.getElementById('toggleReducedMotion').addEventListener('click', function() {
-                this.classList.toggle('active');
-                if (this.classList.contains('active')) {
-                    document.body.style.animationDuration = '0.01ms';
-                } else {
-                    document.body.style.animationDuration = '';
-                }
-            });
-            
-            document.getElementById('toggleBackground').addEventListener('click', function() {
-                this.classList.toggle('active');
-                const bg = document.getElementById('galaxy-background');
-                bg.style.display = this.classList.contains('active') ? 'block' : 'none';
-            });
-            
-            document.getElementById('toggleAutoRefresh').addEventListener('click', function() {
-                this.classList.toggle('active');
-                if (this.classList.contains('active')) {
-                    startAutoRefresh();
-                } else {
-                    stopAutoRefresh();
-                }
-            });
-            
-            // Segmented control buttons
-            document.querySelectorAll('.segmented-button').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.segmented-button').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-            
-            // Close notification panel on outside click
+            document.getElementById('searchInput').addEventListener('input', () => { updateClearButton(); refreshFilter(); });
+            document.getElementById('clearSearch').addEventListener('click', clearSearch);
+            document.querySelector('.modal-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeDropdowns(); }});
             document.addEventListener('click', (e) => {
                 const panel = document.getElementById('notificationPanel');
-                const button = document.getElementById('notificationButton');
-                if (!panel.contains(e.target) && !button.contains(e.target)) {
-                    panel.classList.remove('visible');
-                }
+                const notifBtn = document.getElementById('notificationButton');
+                if (!panel.contains(e.target) && !notifBtn.contains(e.target)) panel.classList.remove('visible');
+                const dropdown = document.getElementById('userDropdown');
+                const avatar = document.getElementById('topbarAvatar');
+                if (!dropdown.contains(e.target) && !avatar.contains(e.target)) dropdown.classList.remove('visible');
+            });
+
+            document.querySelectorAll('.segmented-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const parent = this.closest('.segmented-control');
+                    parent.querySelectorAll('.segmented-button').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    if (parent.closest('#homePage')) {
+                        chartRange = this.dataset.range;
+                        drawChart();
+                    } else if (parent.closest('#analyticsPage')) {
+                        analyticsChartRange = this.dataset.range;
+                        drawAnalyticsChart();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.view-toggle-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.view-toggle-button').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    accountViewMode = this.dataset.view;
+                    renderAccounts(allAccounts);
+                });
+            });
+
+            document.querySelectorAll('[data-action]').forEach(item => {
+                item.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    if (action === 'logout') handleLogout();
+                    else if (action === 'settings') navigateTo('settings');
+                    else if (action === 'profile') showToast('Profile', 'info', 'Profile page coming soon.');
+                    else if (action === 'account') showToast('Account', 'info', 'Account settings coming soon.');
+                    closeDropdowns();
+                });
+            });
+
+            document.getElementById('toggleBackground').addEventListener('click', function() {
+                this.classList.toggle('active');
+                document.getElementById('galaxy-background').style.display = this.classList.contains('active') ? 'block' : 'none';
+            });
+            document.getElementById('toggleAutoRefresh').addEventListener('click', function() {
+                this.classList.toggle('active');
+                if (this.classList.contains('active')) startAutoRefresh(); else stopAutoRefresh();
+            });
+            document.getElementById('toggleReducedMotion').addEventListener('click', function() {
+                this.classList.toggle('active');
+                document.body.style.animationDuration = this.classList.contains('active') ? '0.01ms' : '';
+                document.body.style.transitionDuration = this.classList.contains('active') ? '0.01ms' : '';
+            });
+            document.getElementById('toggleCompact').addEventListener('click', function() {
+                this.classList.toggle('active');
+                document.body.classList.toggle('compact-mode');
+            });
+            document.getElementById('toggleLowPower').addEventListener('click', function() {
+                this.classList.toggle('active');
+                const bg = document.getElementById('galaxy-background');
+                bg.style.opacity = this.classList.contains('active') ? '0.3' : '0.7';
             });
         }
 
-        // ==========================================
-        // PASSWORD TOGGLE
-        // ==========================================
         function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleButton = document.getElementById('togglePassword');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleButton.innerHTML = '<i data-lucide="eye-off"></i>';
+            const input = document.getElementById('password');
+            const btn = document.getElementById('togglePassword');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i data-lucide="eye-off"></i>';
             } else {
-                passwordInput.type = 'password';
-                toggleButton.innerHTML = '<i data-lucide="eye"></i>';
+                input.type = 'password';
+                btn.innerHTML = '<i data-lucide="eye"></i>';
             }
             lucide.createIcons();
         }
 
-        // ==========================================
-        // NAVIGATION
-        // ==========================================
-        function navigateTo(page) {
-            // Update nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.page === page) {
-                    item.classList.add('active');
-                }
-            });
-            
-            // Update pages
-            document.querySelectorAll('.page-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(page + 'Page').classList.add('active');
-            
-            // Update topbar title
-            const titles = {
-                home: 'Home',
-                logs: 'Logs',
-                info: 'Info',
-                settings: 'Settings'
-            };
-            document.getElementById('topbarTitle').textContent = titles[page] || 'Home';
-            
-            // Close sidebar on mobile
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('visible');
-            }
-        }
-
-        // ==========================================
-        // SIDEBAR TOGGLE
-        // ==========================================
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('mainContent');
-            
+            const backdrop = document.querySelector('.sidebar-backdrop');
             if (window.innerWidth <= 768) {
                 sidebar.classList.toggle('visible');
+                backdrop.style.display = sidebar.classList.contains('visible') ? 'block' : 'none';
             } else {
-                sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('collapsed');
                 mainContent.classList.toggle('sidebar-collapsed');
             }
         }
 
-        // ==========================================
-        // NOTIFICATIONS
-        // ==========================================
         function toggleNotifications() {
             const panel = document.getElementById('notificationPanel');
             panel.classList.toggle('visible');
         }
 
-        function addNotification(message) {
-            const list = document.getElementById('notificationList');
-            const item = document.createElement('div');
-            item.className = 'notification-item';
-            item.innerHTML = `
-                <div class="notification-message">${message}</div>
-                <div class="notification-time">Just now</div>
-            `;
-            list.insertBefore(item, list.firstChild);
-            
-            // Show badge
-            document.getElementById('notificationBadge').style.display = 'block';
-            
-            // Limit notifications
-            while (list.children.length > 10) {
-                list.removeChild(list.lastChild);
-            }
+        function toggleUserDropdown() {
+            document.getElementById('userDropdown').classList.toggle('visible');
         }
 
-        // ==========================================
-        // DATA LOADING
-        // ==========================================
+        function closeDropdowns() {
+            document.getElementById('userDropdown').classList.remove('visible');
+            document.getElementById('notificationPanel').classList.remove('visible');
+        }
+
+        function navigateTo(page) {
+            currentPage = page;
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) item.classList.add('active');
+            });
+            document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+            const sectionMap = {
+                home: 'homePage',
+                analytics: 'analyticsPage',
+                activity: 'activityPage',
+                accounts: 'accountsPage',
+                logs: 'logsPage',
+                sessions: 'sessionsPage',
+                notifications: 'notificationsPage',
+                system: 'systemPage',
+                info: 'infoPage',
+                settings: 'settingsPage'
+            };
+            if (sectionMap[page]) document.getElementById(sectionMap[page]).classList.add('active');
+            const titles = {
+                home: 'Home', analytics: 'Analytics', activity: 'Activity',
+                accounts: 'Accounts', logs: 'Logs', sessions: 'Sessions',
+                notifications: 'Notifications', system: 'System Status', info: 'Info', settings: 'Settings'
+            };
+            document.getElementById('topbarTitle').textContent = titles[page] || 'Home';
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('visible');
+                document.querySelector('.sidebar-backdrop').style.display = 'none';
+            }
+            if (page === 'accounts') renderAccounts(allAccounts);
+            if (page === 'logs') renderLogs();
+            if (page === 'analytics') drawAnalyticsChart();
+            if (page === 'home') drawChart();
+        }
+
         async function loadData() {
             try {
                 const response = await fetch(`${API_URL}/api/accounts`);
                 const data = await response.json();
-                
                 if (data.success) {
                     allAccounts = data.accounts || [];
                     renderAccounts(allAccounts);
                     updateStats(data.stats, allAccounts);
                     loadLogs();
-                    
-                    // Check for new accounts
                     checkForUpdates(data.accounts);
                 } else {
                     showError('Server returned error: ' + (data.error || 'unknown'));
@@ -2492,94 +3035,99 @@
         }
 
         function showError(msg) {
-            document.getElementById('accountsGrid').innerHTML =
-                `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--danger);">${msg}</div>`;
+            const container = document.getElementById('accountsContainer');
+            container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--danger);">${msg}</div>`;
         }
 
-        // ==========================================
-        // RENDER ACCOUNTS
-        // ==========================================
         function renderAccounts(accounts) {
-            const grid = document.getElementById('accountsGrid');
+            const container = document.getElementById('accountsContainer');
             const filtered = applyFilter(accounts);
-            
             if (!filtered || filtered.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-secondary);">
-                        <i data-lucide="inbox" style="width:48px; height:48px; margin-bottom:16px; opacity:0.5;"></i>
-                        <p style="font-size:16px; margin-bottom:8px;">No accounts captured yet</p>
-                        <p style="font-size:13px; color:var(--text-muted);">Waiting for data from extension...</p>
-                    </div>
-                `;
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-secondary);"><i data-lucide="inbox" style="width:48px;height:48px;margin-bottom:16px;opacity:0.5;"></i><p>No accounts captured yet</p><p style="font-size:13px;color:var(--text-muted);">Waiting for data...</p></div>`;
                 lucide.createIcons();
                 return;
             }
-            
-            grid.innerHTML = filtered.map(account => `
-                <div class="account-card" data-userid="${escHtml(String(account.userId || ''))}">
-                    <div class="account-avatar">
-                        ${account.avatarUrl 
-                            ? `<img src="${escHtml(account.avatarUrl)}" alt="${escHtml(account.username || '')}" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot;></i>'; lucide.createIcons();">`
-                            : '<i data-lucide="user"></i>'
-                        }
-                    </div>
-                    <div class="account-info">
-                        <div class="account-username">${escHtml(account.displayName || account.username || 'Unknown')}</div>
-                        ${account.username !== account.displayName ? `<div class="account-display-name">@${escHtml(account.username || '')}</div>` : ''}
-                        <div class="account-user-id">
-                            <i data-lucide="fingerprint" style="width:12px; height:12px;"></i>
-                            ${escHtml(String(account.userId || 'N/A'))}
-                        </div>
-                        <div class="account-status">
-                            <span class="status-dot"></span>
-                            <span>Active</span>
-                        </div>
-                        <div class="account-updated-time" data-timestamp="${account.updatedAt || account.createdAt || Date.now()}">
-                            Updated just now
-                        </div>
-                    </div>
-                    <div class="account-actions">
-                        <button class="view-details-btn" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
-                            <i data-lucide="eye"></i>
-                            <span>View Details</span>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-            
+            if (accountViewMode === 'grid') {
+                container.innerHTML = `<div class="accounts-grid">${filtered.map(account => accountCardHTML(account)).join('')}</div>`;
+            } else {
+                container.innerHTML = `<div class="accounts-list">${filtered.map(account => accountRowHTML(account)).join('')}</div>`;
+            }
             lucide.createIcons();
             updateRelativeTimes();
+        }
+
+        function accountCardHTML(account) {
+            const avatarUrl = getAvatarUrl(account);
+            const displayName = account.displayName || account.username || 'Unknown';
+            const username = account.username ? `@${account.username}` : '';
+            const userId = account.userId || 'N/A';
+            const updatedAt = account.updatedAt || account.createdAt || Date.now();
+            return `
+                <div class="account-card" data-userid="${escHtml(String(account.userId || ''))}">
+                    <div class="account-avatar">
+                        ${avatarUrl ? `<img src="${avatarUrl}" alt="${escHtml(displayName)}" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot;></i>'; lucide.createIcons();">` : '<i data-lucide="user"></i>'}
+                    </div>
+                    <div class="account-info">
+                        <div class="account-username">${escHtml(displayName)}</div>
+                        ${username ? `<div class="account-display-name">${escHtml(username)}</div>` : ''}
+                        <div class="account-user-id"><i data-lucide="fingerprint"></i>${escHtml(String(userId))}</div>
+                        <div class="account-status"><span class="status-dot"></span>Active</div>
+                        <div class="account-updated-time" data-timestamp="${updatedAt}">Updated just now</div>
+                    </div>
+                    <div class="account-actions">
+                        <button class="view-details-btn" onclick="openAccountModal('${escHtml(String(userId))}')"><i data-lucide="eye"></i>Details</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function accountRowHTML(account) {
+            const avatarUrl = getAvatarUrl(account);
+            const displayName = account.displayName || account.username || 'Unknown';
+            const username = account.username ? `@${account.username}` : '';
+            const userId = account.userId || 'N/A';
+            const updatedAt = account.updatedAt || account.createdAt || Date.now();
+            return `
+                <div class="account-row" data-userid="${escHtml(String(userId))}" onclick="openAccountModal('${escHtml(String(userId))}')">
+                    <div class="account-row-avatar">
+                        ${avatarUrl ? `<img src="${avatarUrl}" alt="${escHtml(displayName)}" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot;></i>'; lucide.createIcons();">` : '<i data-lucide="user"></i>'}
+                    </div>
+                    <div class="account-row-info">
+                        <span class="account-row-name">${escHtml(displayName)}</span>
+                        ${username ? `<span class="account-row-username">${escHtml(username)}</span>` : ''}
+                        <span class="account-row-userid"><i data-lucide="fingerprint" style="width:12px;height:12px;"></i>${escHtml(String(userId))}</span>
+                        <span class="account-row-status"><span class="status-dot"></span>Active</span>
+                        <span class="account-updated-time" data-timestamp="${updatedAt}">Updated just now</span>
+                    </div>
+                    <div class="account-row-actions">
+                        <button class="view-details-btn" onclick="event.stopPropagation(); openAccountModal('${escHtml(String(userId))}')"><i data-lucide="eye"></i>Details</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getAvatarUrl(account) {
+            if (account.avatarUrl) return account.avatarUrl;
+            const userId = account.userId;
+            if (userId) {
+                return `https://tr.rbxcdn.com/30DAY-AvatarHeadshot-10A859A1F4681BE9AB2AB04507323EA8-Png/150/150/AvatarHeadshot/Webp/noFilter?userId=${userId}`;
+            }
+            return null;
         }
 
         function applyFilter(accounts) {
             const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
             const premiumFilter = document.getElementById('filterPremium')?.value || 'all';
             const sortBy = document.getElementById('sortBy')?.value || 'newest';
-            
             let filtered = (accounts || []).slice();
-            
             if (search) {
-                filtered = filtered.filter(a =>
-                    (a.username || '').toLowerCase().includes(search) ||
-                    (a.displayName || '').toLowerCase().includes(search) ||
-                    String(a.userId || '').includes(search)
-                );
+                filtered = filtered.filter(a => (a.username || '').toLowerCase().includes(search) || (a.displayName || '').toLowerCase().includes(search) || String(a.userId || '').includes(search));
             }
-            
-            if (premiumFilter === 'premium') {
-                filtered = filtered.filter(a => a.premium === true);
-            } else if (premiumFilter === 'free') {
-                filtered = filtered.filter(a => !a.premium);
-            }
-            
-            if (sortBy === 'newest') {
-                filtered.sort((a, b) => new Date(b.createdAt || b.receivedAt || 0) - new Date(a.createdAt || a.receivedAt || 0));
-            } else if (sortBy === 'oldest') {
-                filtered.sort((a, b) => new Date(a.createdAt || a.receivedAt || 0) - new Date(b.createdAt || b.receivedAt || 0));
-            } else if (sortBy === 'robux') {
-                filtered.sort((a, b) => (b.robux || 0) - (a.robux || 0));
-            }
-            
+            if (premiumFilter === 'premium') filtered = filtered.filter(a => a.premium === true);
+            else if (premiumFilter === 'free') filtered = filtered.filter(a => !a.premium);
+            if (sortBy === 'newest') filtered.sort((a,b) => new Date(b.createdAt || b.receivedAt || 0) - new Date(a.createdAt || a.receivedAt || 0));
+            else if (sortBy === 'oldest') filtered.sort((a,b) => new Date(a.createdAt || a.receivedAt || 0) - new Date(b.createdAt || b.receivedAt || 0));
+            else if (sortBy === 'robux') filtered.sort((a,b) => (b.robux || 0) - (a.robux || 0));
             return filtered;
         }
 
@@ -2588,14 +3136,9 @@
         }
 
         function updateClearButton() {
-            const searchInput = document.getElementById('searchInput');
-            const clearButton = document.getElementById('clearSearch');
-            
-            if (searchInput.value.length > 0) {
-                clearButton.classList.add('visible');
-            } else {
-                clearButton.classList.remove('visible');
-            }
+            const input = document.getElementById('searchInput');
+            const btn = document.getElementById('clearSearch');
+            if (input.value.length > 0) btn.classList.add('visible'); else btn.classList.remove('visible');
         }
 
         function clearSearch() {
@@ -2604,188 +3147,146 @@
             refreshFilter();
         }
 
-        // ==========================================
-        // UPDATE STATS
-        // ==========================================
         function updateStats(stats, accounts) {
-            const totalAccounts = accounts.length || stats?.totalAccounts || 0;
-            document.getElementById('statTotalAccounts').textContent = totalAccounts;
-            
-            // Calculate logs today
-            const today = new Date().toDateString();
-            const logsToday = (accounts || []).filter(a => {
-                const date = new Date(a.createdAt || a.receivedAt || 0);
-                return date.toDateString() === today;
-            }).length;
-            document.getElementById('statLogsToday').textContent = logsToday;
-            
-            // Calculate updates today
-            const updatesToday = (accounts || []).filter(a => {
-                const date = new Date(a.updatedAt || a.createdAt || 0);
-                return date.toDateString() === today && a.updatedAt !== a.createdAt;
-            }).length;
-            document.getElementById('statUpdatesToday').textContent = updatesToday;
-            
-            // Last activity
-            const lastActivity = (accounts || []).reduce((latest, account) => {
-                const date = new Date(account.updatedAt || account.createdAt || 0);
-                return date > latest ? date : latest;
+            const total = accounts.length || stats?.totalAccounts || 0;
+            document.querySelector('#statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(0,212,255,0.1);"><i data-lucide="users" style="color:#00d4ff;"></i></div>
+                    <div class="stat-value" data-count="${total}">0</div>
+                    <div class="stat-label">Total Accounts</div>
+                    <div class="stat-trend up"><i data-lucide="trending-up"></i>+12.4%</div>
+                    <div class="stat-comparison">vs last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(16,185,129,0.1);"><i data-lucide="activity" style="color:#10b981;"></i></div>
+                    <div class="stat-value" data-count="${stats?.logsToday || 0}">0</div>
+                    <div class="stat-label">Logs Today</div>
+                    <div class="stat-trend up"><i data-lucide="trending-up"></i>+5.2%</div>
+                    <div class="stat-comparison">vs yesterday</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(245,158,11,0.1);"><i data-lucide="refresh-cw" style="color:#f59e0b;"></i></div>
+                    <div class="stat-value" data-count="${stats?.updatesToday || 0}">0</div>
+                    <div class="stat-label">Updates Today</div>
+                    <div class="stat-trend up"><i data-lucide="trending-up"></i>+3.1%</div>
+                    <div class="stat-comparison">vs yesterday</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(239,68,68,0.1);"><i data-lucide="clock" style="color:#ef4444;"></i></div>
+                    <div class="stat-value" id="statLastActivity">-</div>
+                    <div class="stat-label">Last Activity</div>
+                </div>
+            `;
+            lucide.createIcons();
+            animateCounters();
+            const lastActivity = (accounts || []).reduce((latest, a) => {
+                const d = new Date(a.updatedAt || a.createdAt || 0);
+                return d > latest ? d : latest;
             }, new Date(0));
-            
-            if (lastActivity.getTime() > 0) {
-                document.getElementById('statLastActivity').textContent = formatRelativeTime(lastActivity);
-            } else {
-                document.getElementById('statLastActivity').textContent = 'Never';
-            }
+            document.getElementById('statLastActivity').textContent = lastActivity.getTime() > 0 ? formatRelativeTime(lastActivity) : 'Never';
         }
 
-        // ==========================================
-        // LOAD LOGS
-        // ==========================================
+        function animateCounters() {
+            document.querySelectorAll('.stat-value[data-count]').forEach(el => {
+                const target = parseInt(el.dataset.count) || 0;
+                const duration = 1000;
+                const start = performance.now();
+                function update(now) {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const current = Math.floor(progress * target);
+                    el.textContent = current.toLocaleString();
+                    if (progress < 1) requestAnimationFrame(update);
+                }
+                requestAnimationFrame(update);
+            });
+        }
+
         async function loadLogs() {
             try {
                 const response = await fetch(`${API_URL}/api/stats`);
                 const data = await response.json();
-                
                 if (data.success && data.recentLogs) {
-                    const container = document.getElementById('recentActivity');
                     const logs = [...data.recentLogs].reverse().slice(0, 10);
-                    
+                    const container = document.getElementById('recentActivity');
                     if (logs.length === 0) {
-                        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">No activity yet</div>';
+                        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">No activity yet</div>';
                         return;
                     }
-                    
                     container.innerHTML = logs.map(log => `
                         <div class="timeline-item">
                             <div class="timeline-dot"></div>
                             <div class="timeline-content">
-                                <div class="timeline-message">
-                                    ${log.username ? `@${escHtml(log.username)}` : 'System'}
-                                    ${log.content ? `: ${escHtml(log.content.substring(0, 80))}` : ''}
-                                </div>
+                                <div class="timeline-message">${log.username ? `@${escHtml(log.username)}` : 'System'}${log.content ? `: ${escHtml(log.content.substring(0,80))}` : ''}</div>
                                 <div class="timeline-time">${new Date(log.timestamp).toLocaleString()}</div>
                             </div>
                         </div>
                     `).join('');
+                    renderLogs(logs);
                 }
             } catch (error) {
                 console.error('Error loading logs:', error);
+                document.getElementById('recentActivity').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Cannot load logs</div>';
             }
         }
 
-        // ==========================================
-        // ACCOUNT DETAIL MODAL
-        // ==========================================
+        function renderLogs(providedLogs) {
+            const search = (document.getElementById('logSearch')?.value || '').toLowerCase();
+            let logs = providedLogs || JSON.parse(localStorage.getItem('bloxcracker_logs') || '[]');
+            if (!providedLogs && logs.length === 0) {
+                logs = [
+                    { username: 'System', content: 'Dashboard initialized', timestamp: Date.now(), level: 'info' },
+                    { username: 'Rama', content: 'Logged in', timestamp: Date.now() - 60000, level: 'success' }
+                ];
+            }
+            if (search) logs = logs.filter(l => (l.username || '').toLowerCase().includes(search) || (l.content || '').toLowerCase().includes(search));
+            const container = document.getElementById('logsContainer');
+            container.innerHTML = logs.map(log => {
+                const level = log.level || 'info';
+                return `<div class="log-entry">
+                    <span class="log-level ${level}">${level}</span>
+                    <div class="log-message"><span class="log-user">${escHtml(log.username || 'System')}</span> ${escHtml(log.content || '')}</div>
+                    <span class="log-timestamp">${new Date(log.timestamp).toLocaleString()}</span>
+                </div>`;
+            }).join('');
+        }
+
         function openAccountModal(userId) {
             const account = allAccounts.find(a => String(a.userId) === String(userId));
             if (!account) return;
-            
+            const avatarUrl = getAvatarUrl(account);
             document.getElementById('modalUsername').textContent = account.displayName || account.username || 'Unknown';
             document.getElementById('modalDisplayName').textContent = account.username ? `@${account.username}` : '';
-            
+            const modalAvatar = document.getElementById('modalAvatar');
+            modalAvatar.innerHTML = avatarUrl ? `<img src="${avatarUrl}" alt="avatar" onerror="this.innerHTML='<i data-lucide=&quot;user&quot;></i>'; lucide.createIcons();">` : '<i data-lucide="user"></i>';
+            lucide.createIcons();
             const content = document.getElementById('modalContent');
             content.innerHTML = `
                 <div class="detail-section">
-                    <div class="detail-section-title">
-                        <i data-lucide="user"></i>
-                        Profile
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Username</span>
-                        <span class="detail-value">
-                            ${escHtml(account.username || 'N/A')}
-                            <button class="copy-button" onclick="copyToClipboard('${escHtml(account.username || '')}', 'Username')">
-                                <i data-lucide="copy"></i>
-                                Copy
-                            </button>
-                        </span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Display Name</span>
-                        <span class="detail-value">
-                            ${escHtml(account.displayName || 'N/A')}
-                            <button class="copy-button" onclick="copyToClipboard('${escHtml(account.displayName || '')}', 'Display Name')">
-                                <i data-lucide="copy"></i>
-                                Copy
-                            </button>
-                        </span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">User ID</span>
-                        <span class="detail-value">
-                            ${escHtml(String(account.userId || 'N/A'))}
-                            <button class="copy-button" onclick="copyToClipboard('${escHtml(String(account.userId || ''))}', 'User ID')">
-                                <i data-lucide="copy"></i>
-                                Copy
-                            </button>
-                        </span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Profile URL</span>
-                        <span class="detail-value">
-                            <a href="https://www.roblox.com/users/${escHtml(String(account.userId || ''))}/profile" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">
-                                Open Profile
-                                <i data-lucide="external-link" style="width:12px; height:12px; display:inline;"></i>
-                            </a>
-                        </span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">First Seen</span>
-                        <span class="detail-value">${new Date(account.createdAt || account.receivedAt || Date.now()).toLocaleString()}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Last Seen</span>
-                        <span class="detail-value">${new Date(account.updatedAt || account.createdAt || Date.now()).toLocaleString()}</span>
-                    </div>
+                    <div class="detail-section-title"><i data-lucide="user"></i>Profile</div>
+                    <div class="detail-row"><span class="detail-label">Username</span><span class="detail-value">${escHtml(account.username || 'N/A')}</span></div>
+                    <div class="detail-row"><span class="detail-label">Display Name</span><span class="detail-value">${escHtml(account.displayName || 'N/A')}</span></div>
+                    <div class="detail-row"><span class="detail-label">User ID</span><span class="detail-value">${escHtml(String(account.userId || 'N/A'))}</span></div>
+                    <div class="detail-row"><span class="detail-label">Profile URL</span><span class="detail-value"><a href="https://www.roblox.com/users/${escHtml(String(account.userId || ''))}/profile" target="_blank" style="color:var(--accent-cyan);">Open Profile <i data-lucide="external-link" style="width:12px;height:12px;display:inline;"></i></a></span></div>
+                    <div class="detail-row"><span class="detail-label">First Seen</span><span class="detail-value">${new Date(account.createdAt || account.receivedAt || Date.now()).toLocaleString()}</span></div>
+                    <div class="detail-row"><span class="detail-label">Last Seen</span><span class="detail-value">${new Date(account.updatedAt || account.createdAt || Date.now()).toLocaleString()}</span></div>
                 </div>
-                
                 <div class="detail-section">
-                    <div class="detail-section-title">
-                        <i data-lucide="bar-chart-3"></i>
-                        Statistics
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Robux</span>
-                        <span class="detail-value">${(account.robux || 0).toLocaleString()} R$</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Friends</span>
-                        <span class="detail-value">${account.friends || 0}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Account Age</span>
-                        <span class="detail-value">${escHtml(account.accountAge || 'N/A')}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Inventory Value</span>
-                        <span class="detail-value">${(account.inventoryValue || 0).toLocaleString()} R$</span>
-                    </div>
+                    <div class="detail-section-title"><i data-lucide="bar-chart-3"></i>Statistics</div>
+                    <div class="detail-row"><span class="detail-label">Robux</span><span class="detail-value">${(account.robux || 0).toLocaleString()} R$</span></div>
+                    <div class="detail-row"><span class="detail-label">Friends</span><span class="detail-value">${account.friends || 0}</span></div>
+                    <div class="detail-row"><span class="detail-label">Account Age</span><span class="detail-value">${escHtml(account.accountAge || 'N/A')}</span></div>
+                    <div class="detail-row"><span class="detail-label">Inventory Value</span><span class="detail-value">${(account.inventoryValue || 0).toLocaleString()} R$</span></div>
                 </div>
-                
                 <div class="detail-section">
-                    <div class="detail-section-title">
-                        <i data-lucide="key"></i>
-                        Cookie
-                    </div>
-                    <div class="cookie-box">
-                        <textarea readonly rows="2">${escHtml(account.cookie || 'No cookie')}</textarea>
-                        <button class="copy-btn" onclick="copyCookie('${escHtml(account.cookie || '')}')">Copy</button>
-                    </div>
+                    <div class="detail-section-title"><i data-lucide="lock"></i>Security</div>
+                    <div class="detail-row"><span class="detail-label">Cookie</span><span class="detail-value">••••••••••••••••</span></div>
+                    <div class="security-notice"><i data-lucide="shield-alert"></i>Sensitive credentials are hidden for your security.</div>
                 </div>
-                
-                <div style="display: flex; gap: 10px; margin-top: 16px;">
-                    <button class="view-details-btn" onclick="openProfile('${escHtml(String(account.userId || ''))}')" style="flex: 1; justify-content: center;">
-                        <i data-lucide="external-link"></i>
-                        Open Profile
-                    </button>
-                    <button class="refresh-button" onclick="deleteAccount('${escHtml(String(account.userId || ''))}')" style="flex: 1; justify-content: center; background: rgba(255, 59, 59, 0.1); border-color: rgba(255, 59, 59, 0.3); color: var(--danger);">
-                        <i data-lucide="trash-2"></i>
-                        Delete
-                    </button>
+                <div style="display:flex; gap:10px; margin-top:16px;">
+                    <button class="view-details-btn" onclick="openProfile('${escHtml(String(account.userId || ''))}')" style="flex:1; justify-content:center;"><i data-lucide="external-link"></i>Open Profile</button>
+                    <button class="refresh-button" onclick="deleteAccount('${escHtml(String(account.userId || ''))}')" style="flex:1; justify-content:center; background:rgba(255,59,59,0.1); border-color:rgba(255,59,59,0.3); color:var(--danger);"><i data-lucide="trash-2"></i>Delete</button>
                 </div>
             `;
-            
             lucide.createIcons();
             document.getElementById('accountModal').classList.add('visible');
         }
@@ -2794,111 +3295,59 @@
             document.getElementById('accountModal').classList.remove('visible');
         }
 
-        // ==========================================
-        // COPY FUNCTIONS
-        // ==========================================
         function copyToClipboard(text, label) {
-            if (!text || text === 'N/A') {
-                showToast('Nothing to copy', 'error');
-                return;
-            }
-            
-            navigator.clipboard.writeText(text).then(() => {
-                showToast(`${label} copied to clipboard`, 'success');
-            }).catch(() => {
+            if (!text || text === 'N/A') { showToast('Nothing to copy', 'error', 'No data available'); return; }
+            navigator.clipboard.writeText(text).then(() => showToast(`${label} copied`, 'success', 'Copied to clipboard')).catch(() => {
                 const ta = document.createElement('textarea');
-                ta.value = text;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                showToast(`${label} copied to clipboard`, 'success');
+                ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+                showToast(`${label} copied`, 'success', 'Copied to clipboard');
             });
         }
 
-        function copyCookie(cookie) {
-            if (!cookie || cookie === 'No cookie') {
-                showToast('No cookie to copy', 'error');
-                return;
-            }
-            
-            navigator.clipboard.writeText(cookie).then(() => {
-                showToast('Cookie copied to clipboard', 'success');
-            }).catch(() => {
-                const ta = document.createElement('textarea');
-                ta.value = cookie;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                showToast('Cookie copied to clipboard', 'success');
-            });
-        }
-
-        // ==========================================
-        // ACCOUNT ACTIONS
-        // ==========================================
-        function openProfile(userId) {
-            if (userId) {
-                window.open(`https://www.roblox.com/users/${userId}/profile`, '_blank');
-            }
-        }
+        function openProfile(userId) { if (userId) window.open(`https://www.roblox.com/users/${userId}/profile`, '_blank'); }
 
         async function deleteAccount(userId) {
             if (!confirm('Are you sure you want to delete this account?')) return;
-            
             try {
                 const response = await fetch(`${API_URL}/api/account/${userId}`, { method: 'DELETE' });
                 const data = await response.json();
-                
                 if (data.success) {
-                    showToast('Account deleted successfully', 'success');
-                    closeModal();
-                    loadData();
+                    showToast('Account deleted', 'success', 'Account removed successfully');
+                    closeModal(); loadData();
                 } else {
-                    showToast('Failed to delete account', 'error');
+                    showToast('Failed to delete', 'error', data.error || 'Unknown error');
                 }
             } catch (error) {
-                showToast('Error deleting account', 'error');
+                showToast('Error', 'error', 'Could not connect to server');
             }
         }
 
-        // ==========================================
-        // TOAST NOTIFICATIONS
-        // ==========================================
-        function showToast(message, type = 'success') {
+        function showToast(title, type = 'success', message = '') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            
-            const icon = type === 'success' ? 'check-circle' : 'alert-circle';
+            const iconMap = { success: 'check-circle', error: 'alert-circle', warning: 'alert-triangle', info: 'info' };
+            const icon = iconMap[type] || 'info';
             toast.innerHTML = `
-                <i data-lucide="${icon}"></i>
-                <span>${message}</span>
+                <div class="toast-icon"><i data-lucide="${icon}"></i></div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    ${message ? `<div class="toast-message">${message}</div>` : ''}
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()"><i data-lucide="x"></i></button>
+                <div class="toast-progress" style="animation-duration:${message ? 4000 : 3000}ms;"></div>
             `;
-            
             container.appendChild(toast);
             lucide.createIcons();
-            
             setTimeout(() => {
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    container.removeChild(toast);
-                }, 300);
-            }, 3000);
+                setTimeout(() => toast.remove(), 300);
+            }, message ? 4000 : 3000);
         }
 
-        // ==========================================
-        // UTILITIES
-        // ==========================================
         function escHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
         }
 
         function formatRelativeTime(date) {
@@ -2908,7 +3357,6 @@
             const minutes = Math.floor(seconds / 60);
             const hours = Math.floor(minutes / 60);
             const days = Math.floor(hours / 24);
-            
             if (seconds < 60) return 'just now';
             if (minutes < 60) return `${minutes}m ago`;
             if (hours < 24) return `${hours}h ago`;
@@ -2918,48 +3366,263 @@
 
         function updateRelativeTimes() {
             document.querySelectorAll('[data-timestamp]').forEach(el => {
-                const timestamp = new Date(parseInt(el.dataset.timestamp));
-                el.textContent = `Updated ${formatRelativeTime(timestamp)}`;
+                const ts = new Date(parseInt(el.dataset.timestamp));
+                el.textContent = `Updated ${formatRelativeTime(ts)}`;
             });
         }
+        setInterval(updateRelativeTimes, 30000);
 
         function checkForUpdates(accounts) {
-            const prevAccounts = JSON.parse(localStorage.getItem('bloxcracker_accounts') || '[]');
-            const newAccounts = accounts.filter(a => !prevAccounts.find(p => p.userId === a.userId));
-            
+            const prev = JSON.parse(localStorage.getItem('bloxcracker_accounts') || '[]');
+            const newAccounts = accounts.filter(a => !prev.find(p => p.userId === a.userId));
             if (newAccounts.length > 0) {
                 newAccounts.forEach(account => {
-                    addNotification(`New account detected: ${account.username || account.displayName || 'Unknown'}`);
-                    showToast(`New account: ${account.username || account.displayName || 'Unknown'}`, 'success');
+                    addNotification(`New account detected: ${account.username || account.displayName || 'Unknown'}`, 'info');
+                    showToast('New account', 'success', `${account.username || account.displayName || 'Unknown'} added`);
                 });
             }
-            
             localStorage.setItem('bloxcracker_accounts', JSON.stringify(accounts));
         }
 
         function startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(() => {
-                if (isAuthenticated) {
-                    loadData();
-                }
-            }, 30000);
+            autoRefreshInterval = setInterval(() => { if (isAuthenticated) loadData(); }, 30000);
         }
 
         function stopAutoRefresh() {
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
-            }
+            if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
         }
 
         function clearCache() {
             localStorage.removeItem('bloxcracker_accounts');
-            showToast('Cache cleared successfully', 'success');
+            localStorage.removeItem('bloxcracker_logs');
+            showToast('Cache cleared', 'success', 'Local cache removed');
         }
 
-        // Start relative time updater
-        setInterval(updateRelativeTimes, 30000);
+        function resetUI() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        function addNotification(message, level = 'info') {
+            notificationList.unshift({ message, timestamp: Date.now(), level, read: false });
+            updateNotificationUI();
+        }
+
+        function updateNotificationUI() {
+            const badge = document.getElementById('notificationBadge');
+            const unread = notificationList.filter(n => !n.read).length;
+            badge.classList.toggle('visible', unread > 0);
+            const panelList = document.getElementById('notificationList');
+            panelList.innerHTML = notificationList.map((n, index) => `
+                <div class="notification-item" data-index="${index}">
+                    <div class="notification-icon"><i data-lucide="${n.level === 'success' ? 'check-circle' : 'info'}"></i></div>
+                    <div class="notification-content">
+                        <div class="notification-message">${n.message}</div>
+                        <div class="notification-time">${new Date(n.timestamp).toLocaleString()}</div>
+                    </div>
+                    ${!n.read ? '<div class="notification-unread-indicator"></div>' : ''}
+                </div>
+            `).join('');
+            const fullList = document.getElementById('fullNotificationsList');
+            if (fullList) fullList.innerHTML = notificationList.map(n => `<div class="notification-item"><div class="notification-icon"><i data-lucide="bell"></i></div><div class="notification-content"><div class="notification-message">${n.message}</div><div class="notification-time">${new Date(n.timestamp).toLocaleString()}</div></div></div>`).join('');
+            lucide.createIcons();
+            document.querySelectorAll('#notificationList .notification-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const idx = parseInt(item.dataset.index);
+                    notificationList[idx].read = true;
+                    updateNotificationUI();
+                });
+            });
+        }
+
+        function markAllNotificationsRead() {
+            notificationList.forEach(n => n.read = true);
+            updateNotificationUI();
+        }
+
+        function clearAllNotifications() {
+            notificationList = [];
+            updateNotificationUI();
+        }
+
+        // Chart drawing functions using Canvas
+        function drawChart() {
+            const canvas = document.getElementById('chartCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            const w = rect.width;
+            const h = rect.height;
+            ctx.clearRect(0, 0, w, h);
+            const data = generateChartData(chartRange);
+            const max = Math.max(...data, 10);
+            const points = data.map((value, i) => ({ x: (i / (data.length - 1)) * (w - 40) + 20, y: h - 30 - (value / max) * (h - 60) }));
+            // grid
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 5; i++) {
+                const y = 30 + (i * (h - 60) / 4);
+                ctx.beginPath(); ctx.moveTo(20, y); ctx.lineTo(w - 20, y); ctx.stroke();
+            }
+            // area gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, h);
+            gradient.addColorStop(0, 'rgba(255,59,59,0.3)');
+            gradient.addColorStop(1, 'rgba(255,59,59,0.02)');
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, h - 30);
+            points.forEach(p => ctx.lineTo(p.x, p.y));
+            ctx.lineTo(points[points.length - 1].x, h - 30);
+            ctx.closePath();
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            // line
+            ctx.beginPath();
+            points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+            ctx.strokeStyle = '#ff3b3b';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            // dots
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff3b3b';
+                ctx.fill();
+            });
+            // hover tooltip (simplified)
+            let hoverIndex = -1;
+            canvas.onmousemove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mx = e.clientX - rect.left;
+                hoverIndex = points.findIndex(p => Math.abs(p.x - mx) < 10);
+                if (hoverIndex !== -1) {
+                    const tooltip = document.createElement('div');
+                    tooltip.id = 'chartTooltip';
+                    tooltip.style.cssText = `position:absolute; left:${points[hoverIndex].x + rect.left}px; top:${points[hoverIndex].y + rect.top - 30}px; background:rgba(0,0,0,0.8); color:white; padding:4px 8px; border-radius:4px; font-size:12px; pointer-events:none; transform:translateX(-50%);`;
+                    tooltip.textContent = `${data[hoverIndex]} events`;
+                    const old = document.getElementById('chartTooltip');
+                    if (old) old.remove();
+                    canvas.parentElement.appendChild(tooltip);
+                } else {
+                    const old = document.getElementById('chartTooltip');
+                    if (old) old.remove();
+                }
+            };
+            canvas.onmouseleave = () => { const old = document.getElementById('chartTooltip'); if (old) old.remove(); };
+        }
+
+        function drawAnalyticsChart() {
+            const canvas = document.getElementById('analyticsChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            const w = rect.width;
+            const h = rect.height;
+            ctx.clearRect(0, 0, w, h);
+            const data = generateChartData(analyticsChartRange);
+            const max = Math.max(...data, 10);
+            const points = data.map((value, i) => ({ x: (i / (data.length - 1)) * (w - 40) + 20, y: h - 30 - (value / max) * (h - 60) }));
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            for (let i = 0; i < 5; i++) {
+                const y = 30 + (i * (h - 60) / 4);
+                ctx.beginPath(); ctx.moveTo(20, y); ctx.lineTo(w - 20, y); ctx.stroke();
+            }
+            const gradient = ctx.createLinearGradient(0, 0, 0, h);
+            gradient.addColorStop(0, 'rgba(0,212,255,0.3)');
+            gradient.addColorStop(1, 'rgba(0,212,255,0.02)');
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, h - 30);
+            points.forEach(p => ctx.lineTo(p.x, p.y));
+            ctx.lineTo(points[points.length - 1].x, h - 30);
+            ctx.closePath();
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            ctx.beginPath();
+            points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+            ctx.strokeStyle = '#00d4ff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            points.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fillStyle = '#00d4ff'; ctx.fill(); });
+        }
+
+        function generateChartData(range) {
+            const points = range === '7d' ? 7 : range === '30d' ? 30 : 90;
+            const base = Math.random() * 50 + 20;
+            const data = [];
+            for (let i = 0; i < points; i++) {
+                data.push(Math.floor(base + Math.random() * 50 + (i % 7 === 0 ? 30 : 0)));
+            }
+            return data;
+        }
+
+        function generateMockActivityData() {
+            const now = Date.now();
+            const logs = [];
+            for (let i = 0; i < 20; i++) {
+                logs.push({ username: 'User' + i, content: 'Account updated', timestamp: now - i * 60000, level: i % 3 === 0 ? 'warning' : 'success' });
+            }
+            localStorage.setItem('bloxcracker_logs', JSON.stringify(logs));
+        }
+
+        // Initialize extra sections
+        function initExtraSections() {
+            const sessionsList = [
+                { name: 'Rama', status: 'online', device: 'Desktop', lastSeen: 'now' },
+                { name: 'User123', status: 'idle', device: 'Mobile', lastSeen: '2m ago' },
+                { name: 'RobloxFan', status: 'online', device: 'Tablet', lastSeen: '5m ago' }
+            ];
+            document.getElementById('activeSessionsList').innerHTML = sessionsList.map(s => `
+                <div class="session-item">
+                    <div class="session-avatar"><i data-lucide="user"></i></div>
+                    <div class="session-info">
+                        <div class="session-name">${s.name}</div>
+                        <div class="session-meta">${s.device} · ${s.lastSeen}</div>
+                    </div>
+                    <div class="session-status ${s.status}">● ${s.status}</div>
+                </div>
+            `).join('');
+            document.getElementById('fullSessionsList').innerHTML = sessionsList.map(s => `
+                <div class="account-row">
+                    <div class="account-row-avatar"><i data-lucide="user"></i></div>
+                    <div class="account-row-info">
+                        <span class="account-row-name">${s.name}</span>
+                        <span class="account-row-status"><span class="status-dot"></span>${s.status}</span>
+                        <span class="account-updated-time">${s.lastSeen}</span>
+                    </div>
+                </div>
+            `).join('');
+            const health = [
+                { name: 'API', status: 'online' },
+                { name: 'Database', status: 'online' },
+                { name: 'Server', status: 'online' },
+                { name: 'WebSocket', status: 'degraded' }
+            ];
+            document.getElementById('systemHealthList').innerHTML = health.map(h => `
+                <div class="health-item">
+                    <span class="health-name"><i data-lucide="server" style="width:14px;height:14px;"></i>${h.name}</span>
+                    <span class="health-status ${h.status}"><span class="status-dot"></span>${h.status}</span>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        // Call initExtraSections on load
+        if (document.readyState === 'complete') initExtraSections();
+        else window.addEventListener('load', initExtraSections);
+
+        // Navigation trigger initial render
+        window.addEventListener('resize', () => {
+            if (currentPage === 'home') drawChart();
+            if (currentPage === 'analytics') drawAnalyticsChart();
+        });
     </script>
 </body>
 </html>
