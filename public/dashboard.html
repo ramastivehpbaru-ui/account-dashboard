@@ -41,6 +41,15 @@
             --danger: #ff6b6b;
             --info: #4da3ff;
 
+            /* Tier colors */
+            --tier-gold: #f5a623;
+            --tier-gold-glow: rgba(245, 166, 35, 0.25);
+            --tier-purple: #9b59b6;
+            --tier-purple-glow: rgba(155, 89, 182, 0.25);
+            --tier-blue: #3498db;
+            --tier-blue-glow: rgba(52, 152, 219, 0.35);
+            --tier-blue-light: #5dade2;
+
             --radius-sm: 6px;
             --radius-md: 10px;
             --radius-lg: 14px;
@@ -2005,6 +2014,7 @@
             gap: 16px;
         }
 
+        /* ===== ACCOUNT CARD ===== */
         .account-card {
             background: var(--bg-card);
             backdrop-filter: blur(10px);
@@ -2027,7 +2037,167 @@
             box-shadow: var(--shadow-md), var(--shadow-glow-cyan);
         }
 
-        .account-avatar {
+        /* --- TIER: GOLD (> 100 robux) --- */
+        .account-card.tier-gold {
+            border-color: var(--tier-gold);
+            box-shadow: var(--shadow-md), 0 0 24px var(--tier-gold-glow);
+        }
+        .account-card.tier-gold .account-username {
+            color: var(--tier-gold);
+        }
+        .account-card.tier-gold .account-robux {
+            color: var(--tier-gold);
+        }
+        .account-card.tier-gold .account-avatar {
+            border-color: var(--tier-gold);
+            box-shadow: 0 0 12px var(--tier-gold-glow);
+        }
+        .account-card.tier-gold:hover {
+            border-color: #e8a020;
+            box-shadow: var(--shadow-md), 0 0 32px var(--tier-gold-glow);
+        }
+
+        /* --- TIER: PURPLE (> 1000 robux) --- */
+        .account-card.tier-purple {
+            border-color: var(--tier-purple);
+            box-shadow: var(--shadow-md), 0 0 28px var(--tier-purple-glow);
+        }
+        .account-card.tier-purple .account-username {
+            color: var(--tier-purple);
+        }
+        .account-card.tier-purple .account-robux {
+            color: var(--tier-purple);
+        }
+        .account-card.tier-purple .account-avatar {
+            border-color: var(--tier-purple);
+            box-shadow: 0 0 16px var(--tier-purple-glow);
+        }
+        .account-card.tier-purple:hover {
+            border-color: #a569bd;
+            box-shadow: var(--shadow-md), 0 0 36px var(--tier-purple-glow);
+        }
+
+        /* --- TIER: BLUE ELITE (> 10000 robux) --- */
+        .account-card.tier-blue {
+            border-color: var(--tier-blue);
+            box-shadow: var(--shadow-md), 0 0 32px var(--tier-blue-glow);
+            animation: blueElitePulse 4s ease-in-out infinite;
+        }
+        .account-card.tier-blue .account-username {
+            background: linear-gradient(135deg, #5dade2, #2e86de, #5dade2);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: blueEliteTextShine 6s ease-in-out infinite;
+        }
+        .account-card.tier-blue .account-robux {
+            color: var(--tier-blue-light);
+            text-shadow: 0 0 12px rgba(52, 152, 219, 0.4);
+        }
+        .account-card.tier-blue .account-avatar {
+            border-color: var(--tier-blue);
+            box-shadow: 0 0 20px var(--tier-blue-glow);
+            animation: blueEliteAvatarGlow 3s ease-in-out infinite;
+        }
+        .account-card.tier-blue::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--radius-lg);
+            padding: 2px;
+            background: conic-gradient(from var(--angle, 0deg),
+                    transparent 0deg,
+                    var(--tier-blue) 30deg,
+                    var(--tier-blue-light) 60deg,
+                    var(--tier-blue) 90deg,
+                    transparent 120deg,
+                    transparent 360deg);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 0;
+            animation: blueEliteBorderSpin 8s linear infinite;
+        }
+        .account-card.tier-blue .account-info,
+        .account-card.tier-blue .account-actions {
+            position: relative;
+            z-index: 1;
+        }
+        .account-card.tier-blue .account-avatar {
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes blueElitePulse {
+            0%,
+            100% {
+                box-shadow: var(--shadow-md), 0 0 32px var(--tier-blue-glow);
+            }
+            50% {
+                box-shadow: var(--shadow-md), 0 0 48px rgba(52, 152, 219, 0.5);
+            }
+        }
+
+        @keyframes blueEliteTextShine {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes blueEliteAvatarGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--tier-blue-glow);
+            }
+            50% {
+                box-shadow: 0 0 32px rgba(52, 152, 219, 0.6);
+            }
+        }
+
+        @keyframes blueEliteBorderSpin {
+            to {
+                --angle: 360deg;
+            }
+        }
+
+        @property --angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        /* reduced motion: disable heavy animations */
+        @media (prefers-reduced-motion: reduce) {
+            .account-card.tier-blue {
+                animation: none !important;
+            }
+            .account-card.tier-blue .account-username {
+                animation: none !important;
+                -webkit-text-fill-color: var(--tier-blue-light);
+                background: none;
+            }
+            .account-card.tier-blue .account-avatar {
+                animation: none !important;
+            }
+            .account-card.tier-blue::before {
+                animation: none !important;
+                display: none;
+            }
+            .account-card.tier-blue {
+                border-color: var(--tier-blue) !important;
+                box-shadow: var(--shadow-md), 0 0 24px var(--tier-blue-glow) !important;
+            }
+        }
+
+        /* --- account card internal --- */
+        .account-card .account-avatar {
             width: 52px;
             height: 52px;
             border-radius: 50%;
@@ -2046,24 +2216,23 @@
             box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
         }
 
-        .account-avatar img {
+        .account-card .account-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
-        .account-avatar svg {
+        .account-card .account-avatar svg {
             width: 24px;
             height: 24px;
             color: var(--text-muted);
         }
 
-        .account-info {
+        .account-card .account-info {
             flex: 1;
             min-width: 0;
         }
 
-        .account-username {
+        .account-card .account-username {
             font-size: 15px;
             font-weight: 600;
             color: var(--text-primary);
@@ -2071,45 +2240,69 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: color var(--transition-base);
         }
 
-        .account-display-name {
+        .account-card .account-display-name {
             font-size: 13px;
             color: var(--text-secondary);
-            margin-bottom: 6px;
+            margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .account-user-id {
+        .account-card .account-robux {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color var(--transition-base);
+        }
+        .account-card .account-robux svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+        .account-card .account-robux .robux-unavailable {
+            font-weight: 400;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .account-card .account-user-id {
             font-size: 11px;
             color: var(--text-muted);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .account-status {
+        .account-card .account-status {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-size: 11px;
             color: var(--success);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
-        .account-status.recently-updated {
+        .account-card .account-status.recently-updated {
             color: var(--warning);
         }
 
-        .account-updated-time {
+        .account-card .account-updated-time {
             font-size: 11px;
             color: var(--text-muted);
         }
 
-        .account-actions {
+        .account-card .account-actions {
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -2117,7 +2310,7 @@
             align-items: flex-end;
         }
 
-        .view-details-btn {
+        .account-card .view-details-btn {
             padding: 7px 12px;
             background: rgba(0, 212, 255, 0.08);
             border: 1px solid rgba(0, 212, 255, 0.2);
@@ -2135,12 +2328,12 @@
             height: 32px;
         }
 
-        .view-details-btn:hover {
+        .account-card .view-details-btn:hover {
             background: rgba(0, 212, 255, 0.15);
             box-shadow: var(--shadow-glow-cyan);
         }
 
-        .view-details-btn svg {
+        .account-card .view-details-btn svg {
             width: 14px;
             height: 14px;
         }
@@ -2163,6 +2356,7 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             transition: all var(--transition-base);
+            flex-wrap: wrap;
         }
 
         .account-list-item:hover {
@@ -2180,17 +2374,23 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #1a2a3f, #2a3a5c);
+            border: 1px solid var(--border-color);
+            transition: border-color var(--transition-base);
         }
-
         .account-list-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+        .account-list-avatar svg {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
 
         .account-list-info {
             flex: 1;
-            min-width: 0;
+            min-width: 120px;
         }
 
         .account-list-name {
@@ -2204,12 +2404,67 @@
             color: var(--text-muted);
         }
 
+        .account-list-robux {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .account-list-robux svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0.6;
+        }
+
         .account-list-status {
             display: flex;
             align-items: center;
             gap: 6px;
             font-size: 11px;
             color: var(--success);
+            white-space: nowrap;
+        }
+
+        /* tier styles for list view */
+        .account-list-item.tier-gold {
+            border-color: var(--tier-gold);
+        }
+        .account-list-item.tier-gold .account-list-name {
+            color: var(--tier-gold);
+        }
+        .account-list-item.tier-gold .account-list-robux {
+            color: var(--tier-gold);
+        }
+
+        .account-list-item.tier-purple {
+            border-color: var(--tier-purple);
+        }
+        .account-list-item.tier-purple .account-list-name {
+            color: var(--tier-purple);
+        }
+        .account-list-item.tier-purple .account-list-robux {
+            color: var(--tier-purple);
+        }
+
+        .account-list-item.tier-blue {
+            border-color: var(--tier-blue);
+            box-shadow: 0 0 20px var(--tier-blue-glow);
+        }
+        .account-list-item.tier-blue .account-list-name {
+            background: linear-gradient(135deg, #5dade2, #2e86de);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .account-list-item.tier-blue .account-list-robux {
+            color: var(--tier-blue-light);
+        }
+        .account-list-item.tier-blue .account-list-avatar {
+            border-color: var(--tier-blue);
+            box-shadow: 0 0 12px var(--tier-blue-glow);
         }
 
         /* ================================================================
@@ -3092,6 +3347,16 @@
             .welcome-title {
                 font-size: 24px;
             }
+            .account-card .account-robux {
+                font-size: 13px;
+            }
+            .account-list-item {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .account-list-robux {
+                font-size: 12px;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -3103,6 +3368,25 @@
             .loading-progress-bar {
                 animation: none;
                 width: 100%;
+            }
+            .account-card.tier-blue {
+                animation: none !important;
+            }
+            .account-card.tier-blue .account-username {
+                animation: none !important;
+                -webkit-text-fill-color: var(--tier-blue-light);
+                background: none;
+            }
+            .account-card.tier-blue .account-avatar {
+                animation: none !important;
+            }
+            .account-card.tier-blue::before {
+                animation: none !important;
+                display: none;
+            }
+            .account-card.tier-blue {
+                border-color: var(--tier-blue) !important;
+                box-shadow: var(--shadow-md), 0 0 24px var(--tier-blue-glow) !important;
             }
         }
     </style>
@@ -4013,6 +4297,9 @@ SCRIPT
     let commandItems = [];
     let commandSelectedIndex = -1;
 
+    // ---- Avatar cache ----
+    const avatarCache = new Map();
+
     // ================================================================
     // DOM READY
     // ================================================================
@@ -4059,7 +4346,6 @@ SCRIPT
         initActivityChart('7d');
         initAnalyticsChart();
         initCategoryChart();
-        // Restore sidebar state
         const sidebarState = localStorage.getItem('bloxcracker_sidebar_collapsed');
         if (sidebarState === 'true') {
             document.getElementById('sidebar').classList.add('collapsed');
@@ -4172,7 +4458,6 @@ SCRIPT
         document.getElementById('commandPaletteBtn').addEventListener('click', openCommandPalette);
         document.getElementById('globalSearchClose').addEventListener('click', closeGlobalSearch);
 
-        // Export dropdown
         document.getElementById('exportDropdownBtn').addEventListener('click', (e) => {
             e.stopPropagation();
             document.getElementById('exportDropdownContent').classList.toggle('visible');
@@ -4181,7 +4466,6 @@ SCRIPT
             document.getElementById('exportDropdownContent').classList.remove('visible');
         });
 
-        // Segmented control
         document.querySelectorAll('.segmented-button').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.segmented-button').forEach(b => b.classList.remove('active'));
@@ -4191,7 +4475,6 @@ SCRIPT
             });
         });
 
-        // View toggle
         document.querySelectorAll('.view-toggle-button').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.view-toggle-button').forEach(b => b.classList.remove('active'));
@@ -4201,7 +4484,6 @@ SCRIPT
             });
         });
 
-        // Settings toggles
         document.getElementById('toggleAnimations').addEventListener('click', function() { this.classList.toggle(
             'active'); });
         document.getElementById('toggleBackground').addEventListener('click', function() {
@@ -4233,17 +4515,15 @@ SCRIPT
         document.getElementById('toggleSidebarBehavior').addEventListener('click', function() { this.classList.toggle(
             'active'); });
 
-        // Activity pause
         document.getElementById('pauseActivityBtn').addEventListener('click', function() {
             activityPaused = !activityPaused;
             this.innerHTML = activityPaused ?
                 '<i data-lucide="play"></i> Resume' :
                 '<i data-lucide="pause"></i> Pause';
             lucide.createIcons();
-            if (!activityPaused) updateActivityFeed();
+            if (!activityPaused) updateActivityFeed(allLogs);
         });
 
-        // User dropdown items
         document.querySelectorAll('.user-dropdown .dropdown-item').forEach(item => {
             item.addEventListener('click', function() {
                 const action = this.dataset.action;
@@ -4255,7 +4535,6 @@ SCRIPT
             });
         });
 
-        // Close dropdowns on outside click
         document.addEventListener('click', (e) => {
             const panel = document.getElementById('notificationPanel');
             const notifBtn = document.getElementById('notificationButton');
@@ -4272,9 +4551,7 @@ SCRIPT
 
     function setupToggles() {
         document.querySelectorAll('.toggle-switch').forEach(toggle => {
-            if (toggle.id && !toggle.id.startsWith('toggle')) {
-                // Already handled
-            }
+            // preserve existing behavior
         });
     }
 
@@ -4342,7 +4619,6 @@ SCRIPT
             document.getElementById('sidebar').classList.remove('visible');
         }
 
-        // Save last page
         localStorage.setItem('bloxcracker_last_page', page);
     }
 
@@ -4385,7 +4661,6 @@ SCRIPT
         notifications.unshift(notification);
         updateNotificationUI();
         localStorage.setItem('bloxcracker_notifications', JSON.stringify(notifications));
-        // Show toast for new notifications
         const iconMap = { success: 'success', error: 'error', warning: 'warning', info: 'info' };
         showToast(message, iconMap[type] || 'info');
     }
@@ -4501,7 +4776,6 @@ SCRIPT
         const input = document.getElementById('commandInput');
         const results = document.getElementById('commandResults');
 
-        // Define commands
         commandItems = [
             { id: 'home', label: 'Go to Home', icon: 'home', shortcut: '⌘H', action: () => navigateTo('home') },
             { id: 'accounts', label: 'Go to Accounts', icon: 'users', shortcut: '⌘A', action: () => navigateTo(
@@ -4529,18 +4803,15 @@ SCRIPT
             { id: 'sidebar_toggle', label: 'Toggle Sidebar', icon: 'menu', shortcut: '', action: () => toggleSidebar() },
         ];
 
-        // Filter commands
         input.addEventListener('input', () => {
             const query = input.value.toLowerCase().trim();
             const filtered = query ? commandItems.filter(c =>
                 c.label.toLowerCase().includes(query) ||
                 c.id.toLowerCase().includes(query)
             ) : commandItems;
-
             renderCommandResults(filtered, query);
         });
 
-        // Keyboard navigation
         input.addEventListener('keydown', (e) => {
             const items = results.querySelectorAll('.command-item');
             if (e.key === 'ArrowDown') {
@@ -4568,7 +4839,6 @@ SCRIPT
             }
         });
 
-        // Close on overlay click
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) closeCommandPalette();
         });
@@ -4593,7 +4863,6 @@ SCRIPT
         commandSelectedIndex = 0;
         lucide.createIcons();
 
-        // Click handler
         results.querySelectorAll('.command-item').forEach(el => {
             el.addEventListener('click', () => {
                 const id = el.dataset.id;
@@ -4666,7 +4935,6 @@ SCRIPT
         const results = document.getElementById('globalSearchResults');
         const matches = [];
 
-        // Search accounts
         allAccounts.forEach(acc => {
             const username = (acc.username || '').toLowerCase();
             const displayName = (acc.displayName || '').toLowerCase();
@@ -4682,7 +4950,6 @@ SCRIPT
             }
         });
 
-        // Search logs
         allLogs.forEach(log => {
             const content = (log.content || '').toLowerCase();
             const username = (log.username || '').toLowerCase();
@@ -4703,7 +4970,6 @@ SCRIPT
             return;
         }
 
-        // Group by type
         const groups = {};
         matches.forEach(m => {
             if (!groups[m.type]) groups[m.type] = [];
@@ -4719,7 +4985,7 @@ SCRIPT
                         <div class="gs-result-item" data-type="${item.type}" data-id="${item.data.id || item.data.userId || ''}">
                             <div class="gs-item-avatar">
                                 ${item.type === 'account' && item.data.userId ? 
-                                    `<img src="https://www.roblox.com/headshot-thumbnail/image?userId=${item.data.userId}&width=60&height=60&format=png" 
+                                    `<img src="${getAvatarUrl(item.data)}" 
                                          onerror="this.parentElement.innerHTML='<i data-lucide=&quot;${item.icon}&quot;></i>'; lucide.createIcons();">` :
                                     `<i data-lucide="${item.icon}"></i>`
                                 }
@@ -4736,7 +5002,6 @@ SCRIPT
 
         lucide.createIcons();
 
-        // Click handler
         results.querySelectorAll('.gs-result-item').forEach(el => {
             el.addEventListener('click', () => {
                 const type = el.dataset.type;
@@ -4793,10 +5058,8 @@ SCRIPT
     // ================================================================
     function setupKeyboardShortcuts() {
         document.addEventListener('keydown', (e) => {
-            // Don't trigger if typing in input
             const tag = e.target.tagName;
             if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
-                // Allow Ctrl+K in inputs to open command palette
                 if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                     e.preventDefault();
                     openCommandPalette();
@@ -4804,56 +5067,48 @@ SCRIPT
                 return;
             }
 
-            // Ctrl+K - Command Palette
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
                 openCommandPalette();
                 return;
             }
 
-            // Ctrl+Shift+F - Global Search
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F') {
                 e.preventDefault();
                 openGlobalSearch();
                 return;
             }
 
-            // Ctrl+/ - Shortcuts Help
             if ((e.ctrlKey || e.metaKey) && e.key === '/') {
                 e.preventDefault();
                 openShortcutsHelp();
                 return;
             }
 
-            // Ctrl+H - Home
             if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
                 e.preventDefault();
                 navigateTo('home');
                 return;
             }
 
-            // Ctrl+A - Accounts
             if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
                 e.preventDefault();
                 navigateTo('accounts');
                 return;
             }
 
-            // Ctrl+L - Logs
             if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
                 e.preventDefault();
                 navigateTo('logs');
                 return;
             }
 
-            // Ctrl+S - Settings
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                 e.preventDefault();
                 navigateTo('settings');
                 return;
             }
 
-            // Escape - close modals
             if (e.key === 'Escape') {
                 if (document.getElementById('command-palette-overlay').classList.contains('visible')) {
                     closeCommandPalette();
@@ -4875,6 +5130,73 @@ SCRIPT
     }
 
     // ================================================================
+    // AVATAR HELPER (Roblox Avatar Headshot API)
+    // ================================================================
+    function getAvatarUrl(account) {
+        if (!account) return '';
+        const userId = account.userId;
+        if (!userId) return '';
+        const cacheKey = String(userId);
+        if (avatarCache.has(cacheKey)) {
+            const cached = avatarCache.get(cacheKey);
+            if (cached && cached !== 'fallback') return cached;
+        }
+        return `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`;
+    }
+
+    async function batchFetchAvatars(accounts) {
+        const userIds = accounts
+            .map(a => a.userId)
+            .filter(id => id != null && id !== '' && !avatarCache.has(String(id)));
+
+        if (userIds.length === 0) return;
+
+        const chunkSize = 20;
+        for (let i = 0; i < userIds.length; i += chunkSize) {
+            const chunk = userIds.slice(i, i + chunkSize);
+            try {
+                const response = await fetch(
+                    `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk.join(',')}&size=150x150&format=Png&isCircular=false`
+                );
+                if (!response.ok) throw new Error('API responded with ' + response.status);
+                const data = await response.json();
+                if (data.data && Array.isArray(data.data)) {
+                    data.data.forEach(item => {
+                        const targetId = String(item.targetId);
+                        if (item.imageUrl && item.state === 'Completed') {
+                            avatarCache.set(targetId, item.imageUrl);
+                        } else {
+                            avatarCache.set(targetId, 'fallback');
+                        }
+                    });
+                }
+            } catch (error) {
+                console.warn('Failed to fetch avatar batch:', error);
+                chunk.forEach(id => {
+                    avatarCache.set(String(id), 'fallback');
+                });
+            }
+        }
+    }
+
+    // ================================================================
+    // TIER SYSTEM
+    // ================================================================
+    function getRobuxTier(robux) {
+        if (robux === undefined || robux === null || isNaN(robux)) return 'normal';
+        const r = Number(robux);
+        if (r > 10000) return 'blue';
+        if (r > 1000) return 'purple';
+        if (r > 100) return 'gold';
+        return 'normal';
+    }
+
+    function formatRobux(value) {
+        if (value === undefined || value === null || isNaN(value)) return null;
+        return Number(value).toLocaleString();
+    }
+
+    // ================================================================
     // DATA LOADING
     // ================================================================
     async function loadData() {
@@ -4883,6 +5205,7 @@ SCRIPT
             const data = await response.json();
             if (data.success) {
                 allAccounts = data.accounts || [];
+                await batchFetchAvatars(allAccounts);
                 renderAccounts(allAccounts);
                 updateStats(data.stats, allAccounts);
                 loadLogs();
@@ -4934,14 +5257,26 @@ SCRIPT
 
     function buildAccountCard(account) {
         const avatarUrl = getAvatarUrl(account);
+        const robux = account.robux;
+        const robuxFormatted = formatRobux(robux);
+        const tier = getRobuxTier(robux);
+        const tierClass = tier === 'normal' ? '' : `tier-${tier}`;
+        const robuxDisplay = robuxFormatted !== null ?
+            `${robuxFormatted} Robux` :
+            '<span class="robux-unavailable">Robux unavailable</span>';
+
         return `
-                <div class="account-card" data-userid="${escHtml(String(account.userId || ''))}">
+                <div class="account-card ${tierClass}" data-userid="${escHtml(String(account.userId || ''))}">
                     <div class="account-avatar" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
                         ${avatarUrl ? `<img src="${escHtml(avatarUrl)}" alt="${escHtml(account.displayName || account.username || '')}" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot;></i>'; lucide.createIcons();">` : '<i data-lucide="user"></i>'}
                     </div>
                     <div class="account-info" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
                         <div class="account-username">${escHtml(account.displayName || account.username || 'Unknown')}</div>
                         ${account.username !== account.displayName ? `<div class="account-display-name">@${escHtml(account.username || '')}</div>` : ''}
+                        <div class="account-robux">
+                            <i data-lucide="coins"></i>
+                            ${robuxDisplay}
+                        </div>
                         <div class="account-user-id">
                             <i data-lucide="fingerprint" style="width:12px; height:12px;"></i>
                             ${escHtml(String(account.userId || 'N/A'))}
@@ -4966,14 +5301,25 @@ SCRIPT
 
     function buildAccountListItem(account) {
         const avatarUrl = getAvatarUrl(account);
+        const robux = account.robux;
+        const robuxFormatted = formatRobux(robux);
+        const tier = getRobuxTier(robux);
+        const tierClass = tier === 'normal' ? '' : `tier-${tier}`;
+        const robuxDisplay = robuxFormatted !== null ?
+            `${robuxFormatted} Robux` :
+            'Robux unavailable';
+
         return `
-                <div class="account-list-item" data-userid="${escHtml(String(account.userId || ''))}">
+                <div class="account-list-item ${tierClass}" data-userid="${escHtml(String(account.userId || ''))}">
                     <div class="account-list-avatar" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
                         ${avatarUrl ? `<img src="${escHtml(avatarUrl)}" alt="${escHtml(account.displayName || account.username || '')}" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;user&quot;></i>'; lucide.createIcons();">` : '<i data-lucide="user"></i>'}
                     </div>
                     <div class="account-list-info" onclick="openAccountModal('${escHtml(String(account.userId || ''))}')">
                         <div class="account-list-name">${escHtml(account.displayName || account.username || 'Unknown')}</div>
                         <div class="account-list-id">${escHtml(String(account.userId || 'N/A'))} ${account.premium ? '✦' : ''}</div>
+                    </div>
+                    <div class="account-list-robux">
+                        <i data-lucide="coins"></i> ${robuxDisplay}
                     </div>
                     <div class="account-list-status">
                         <span class="status-dot"></span>
@@ -4984,14 +5330,6 @@ SCRIPT
                     </button>
                 </div>
             `;
-    }
-
-    function getAvatarUrl(account) {
-        if (account.avatarUrl) return account.avatarUrl;
-        if (account.userId) {
-            return `https://www.roblox.com/headshot-thumbnail/image?userId=${account.userId}&width=150&height=150&format=png`;
-        }
-        return '';
     }
 
     function applyFilter(accounts) {
@@ -5174,7 +5512,6 @@ SCRIPT
 
         allLogsFiltered = logs;
 
-        // Pagination
         const totalPages = Math.ceil(logs.length / logsPageSize) || 1;
         if (logsCurrentPage > totalPages) logsCurrentPage = totalPages;
         const start = (logsCurrentPage - 1) * logsPageSize;
@@ -5206,7 +5543,6 @@ SCRIPT
             }).join('');
         }
 
-        // Render pagination
         renderPagination(totalPages);
         lucide.createIcons();
     }
@@ -5505,6 +5841,8 @@ SCRIPT
         document.getElementById('modalDisplayName').textContent = account.username ? `@${account.username}` : '';
         document.getElementById('modalUserId').textContent = `User ID: ${account.userId || 'N/A'}`;
 
+        const robuxFormatted = formatRobux(account.robux);
+
         const content = document.getElementById('modalContent');
         content.innerHTML = `
                 <div class="detail-section">
@@ -5543,6 +5881,10 @@ SCRIPT
                         <span class="detail-value">${account.premium ? '✅ Yes' : '❌ No'}</span>
                     </div>
                     <div class="detail-row">
+                        <span class="detail-label">Robux</span>
+                        <span class="detail-value">${robuxFormatted !== null ? robuxFormatted + ' R$' : 'Unavailable'}</span>
+                    </div>
+                    <div class="detail-row">
                         <span class="detail-label">First Seen</span>
                         <span class="detail-value">${new Date(account.createdAt || account.receivedAt || Date.now()).toLocaleString()}</span>
                     </div>
@@ -5553,10 +5895,6 @@ SCRIPT
                 </div>
                 <div class="detail-section">
                     <div class="detail-section-title"><i data-lucide="bar-chart-3"></i> Statistics</div>
-                    <div class="detail-row">
-                        <span class="detail-label">Robux</span>
-                        <span class="detail-value">${(account.robux || 0).toLocaleString()} R$</span>
-                    </div>
                     <div class="detail-row">
                         <span class="detail-label">Friends</span>
                         <span class="detail-value">${account.friends || 0}</span>
@@ -5839,9 +6177,7 @@ SCRIPT
         location.reload();
     }
 
-    // Initial relative time updater
     setInterval(updateRelativeTimes, 30000);
-    // Auto-refresh activity feed
     setInterval(() => {
         if (!activityPaused && isAuthenticated) loadLogs();
     }, 15000);
