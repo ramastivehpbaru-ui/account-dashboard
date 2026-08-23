@@ -5,8 +5,9 @@ const API_URL = window.location.origin;
 let API_KEY = '';
 
 async function loadApiKey() {
-    const response = await fetch('https://pastebin.com/raw/5EajitbH');
-    API_KEY = (await response.text()).trim();
+    const response = await fetch('/config');
+    const data = await response.json();
+    API_KEY = data.apiKey;
 }
 
 // Simpan accounts di memory supaya filter tidak perlu fetch ulang
