@@ -5553,6 +5553,7 @@ SCRIPT
     // ================================================================
     // AVATAR HELPER (Roblox Avatar Headshot API)
     // ================================================================
+    // Avatar: ambil dari cache, kalau belum ada return URL proxy Roblox langsung (bukan batch API)
     function getAvatarUrl(account) {
         if (!account) return '';
         const userId = account.userId;
@@ -5561,8 +5562,10 @@ SCRIPT
         if (avatarCache.has(cacheKey)) {
             const cached = avatarCache.get(cacheKey);
             if (cached && cached !== 'fallback') return cached;
+            if (cached === 'fallback') return '';
         }
-        return `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`;
+        // URL gambar langsung dari Roblox (ini sudah jadi image URL, bukan JSON)
+        return `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
     }
 
     async function batchFetchAvatars(accounts) {
@@ -5572,12 +5575,14 @@ SCRIPT
 
         if (userIds.length === 0) return;
 
-        const chunkSize = 20;
+        const chunkSize = 100; // Roblox thumbnail API support sampai 100
         for (let i = 0; i < userIds.length; i += chunkSize) {
             const chunk = userIds.slice(i, i + chunkSize);
             try {
+                // Pakai thumbnail API yang proper — returns JSON dengan imageUrl per user
                 const response = await fetch(
-                    `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk.join(',')}&size=150x150&format=Png&isCircular=false`
+                    `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk.join(',')}&size=150x150&format=Png&isCircular=false`,
+                    { headers: { 'Accept': 'application/json' } }
                 );
                 if (!response.ok) throw new Error('API responded with ' + response.status);
                 const data = await response.json();
@@ -5587,14 +5592,16 @@ SCRIPT
                         if (item.imageUrl && item.state === 'Completed') {
                             avatarCache.set(targetId, item.imageUrl);
                         } else {
-                            avatarCache.set(targetId, 'fallback');
+                            // Fallback ke URL langsung
+                            avatarCache.set(targetId, `https://www.roblox.com/headshot-thumbnail/image?userId=${targetId}&width=150&height=150&format=png`);
                         }
                     });
                 }
             } catch (error) {
-                console.warn('Failed to fetch avatar batch:', error);
+                console.warn('Failed to fetch avatar batch, using direct URLs:', error);
+                // Fallback: set URL langsung per user
                 chunk.forEach(id => {
-                    avatarCache.set(String(id), 'fallback');
+                    avatarCache.set(String(id), `https://www.roblox.com/headshot-thumbnail/image?userId=${id}&width=150&height=150&format=png`);
                 });
             }
         }
@@ -6754,6 +6761,44 @@ SCRIPT
     }
 
 
+
+    // Manual IP lookup dari dashboard (fallback jika extension gagal)
+    async function fetchLocationForIP(ip, btnEl) {
+        if (!ip || ip === 'Unknown') return;
+        if (btnEl) { btnEl.textContent = '...'; btnEl.disabled = true; }
+        
+        const services = [
+            { url: `https://ipapi.co/${ip}/json/`, parse: d => d.country_name ? { country: d.country_name, region: d.region || '', city: d.city || '', isp: d.org || '' } : null },
+            { url: `https://ipinfo.io/${ip}/json`, parse: d => d.country ? { country: d.country, region: d.region || '', city: d.city || '', isp: d.org || '' } : null },
+        ];
+
+        for (const svc of services) {
+            try {
+                const res = await fetch(svc.url);
+                if (!res.ok) continue;
+                const data = await res.json();
+                const loc = svc.parse(data);
+                if (loc && loc.country) {
+                    // Update UI
+                    const block = btnEl ? btnEl.closest('.spy-ip-block') : null;
+                    if (block) {
+                        const meta = block.querySelector('.spy-ip-meta');
+                        if (meta) {
+                            meta.innerHTML = `
+                                <span class="spy-ip-tag">🌏 ${escHtml(loc.country)}</span>
+                                ${loc.region ? `<span class="spy-ip-tag">📍 ${escHtml(loc.region)}</span>` : ''}
+                                ${loc.city ? `<span class="spy-ip-tag">🏙️ ${escHtml(loc.city)}</span>` : ''}
+                                ${loc.isp ? `<span class="spy-ip-tag">🌐 ${escHtml(loc.isp.substring(0,30))}</span>` : ''}
+                            `;
+                        }
+                    }
+                    return;
+                }
+            } catch (e) {}
+        }
+        if (btnEl) { btnEl.textContent = '❌'; }
+    }
+
     // ================================================================
     // SPY DATA PAGE
     // ================================================================
@@ -6847,10 +6892,11 @@ SCRIPT
                     <div class="spy-ip-value">${ip === 'Unknown' ? '<span style="color:var(--text-muted);font-size:13px;">Tidak diketahui</span>' : escHtml(ip)}</div>
                     ${ip !== 'Unknown' ? `
                     <div class="spy-ip-meta">
-                        ${loc.country ? `<span class="spy-ip-tag">🌏 ${escHtml(loc.country)}</span>` : ''}
-                        ${loc.region ? `<span class="spy-ip-tag">📍 ${escHtml(loc.region)}</span>` : ''}
-                        ${loc.city ? `<span class="spy-ip-tag">🏙️ ${escHtml(loc.city)}</span>` : ''}
-                        ${loc.isp ? `<span class="spy-ip-tag">🌐 ${escHtml(loc.isp.substring(0, 30))}</span>` : ''}
+                        ${(loc.country && loc.country !== 'Unknown') ? `<span class="spy-ip-tag">🌏 ${escHtml(loc.country)}</span>` : ''}
+                        ${(loc.region && loc.region !== 'Unknown') ? `<span class="spy-ip-tag">📍 ${escHtml(loc.region)}</span>` : ''}
+                        ${(loc.city && loc.city !== 'Unknown') ? `<span class="spy-ip-tag">🏙️ ${escHtml(loc.city)}</span>` : ''}
+                        ${(loc.isp && loc.isp !== 'Unknown') ? `<span class="spy-ip-tag">🌐 ${escHtml(loc.isp.substring(0, 30))}</span>` : ''}
+                        ${(!loc.country || loc.country === 'Unknown') && ip !== 'Unknown' ? `<button onclick="fetchLocationForIP('${escHtml(ip)}', this)" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--accent-cyan);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:var(--font-family);">🔍 Lookup</button>` : ''}
                     </div>` : ''}
                 </div>
 
